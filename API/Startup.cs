@@ -1,8 +1,10 @@
 ﻿using API.Extensions;
+using Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +24,7 @@ namespace API
         {
             services.ConfigureCors();
             services.ConfigureIISIntegration();
+            services.AddDbContext<EFContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:nextDoor"], b => b.MigrationsAssembly("API")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
