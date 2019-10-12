@@ -1,12 +1,10 @@
-﻿using API.Extensions;
 using Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace API
 {
@@ -22,32 +20,28 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureCors();
-            services.ConfigureIISIntegration();
-            services.AddDbContext<EFContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:nextDoor"], b => b.MigrationsAssembly("API")));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllers();
+            services.AddDbContext<EFContext>(options => options.UseSqlServer(Configuration["ConnectionString:nextDoor"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
 
             app.UseHttpsRedirection();
-            app.UseCors("CorsPolicy");
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                ForwardedHeaders = ForwardedHeaders.All
+                endpoints.MapControllers();
             });
-            app.UseStaticFiles();
-            app.UseMvc();
         }
     }
 }

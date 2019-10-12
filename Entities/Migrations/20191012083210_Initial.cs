@@ -1,12 +1,27 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace API.Migrations
+namespace Entities.Migrations
 {
-    public partial class EntitiesEFContextUserContextSeed : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    Password = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id);
+                });
+
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "Email", "FirstName", "LastName", "Password" },
@@ -20,15 +35,8 @@ namespace API.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
-                table: "User",
-                keyColumn: "Id",
-                keyValue: new Guid("71941ffc-a6f1-493b-9e01-5a06f75399bc"));
-
-            migrationBuilder.DeleteData(
-                table: "User",
-                keyColumn: "Id",
-                keyValue: new Guid("bee381a3-fe38-4c79-8c4a-a0ac1ab4c508"));
+            migrationBuilder.DropTable(
+                name: "User");
         }
     }
 }
