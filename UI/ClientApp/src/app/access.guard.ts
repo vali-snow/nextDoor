@@ -15,7 +15,7 @@ export class AccessGuard implements CanActivate, CanActivateChild {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const requiresLogin = next.data.requiresLogin || false;
     if (requiresLogin) {
-      this.router.navigate(['login']);
+      this.router.navigate(['auth/login']);
     }
     return true;
   }
@@ -24,7 +24,7 @@ export class AccessGuard implements CanActivate, CanActivateChild {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const requiresLogin = next.data.requiresLogin || false;
     if (requiresLogin) {
-      this.router.navigate(['login']);
+      this.router.navigate(['auth/login']);
     }
     return true;
   }

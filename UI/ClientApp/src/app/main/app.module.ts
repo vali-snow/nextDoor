@@ -16,8 +16,8 @@ import { AccessGuard } from '../access.guard';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full', data: { requiresLogin: true }, canActivate: [ AccessGuard ] },
-  { path: '1', component: HomeComponent, canActivate: [ AccessGuard ] },
-  { path: 'login', loadChildren: () => import('../login/login.module').then(m => m.LoginModule) }
+  { path: '1', component: HomeComponent, data: { requiresLogin: true } },
+  { path: 'auth', loadChildren: () => import('../auth/auth.module').then(m => m.AuthModule) }
   //{ path: '**', component: NotFoundComponent }
 ]
 
@@ -30,13 +30,13 @@ const routes: Routes = [
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     AppMaterialModule,
+    FlexLayoutModule,
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot(
       routes, {enableTracing: true}
     ),
-    BrowserAnimationsModule,
-    FlexLayoutModule
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
