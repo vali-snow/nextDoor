@@ -1,6 +1,10 @@
-<body>
-  <app-nav-menu></app-nav-menu>
-  <div class="container">
-    <router-outlet></router-outlet>
-  </div>
+<body fxLayout="column" fxLayoutAlign="space-between none">
+  <mat-toolbar *ngIf="requiresLogin">Header</mat-toolbar>
+  <mat-sidenav-container fxFlex>
+    <mat-sidenav *ngIf="requiresLogin" mode="side" opened>Sidebar</mat-sidenav>
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+  <mat-toolbar *ngIf="requiresLogin">Footer</mat-toolbar>
 </body>
