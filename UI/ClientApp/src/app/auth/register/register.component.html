@@ -7,35 +7,53 @@
     </mat-card-subtitle>
     <mat-card-content fxLayout="column">
       <mat-form-field>
-        <input matInput type="text" placeholder="Username" [formControl]="usernameFormControl" [errorStateMatcher]="matcher">
-        <mat-error *ngIf="usernameFormControl.hasError('minLength') && !usernameFormControl.hasError('required')">
+        <input matInput type="text" placeholder="First Name" [formControl]="registerFormGroup.get('firstName')" [errorStateMatcher]="matcher">
+        <mat-error *ngIf="registerFormGroup.get('firstName').hasError('minlength')">
             Please enter a username with length grater than 7.
         </mat-error>
-        <mat-error *ngIf="usernameFormControl.hasError('required')">
+        <mat-error *ngIf="registerFormGroup.get('firstName').hasError('required')">
           Username is <strong>required</strong>
         </mat-error>
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="email" placeholder="Email" [formControl]="emailFormControl" [errorStateMatcher]="matcher">
-        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+        <input matInput type="text" placeholder="Last Name" [formControl]="registerFormGroup.get('lastName')" [errorStateMatcher]="matcher">
+        <mat-error *ngIf="registerFormGroup.get('lastName').hasError('minlength')">
+            Please enter a username with length grater than 7.
+        </mat-error>
+        <mat-error *ngIf="registerFormGroup.get('lastName').hasError('required')">
+          Username is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="email" placeholder="Email" [formControl]="registerFormGroup.get('email')" [errorStateMatcher]="matcher">
+        <mat-error *ngIf="registerFormGroup.get('email').hasError('email') && !registerFormGroup.get('email').hasError('required')">
           Please enter a valid email address
         </mat-error>
-        <mat-error *ngIf="emailFormControl.hasError('required')">
+        <mat-error *ngIf="registerFormGroup.get('email').hasError('required')">
           Email is <strong>required</strong>
         </mat-error>
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="password" placeholder="Password" [formControl]="passwordFormControl" [errorStateMatcher]="matcher">
-        <mat-error *ngIf="passwordFormControl.hasError('minLength') && !passwordFormControl.hasError('required')">
+        <input matInput type="password" placeholder="Password" [formControl]="registerFormGroup.get('passwordGroup').get('password1')" (input)="onPasswordInput()" [errorStateMatcher]="matcher">
+        <mat-error *ngIf="registerFormGroup.get('passwordGroup').get('password1').hasError('minlength') && !registerFormGroup.get('passwordGroup').get('password1').hasError('required')">
           Please enter a password with length grater than 7.
         </mat-error>
-        <mat-error *ngIf="passwordFormControl.hasError('required')">
+        <mat-error *ngIf="registerFormGroup.get('passwordGroup').get('password1').hasError('required')">
           Password is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="password" placeholder="Confirm Password" [formControl]="registerFormGroup.get('passwordGroup').get('password2')" (input)="onPasswordInput()" [errorStateMatcher]="matcher">
+        <mat-error *ngIf="registerFormGroup.get('passwordGroup').get('password2').hasError('required')">
+          Password confirmation <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="registerFormGroup.get('passwordGroup').get('password2').invalid && !registerFormGroup.get('passwordGroup').get('password1').hasError('required')">
+          Passwords do not match.
         </mat-error>
       </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-raised-button>Register</button>
+      <button mat-raised-button (click)="onRegister($event)" [disabled]="isFormInvalid()">Register</button>
     </mat-card-actions>
     <mat-card-footer></mat-card-footer>
   </mat-card>
