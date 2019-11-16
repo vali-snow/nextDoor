@@ -1,15 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ErrorStateMatcher } from '@angular/material';
-import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, ValidationErrors } from '@angular/forms';
+import { FormControl, Validators, FormGroup, ValidationErrors } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { User } from 'src/models/user.model';
 import { ToastrService } from 'ngx-toastr';
-
-export class InstantErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    return control && control.invalid && (control.dirty || control.touched);
-  }
-}
+import { ErrorStateMatcher } from '@angular/material';
+import { AuthErrorStateMatcher } from '../auth.matcher';
 
 @Component({
   selector: 'app-register',
@@ -33,7 +28,7 @@ export class RegisterComponent implements OnInit {
       }})
     });
 
-    this.matcher = new InstantErrorStateMatcher();
+    this.matcher = new AuthErrorStateMatcher();
   }
 
   ngOnInit() {
