@@ -8824,23 +8824,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\va\\.nuget\\packages\\": {},
+    "C:\\Users\\vsarghi\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\nextDoor\\API\\API.csproj",
+      "projectUniqueName": "D:\\valentin.sarghi\\nextDoor\\API\\API.csproj",
       "projectName": "API",
-      "projectPath": "C:\\nextDoor\\API\\API.csproj",
-      "packagesPath": "C:\\Users\\va\\.nuget\\packages\\",
-      "outputPath": "C:\\nextDoor\\API\\obj\\",
+      "projectPath": "D:\\valentin.sarghi\\nextDoor\\API\\API.csproj",
+      "packagesPath": "C:\\Users\\vsarghi\\.nuget\\packages\\",
+      "outputPath": "D:\\valentin.sarghi\\nextDoor\\API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\va\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\vsarghi\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
