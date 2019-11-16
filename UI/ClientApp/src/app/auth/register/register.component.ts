@@ -63,7 +63,13 @@ export class RegisterComponent implements OnInit {
           this.toastr.success('New user created', 'Registration successfull');
         } else {
           data.errors.forEach((element: { code: string, description: string }) => {
-            this.toastr.error(element.description, 'Registration failed');
+            switch (element.code) {
+              case 'DuplicateUserName':
+                break;
+              default:
+                this.toastr.error(element.description, 'Registration failed');
+                break;
+            }
           });
         }
       },
