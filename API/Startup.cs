@@ -27,15 +27,16 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AppSettings>(Configuration.GetSection("ApplicationSettings"));
-            
-            services.AddIdentity<User, IdentityRole>(config => { config.User.RequireUniqueEmail = true; })
-                    .AddEntityFrameworkStores<EFContext>();
-            services.Configure<IdentityOptions>( options => {
+            services.Configure<IdentityOptions>(options => {
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredLength = 4;
             });
 
-            services.AddControllers();
+            services.AddIdentity<User, IdentityRole>(config => { config.User.RequireUniqueEmail = true; })
+                    .AddEntityFrameworkStores<EFContext>();
+            
+
+            
             services.AddDbContext<EFContext>(options => options.UseSqlServer(Configuration["ConnectionString:nextDoor"]));
             services.AddTransient<Seeder>();
 
@@ -48,7 +49,6 @@ namespace API
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options => {
-                options.RequireHttpsMetadata = false; // guess this could be true
                 options.SaveToken = false;
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
@@ -59,6 +59,7 @@ namespace API
                     ClockSkew = TimeSpan.Zero
                 };
             });
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,11 +73,11 @@ namespace API
                .AllowAnyHeader()
                .AllowAnyMethod()
             );
-            
-            app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
