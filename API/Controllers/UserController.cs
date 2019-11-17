@@ -63,7 +63,7 @@ namespace API.Controllers
                 var tokenDescriptor = new SecurityTokenDescriptor()
                 {
                     Subject = new System.Security.Claims.ClaimsIdentity(new Claim[] { new Claim("UserID", user.Id) }),
-                    Expires = DateTime.UtcNow.AddMinutes(5),
+                    Expires = DateTime.UtcNow.AddHours(12),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
                 };
                 var tokenHandler = new JwtSecurityTokenHandler();
