@@ -34,14 +34,7 @@ export class LoginComponent implements OnInit {
     };
     this.http.post<User>('https://localhost:44377/api/User/login', body).subscribe(
       (data: any) => {
-        if (data.succeeded) {
-          this.loginFormGroup.reset();
-          // treat succesfull login
-        } else {
-          data.errors.forEach((element: { code: string, description: string }) => {
-            // treat errors
-          });
-        }
+        this.toastr.success('Login successful', 'Login successful');
       },
       (error) => {
         this.toastr.error('Login failed', 'Login failed');

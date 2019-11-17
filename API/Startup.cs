@@ -1,5 +1,6 @@
 using API.Data;
 using API.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Text;
 
 namespace API
 {
@@ -22,6 +26,8 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(Configuration.GetSection("ApplicationSettings"));
+            
             services.AddIdentity<User, IdentityRole>(config => { config.User.RequireUniqueEmail = true; })
                     .AddEntityFrameworkStores<EFContext>();
             services.Configure<IdentityOptions>( options => {
@@ -34,6 +40,25 @@ namespace API
             services.AddTransient<Seeder>();
 
             services.AddCors();
+
+            var authKey = Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWT_Secret"]);
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => {
+                options.RequireHttpsMetadata = false; // guess this could be true
+                options.SaveToken = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(authKey),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,7 +68,7 @@ namespace API
 
             app.UseHttpsRedirection();
 
-            app.UseCors( builder => builder.WithOrigins("https://localhost:44356")
+            app.UseCors( builder => builder.WithOrigins(Configuration["ApplicationSettings:UI_Url"])
                .AllowAnyHeader()
                .AllowAnyMethod()
             );
