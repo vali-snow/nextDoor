@@ -17,11 +17,11 @@ export class RegisterComponent implements OnInit {
 
   constructor(private http: HttpClient, private toastr: ToastrService) {
     this.registerFormGroup = new FormGroup({
-      firstName: new FormControl('', [ Validators.required, Validators.minLength(7) ]),
-      lastName: new FormControl('', [ Validators.required, Validators.minLength(7) ]),
+      firstName: new FormControl('', [ Validators.required, Validators.minLength(3) ]),
+      lastName: new FormControl('', [ Validators.required, Validators.minLength(3) ]),
       email: new FormControl('', [ Validators.required, Validators.email ]),
       passwordGroup: new FormGroup({
-        password1: new FormControl('', [ Validators.required, Validators.minLength(4) ]),
+        password1: new FormControl('', [ Validators.required, Validators.minLength(3) ]),
         password2: new FormControl('', [ Validators.required ])
       }, { validators: (formGroup: FormGroup): ValidationErrors | null => {
         return (formGroup.get('password1').value === formGroup.get('password2').value) ? null : { passwordMismatch: true };

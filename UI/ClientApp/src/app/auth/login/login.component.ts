@@ -5,6 +5,7 @@ import { AuthErrorStateMatcher } from '../auth.matcher';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { User } from 'src/models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,7 @@ export class LoginComponent implements OnInit {
   loginFormGroup: FormGroup;
   matcher: ErrorStateMatcher;
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {
+  constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) {
     this.loginFormGroup = new FormGroup({
       email: new FormControl('', [ Validators.required ]),
       password: new FormControl('', [ Validators.required ])
@@ -34,10 +35,16 @@ export class LoginComponent implements OnInit {
     };
     this.http.post<User>('https://localhost:44377/api/User/login', body).subscribe(
       (data: any) => {
+        localStorage.setItem('authToken', data.token);
         this.toastr.success('Login successful', 'Login successful');
+        this.router.navigate(['main/dash']);
       },
       (error) => {
-        this.toastr.error('Login failed', 'Login failed');
+        if (error.status === 400) {
+          this.toastr.error(error.error.message, 'Login failed');
+        } else {
+          console.log(error);
+        }
       }
     );
   }

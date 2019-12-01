@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
-import { AppMaterialModule } from '../app-material.module';
+import { AppMaterialModule } from '../core/app-material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { LoginComponent } from './login/login.component';

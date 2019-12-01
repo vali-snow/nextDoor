@@ -73,7 +73,7 @@ namespace API.Controllers
             }
             else
             {
-                return BadRequest(new { error = "Username or password is incorrect" });
+                return BadRequest(new { message = "Username or password is incorrect" });
             }
         }
     }

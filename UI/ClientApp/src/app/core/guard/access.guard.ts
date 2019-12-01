@@ -6,27 +6,21 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AccessGuard implements CanActivate, CanActivateChild {
-  constructor (private router: Router) {
-    
+  constructor(private router: Router) { }
+
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    const requiresLogin = next.data.requiresLogin || false;
+    if (requiresLogin && localStorage.getItem('authToken') === null) {
+      this.router.navigate(['auth/login']);
+    }
+    return true;
   }
 
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+  canActivateChild(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const requiresLogin = next.data.requiresLogin || false;
-    if (requiresLogin) {
+    if (requiresLogin && localStorage.getItem('authToken') === null) {
       this.router.navigate(['auth/login']);
     }
     return true;
   }
-  canActivateChild(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const requiresLogin = next.data.requiresLogin || false;
-    if (requiresLogin) {
-      this.router.navigate(['auth/login']);
-    }
-    return true;
-  }
-  
 }
