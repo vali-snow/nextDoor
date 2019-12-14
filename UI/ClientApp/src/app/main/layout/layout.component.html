@@ -1,5 +1,5 @@
 <div fxLayout="column" fxLayoutAlign=" stretch" class="height100">
-  <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
+  <mat-toolbar fxFlex="40px" fxLayout="row" fxLayoutAlign="space-between center">
     <button mat-icon-button (click)="toggleNavbar()">
       <mat-icon *ngIf="toggle.icon" [attr.aria-label]="toggle.description">{{toggle.icon}}</mat-icon>
     </button>
@@ -12,22 +12,28 @@
       </mat-menu>
     </button>
   </mat-toolbar>
-  <mat-sidenav-container fxFlex class="example-container">
-    <mat-sidenav #sidenav mode="side" closed>
+  <mat-sidenav-container fxFlex>
+    <mat-sidenav #sidenav mode="side" opened>
       <mat-list>
         <mat-list-item [routerLinkActive]="['active']">
           <a routerLink="/main/dash">Dashboard</a>
         </mat-list-item>
         <mat-list-item [routerLinkActive]="['active']">
-          <a routerLink="/main/products">Products</a>
+          <a routerLink="/main/orders">My Orders</a>
         </mat-list-item>
         <mat-list-item [routerLinkActive]="['active']">
-          <a routerLink="/main/services">Services</a>
+          <a routerLink="/main/store">My Store</a>
+        </mat-list-item>
+        <mat-list-item [routerLinkActive]="['active']">
+          <a routerLink="/main/products">Products</a>
         </mat-list-item>
       </mat-list>
     </mat-sidenav>
-    <mat-sidenav-content class="overflow">
+    <mat-sidenav-content>
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
+  <mat-toolbar fxFlex="32px" fxLayout="row" fxLayoutAlign="center center">
+    <span>Copywright @NextDoor</span>
+  </mat-toolbar>
 </div>
