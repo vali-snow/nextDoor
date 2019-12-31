@@ -20,7 +20,7 @@
     <mat-form-field>
       <mat-label>Date Range</mat-label>
       <input matInput [satDatepicker]="picker" formControlName="date">
-      <sat-datepicker #picker [rangeMode]="true"> </sat-datepicker>
+      <sat-datepicker #picker [rangeMode]="true" [closeAfterSelection]="false"> </sat-datepicker>
       <sat-datepicker-toggle matSuffix [for]="picker"></sat-datepicker-toggle>
     </mat-form-field>
   </form>
