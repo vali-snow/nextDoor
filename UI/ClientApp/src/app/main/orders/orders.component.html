@@ -1,50 +1,67 @@
 <div class="height100 overflow">
-  <form [formGroup]="form" fxLayout="row" fxLayoutAlign="space-evenly center">
-    <p>Filters:</p>
-    <mat-form-field>
-      <mat-label>Type</mat-label>
-      <mat-select formControlName="type">
-        <mat-option *ngFor="let type of types" [value]="type.code">
-          {{type.des}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Status</mat-label>
-      <mat-select formControlName="status">
-        <mat-option *ngFor="let status of statuses" [value]="status.code">
-          {{status.des}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Date Range</mat-label>
-      <input matInput [satDatepicker]="picker" formControlName="date">
-      <sat-datepicker #picker [rangeMode]="true" [closeAfterSelection]="false"> </sat-datepicker>
-      <sat-datepicker-toggle matSuffix [for]="picker"></sat-datepicker-toggle>
-    </mat-form-field>
-  </form>
-  <mat-grid-list cols="3" rowHeight="2.5:1">
-    <mat-grid-tile>Order 1</mat-grid-tile>
-    <mat-grid-tile>Order 2</mat-grid-tile>
-    <mat-grid-tile>Order 3</mat-grid-tile>
-    <mat-grid-tile>Order 4</mat-grid-tile>
-    <mat-grid-tile>Order 5</mat-grid-tile>
-    <mat-grid-tile>Order 6</mat-grid-tile>
-    <mat-grid-tile>Order 7</mat-grid-tile>
-    <mat-grid-tile>Order 8</mat-grid-tile>
-    <mat-grid-tile>Order 9</mat-grid-tile>
-    <mat-grid-tile>Order 10</mat-grid-tile>
-    <mat-grid-tile>Order 11</mat-grid-tile>
-    <mat-grid-tile>Order 12</mat-grid-tile>
-    <mat-grid-tile>Order 13</mat-grid-tile>
-    <mat-grid-tile>Order 14</mat-grid-tile>
-    <mat-grid-tile>Order 15</mat-grid-tile>
-    <mat-grid-tile>Order 16</mat-grid-tile>
-    <mat-grid-tile>Order 17</mat-grid-tile>
-    <mat-grid-tile>Order 18</mat-grid-tile>
-    <mat-grid-tile>Order 19</mat-grid-tile>
-    <mat-grid-tile>Order 20</mat-grid-tile>
-    <mat-grid-tile>Order 21</mat-grid-tile>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        My Orders
+      </mat-panel-title>
+      <mat-panel-description>
+        Filter Panel
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <form [formGroup]="form" fxLayout="row" fxLayoutAlign="space-evenly center">
+      <mat-form-field>
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option *ngFor="let type of types" [value]="type.code">
+            {{type.des}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option *ngFor="let status of statuses" [value]="status.code">
+            {{status.des}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Date Range</mat-label>
+        <input matInput [satDatepicker]="picker" formControlName="date">
+        <sat-datepicker #picker [rangeMode]="true" [closeAfterSelection]="false"> </sat-datepicker>
+        <sat-datepicker-toggle matSuffix [for]="picker"></sat-datepicker-toggle>
+      </mat-form-field>
+      <button mat-button>
+        <!-- <mat-icon>filter_list</mat-icon> -->
+        <span>Apply Filters</span>
+      </button>
+    </form>
+  </mat-expansion-panel>
+  <mat-grid-list cols="3" rowHeight="2.5:1" gutterSize="5px" class="gridList">
+    <mat-grid-tile *ngFor="let order of myOrders">
+      <mat-card class="height100 width100">
+        <mat-card-title>
+          Order: {{order.Product.name}}
+        </mat-card-title>
+        <mat-card-content>
+          <p>For: {{order.DeliverToUser.firstName}} {{order.DeliverToUser.lastName}}</p>
+          <p>Address: {{order.DeliverToAddress}}</p>
+          <p>Phone: {{order.DeliveryToPhoneNumber}}</p>
+        </mat-card-content>
+        <mat-card-actions fxLayout="row" fxLayoutAlign="space-evenly center">
+          <button mat-button>
+            <mat-icon>details</mat-icon>
+            <span>Details</span>
+          </button>
+          <button mat-icon-button color="primary">
+            <mat-icon>done</mat-icon>
+          </button>
+          <button mat-icon-button color="warn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </mat-grid-tile>
   </mat-grid-list>
 </div>

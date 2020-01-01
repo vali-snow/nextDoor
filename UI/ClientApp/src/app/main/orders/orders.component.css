@@ -2,6 +2,26 @@
   height: 100%;
 }
 
+.width100 {
+  width: 100%;
+}
+
+.header {
+  padding: 0px 50px;
+}
+
+form p {
+  margin: auto 0;
+}
+
+.gridList {
+  padding: 5px 0px;
+}
+
 .overflow {
   overflow: auto;
+}
+
+:host ::ng-deep .mat-form-field-wrapper{
+  margin-bottom: -1.25em;
 }
