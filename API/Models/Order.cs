@@ -13,7 +13,7 @@ namespace API.Models
         public OrderStatus Status { get; set; }
         public User DeliverToUser { get; set; }
         public string DeliverToAddress { get; set; }
-        public string DeliveryToPhoneNumber { get; set; }
+        public string DeliverToPhoneNumber { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }

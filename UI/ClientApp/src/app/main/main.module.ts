@@ -5,11 +5,11 @@ import { LayoutComponent } from './layout/layout.component';
 import { DashComponent } from './dash/dash.component';
 import { AppMaterialModule } from '../core/app-material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ProductsComponent } from './products/products.component';
-import { OrdersComponent } from './orders/orders.component';
-import { StoreComponent } from './store/store.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { ProductsAllComponent } from './products/productsAll.component';
+import { ProductsShopComponent } from './products/productsShop.component';
+import { OrdersToFulfillComponent } from './orders/ordersToFulfill.component';
+import { OrdersToReceiveComponent } from './orders/ordersToReceive.component';
 
 const routes: Routes = [
   {
@@ -17,9 +17,10 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: 'dash', component: DashComponent },
-      { path: 'orders', component: OrdersComponent },
-      { path: 'store', component: StoreComponent },
-      { path: 'products', component: ProductsComponent },
+      { path: 'products-all', component: ProductsAllComponent },
+      { path: 'products-shop', component: ProductsShopComponent },
+      { path: 'orders-to-fulfill', component: OrdersToFulfillComponent },
+      { path: 'orders-to-receive', component: OrdersToReceiveComponent }
     ]
   }
 ];
@@ -28,9 +29,10 @@ const routes: Routes = [
   declarations: [
     LayoutComponent,
     DashComponent,
-    ProductsComponent,
-    OrdersComponent,
-    StoreComponent
+    ProductsAllComponent,
+    ProductsShopComponent,
+    OrdersToFulfillComponent,
+    OrdersToReceiveComponent
   ],
   imports: [
     CommonModule,

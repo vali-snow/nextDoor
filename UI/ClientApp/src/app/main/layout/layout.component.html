@@ -19,14 +19,25 @@
           <a routerLink="/main/dash">Dashboard</a>
         </mat-list-item>
         <mat-list-item [routerLinkActive]="['active']">
-          <a routerLink="/main/orders">My Orders</a>
+          <a routerLink="/main/products-all">All Products</a>
         </mat-list-item>
-        <mat-list-item [routerLinkActive]="['active']">
-          <a routerLink="/main/store">My Store</a>
+        
+        <mat-list-item style="color: #0366D6;">
+          My Hub
         </mat-list-item>
-        <mat-list-item [routerLinkActive]="['active']">
-          <a routerLink="/main/products">Products</a>
-        </mat-list-item>
+        <mat-list style="padding-top: 0px;">
+          <div>
+            <mat-list-item [routerLinkActive]="['active']" style="padding-left: 8px;">
+              <a routerLink="/main/products-shop">My Products</a>
+            </mat-list-item>
+            <mat-list-item [routerLinkActive]="['active']" style="padding-left: 8px;">
+              <a routerLink="/main/orders-to-fulfill">Orders To Fulfill</a>
+            </mat-list-item>
+            <mat-list-item [routerLinkActive]="['active']" style="padding-left: 8px;">
+              <a routerLink="/main/orders-to-receive">Orders To Receive</a>
+            </mat-list-item>
+          </div>
+        </mat-list>
       </mat-list>
     </mat-sidenav>
     <mat-sidenav-content>

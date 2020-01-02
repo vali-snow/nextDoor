@@ -102,8 +102,8 @@ namespace API.Data
                 {
                     var orders1 = new List<Order>()
                     {
-                        new Order () { Product = product1, Quantity = 2, Status = OrderStatus.New, DeliverToUser = user1, DeliverToAddress = "Address 1", DeliveryToPhoneNumber = "0770111111", StartDate = DateTime.UtcNow },
-                        new Order () { Product = product1, Quantity = 1, Status = OrderStatus.New, DeliverToUser = user2, DeliverToAddress = "Address 2", DeliveryToPhoneNumber = "0770222222", StartDate = DateTime.UtcNow }
+                        new Order () { Product = product1, Quantity = 2, Status = OrderStatus.New, DeliverToUser = user1, DeliverToAddress = "Address 1", DeliverToPhoneNumber = "0770111111", StartDate = DateTime.UtcNow },
+                        new Order () { Product = product1, Quantity = 1, Status = OrderStatus.New, DeliverToUser = user2, DeliverToAddress = "Address 2", DeliverToPhoneNumber = "0770222222", StartDate = DateTime.UtcNow }
                     };
                     context.Orders.AddRange(orders1);
                 }
@@ -113,8 +113,8 @@ namespace API.Data
                 {
                     var orders2 = new List<Order>()
                     {
-                        new Order () { Product = product2, Quantity = 1, Status = OrderStatus.New, DeliverToUser = user1, DeliverToAddress = "Address 1", DeliveryToPhoneNumber = "0770111111", StartDate = DateTime.UtcNow },
-                        new Order () { Product = product2, Quantity = 1, Status = OrderStatus.New, DeliverToUser = user2, DeliverToAddress = "Address 2", DeliveryToPhoneNumber = "0770222222", StartDate = DateTime.UtcNow }
+                        new Order () { Product = product2, Quantity = 1, Status = OrderStatus.New, DeliverToUser = user1, DeliverToAddress = "Address 1", DeliverToPhoneNumber = "0770111111", StartDate = DateTime.UtcNow },
+                        new Order () { Product = product2, Quantity = 1, Status = OrderStatus.New, DeliverToUser = user2, DeliverToAddress = "Address 2", DeliverToPhoneNumber = "0770222222", StartDate = DateTime.UtcNow }
                     };
                     context.Orders.AddRange(orders2);
                 }

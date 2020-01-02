@@ -1,5 +1,16 @@
+.title {
+  font-size: 20px;
+}
+
+.subtitle {
+  font-size: 12px;
+}
 .height100 {
   height: 100%;
+}
+
+.hoverHand{
+  cursor: pointer;
 }
 
 .width100 {
@@ -20,6 +31,10 @@ form p {
 
 .overflow {
   overflow: auto;
+}
+
+mat-card-content > div {
+  height: 24px;
 }
 
 :host ::ng-deep .mat-form-field-wrapper{

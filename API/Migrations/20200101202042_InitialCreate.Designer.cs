@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20191231005905_InitialCreate")]
+    [Migration("20200101202042_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,11 +30,11 @@ namespace API.Migrations
                     b.Property<string>("DeliverToAddress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DeliverToPhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DeliverToUserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("DeliveryToPhoneNumber")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");

@@ -186,7 +186,7 @@ namespace API.Migrations
                     Status = table.Column<int>(nullable: false),
                     DeliverToUserId = table.Column<string>(nullable: true),
                     DeliverToAddress = table.Column<string>(nullable: true),
-                    DeliveryToPhoneNumber = table.Column<string>(nullable: true),
+                    DeliverToPhoneNumber = table.Column<string>(nullable: true),
                     StartDate = table.Column<DateTime>(nullable: false),
                     EndDate = table.Column<DateTime>(nullable: false)
                 },
