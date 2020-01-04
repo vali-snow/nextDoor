@@ -25,12 +25,11 @@ export class OrdersToFulfillComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('https://localhost:44377/api/Orders').subscribe(
+    this.http.get( 'https://localhost:44377/api/Orders').subscribe(
       (data: any[]) => {
         this.toFulfill = [...data];
       },
       (error) => {
-        debugger;
         // if (error.status === 400) {
         //   this.toastr.error(error.error.message, 'Login failed');
         // } else {
