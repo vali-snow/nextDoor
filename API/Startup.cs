@@ -16,12 +16,12 @@ namespace API
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -37,7 +37,8 @@ namespace API
             });
 
             services.AddIdentity<User, IdentityRole>(config => { config.User.RequireUniqueEmail = true; })
-                    .AddEntityFrameworkStores<EFContext>();
+                    .AddEntityFrameworkStores<EFContext>()
+                    .AddDefaultTokenProviders();
             
 
             
@@ -52,15 +53,15 @@ namespace API
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options => {
-                options.SaveToken = false;
+            })
+            .AddJwtBearer(options => {
+                options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(authKey),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(authKey)
                 };
             });
             services.AddControllers();

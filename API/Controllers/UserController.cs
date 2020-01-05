@@ -60,20 +60,25 @@ namespace API.Controllers
             var user = await userManager.FindByEmailAsync(sent.Email);
             if (user != null && await userManager.CheckPasswordAsync(user, sent.Password))
             {
-                var tokenDescriptor = new SecurityTokenDescriptor()
+                var token = new JwtSecurityToken(
+                    expires: DateTime.Now.AddHours(3),
+                    claims: new[]
+                    {
+                        new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    },
+                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256)
+                );
+
+                return Ok(new
                 {
-                    Subject = new System.Security.Claims.ClaimsIdentity(new Claim[] { new Claim("UserID", user.Id) }),
-                    Expires = DateTime.UtcNow.AddHours(12),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
-                };
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-                var token = tokenHandler.WriteToken(securityToken);
-                return Ok(new { token });
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                });
             }
             else
             {
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return Unauthorized();
             }
         }
     }

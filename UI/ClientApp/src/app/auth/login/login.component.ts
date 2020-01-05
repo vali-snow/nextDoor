@@ -40,8 +40,8 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['main/dash']);
       },
       (error) => {
-        if (error.status === 400) {
-          this.toastr.error(error.error.message, 'Login failed');
+        if (error.status === 401) {
+          this.toastr.error('Username or password is incorrect', 'Login failed');
         } else {
           console.log(error);
         }

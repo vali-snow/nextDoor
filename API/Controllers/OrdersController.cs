@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using API;
 using API.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -17,16 +17,22 @@ namespace API.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly EFContext context;
+        private readonly UserManager<User> userManager;
 
-        public OrdersController(EFContext context)
+        public OrdersController(EFContext context, UserManager<User> userManager)
         {
             this.context = context;
+            this.userManager = userManager;
         }
 
         // GET: api/Orders
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
+            var currentUser = this.User;
+            var currentUserEmail = currentUser.FindFirst(ClaimTypes.Email).Value;
+            var user = await userManager.FindByEmailAsync(currentUserEmail);
+
             return await context.Orders.Include(o => o.DeliverToUser).Include(o => o.Product).ThenInclude(p => p.Owner).ToListAsync();
         }
 
