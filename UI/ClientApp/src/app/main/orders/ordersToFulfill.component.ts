@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SatDatepickerRangeValue } from 'saturn-datepicker';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { OrderStatus } from 'src/models/enums/orderstatus.enum';
 import { ProductType } from 'src/models/enums/producttype.enums';
 
@@ -20,12 +20,12 @@ export class OrdersToFulfillComponent implements OnInit {
     this.form = builder.group({
       type: null,
       status: null,
-      date: [{begin: null, end: null} as SatDatepickerRangeValue<Date>]
+      date: [{ begin: null, end: null } as SatDatepickerRangeValue<Date>]
     });
   }
 
   ngOnInit() {
-    this.http.get( 'https://localhost:44377/api/Orders').subscribe(
+    this.http.get('https://localhost:44377/api/Orders').subscribe(
       (data: any[]) => {
         this.toFulfill = [...data];
       },
@@ -65,21 +65,37 @@ export class OrdersToFulfillComponent implements OnInit {
     }
     const values = [];
     keys(enumObj).filter(key => parseInt(key, 10) >= 0).forEach(key => {
-      values.push({'code': key, 'des': enumObj[key]});
+      values.push({ 'code': key, 'des': enumObj[key] });
     });
 
     return values;
   }
 
   onFilterApplyClick() {
-
+    const params = new HttpParams();
+    if (this.form.get('type').value) { params.set('productType', this.form.get('type').value); }
+    if (this.form.get('status').value) { params.set('orderStatus', this.form.get('status').value); }
+    if (this.form.get('date').value.begin) { params.set('startDate', this.form.get('date').value.begin); }
+    if (this.form.get('date').value.end) { params.set('endDate', this.form.get('date').value.end); }
+    this.http.get('https://localhost:44377/api/Orders', { params: params }).subscribe(
+      (data: any[]) => {
+        this.toFulfill = [...data];
+      },
+      (error) => {
+        // if (error.status === 400) {
+        //   this.toastr.error(error.error.message, 'Login failed');
+        // } else {
+        //   console.log(error);
+        // }
+      }
+    );
   }
 
   onFilterClearClick() {
     this.form.setValue({
-      type: 'any',
-      status: 'any',
-      date: {begin: null, end: null} as SatDatepickerRangeValue<Date>
+      type: null,
+      status: null,
+      date: { begin: null, end: null } as SatDatepickerRangeValue<Date>
     });
   }
 

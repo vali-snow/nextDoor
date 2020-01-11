@@ -8,6 +8,7 @@ using API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using API.Models.Filters;
 
 namespace API.Controllers
 {
@@ -27,13 +28,18 @@ namespace API.Controllers
 
         // GET: api/Orders
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersToFulfill([FromQuery] OrderFilters filters)
         {
             var currentUser = this.User;
             var currentUserEmail = currentUser.FindFirst(ClaimTypes.Email).Value;
             var user = await userManager.FindByEmailAsync(currentUserEmail);
 
-            return await context.Orders.Include(o => o.DeliverToUser).Include(o => o.Product).ThenInclude(p => p.Owner).ToListAsync();
+            var orders = context.Orders.Include(o => o.DeliverToUser).Include(o => o.Product).ThenInclude(p => p.Owner);
+            var ordersToFulfill = orders.Where(o => o.Product.Owner.Id == user.Id)
+                .Where(o => filters.OrderStatus == null || o.Status == filters.OrderStatus)
+                .Where(o => filters.ProductType == null || o.Product.Type == filters.ProductType)
+                .Where(o => (filters.StartDate == null && filters.EndDate != null) || (filters.StartDate < o.StartDate && o.StartDate < filters.EndDate));
+            return ordersToFulfill.ToList();
         }
 
         // GET: api/Orders/5
