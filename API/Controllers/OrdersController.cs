@@ -12,9 +12,9 @@ using API.Models.Filters;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     [Authorize]
+    [ApiController]
+    [Route("api/[controller]")]
     public class OrdersController : ControllerBase
     {
         private readonly EFContext context;
@@ -26,99 +26,43 @@ namespace API.Controllers
             this.userManager = userManager;
         }
 
-        // GET: api/Orders
-        [HttpGet]
+        [HttpGet("ToFulfill")]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrdersToFulfill([FromQuery] OrderFilters filters)
         {
-            var currentUser = this.User;
-            var currentUserEmail = currentUser.FindFirst(ClaimTypes.Email).Value;
-            var user = await userManager.FindByEmailAsync(currentUserEmail);
+            var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
 
             var orders = context.Orders.Include(o => o.DeliverToUser).Include(o => o.Product).ThenInclude(p => p.Owner);
-            var ordersToFulfill = orders.Where(o => o.Product.Owner.Id == user.Id)
+
+            var ordersToFulfill = orders.Where(o => o.Product.Owner.Email == user.Email)
                 .Where(o => filters.OrderStatus == null || o.Status == filters.OrderStatus)
                 .Where(o => filters.ProductType == null || o.Product.Type == filters.ProductType)
-                .Where(o => (filters.StartDate == null && filters.EndDate != null) || (filters.StartDate < o.StartDate && o.StartDate < filters.EndDate));
-            return ordersToFulfill.ToList();
+                .Where(o => filters.StartDate == null || filters.EndDate == null || (filters.StartDate < o.StartDate && o.StartDate < filters.EndDate));
+            return await ordersToFulfill.ToListAsync();
         }
 
-        // GET: api/Orders/5
+        [HttpGet("ToReceive")]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersToReceive([FromQuery] OrderFilters filters)
+        {
+            var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+
+            var orders = context.Orders.Include(o => o.DeliverToUser).Include(o => o.Product).ThenInclude(p => p.Owner);
+
+            var ordersToReceive = orders.Where(o => o.DeliverToUser.Id == user.Id)
+                .Where(o => filters.OrderStatus == null || o.Status == filters.OrderStatus)
+                .Where(o => filters.ProductType == null || o.Product.Type == filters.ProductType)
+                .Where(o => filters.StartDate == null || filters.EndDate == null || (filters.StartDate < o.StartDate && o.StartDate < filters.EndDate));
+            return await ordersToReceive.ToListAsync();
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(Guid id)
         {
             var order = await context.Orders.FindAsync(id);
-
             if (order == null)
             {
                 return NotFound();
             }
-
             return order;
-        }
-
-        // PUT: api/Orders/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(Guid id, Order order)
-        {
-            if (id != order.Id)
-            {
-                return BadRequest();
-            }
-
-            context.Entry(order).State = EntityState.Modified;
-
-            try
-            {
-                await context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Orders
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
-        {
-            context.Orders.Add(order);
-            await context.SaveChangesAsync();
-
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
-        }
-
-        // DELETE: api/Orders/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Order>> DeleteOrder(Guid id)
-        {
-            var order = await context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            context.Orders.Remove(order);
-            await context.SaveChangesAsync();
-
-            return order;
-        }
-
-        private bool OrderExists(Guid id)
-        {
-            return context.Orders.Any(e => e.Id == id);
         }
     }
 }

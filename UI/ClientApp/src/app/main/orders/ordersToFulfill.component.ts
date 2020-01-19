@@ -13,7 +13,6 @@ export class OrdersToFulfillComponent implements OnInit {
   form: FormGroup;
   statuses = this.getKeysFromEnum('statuses');
   types = this.getKeysFromEnum('types');
-
   toFulfill = [];
 
   constructor(private http: HttpClient, private builder: FormBuilder) {
@@ -25,7 +24,7 @@ export class OrdersToFulfillComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('https://localhost:44377/api/Orders').subscribe(
+    this.http.get('https://localhost:44377/api/Orders/ToFulfill').subscribe(
       (data: any[]) => {
         this.toFulfill = [...data];
       },
@@ -72,12 +71,12 @@ export class OrdersToFulfillComponent implements OnInit {
   }
 
   onFilterApplyClick() {
-    const params = new HttpParams();
-    if (this.form.get('type').value) { params.set('productType', this.form.get('type').value); }
-    if (this.form.get('status').value) { params.set('orderStatus', this.form.get('status').value); }
-    if (this.form.get('date').value.begin) { params.set('startDate', this.form.get('date').value.begin); }
-    if (this.form.get('date').value.end) { params.set('endDate', this.form.get('date').value.end); }
-    this.http.get('https://localhost:44377/api/Orders', { params: params }).subscribe(
+    let params = new HttpParams();
+    if (this.form.get('type').value) { params = params.set('productType', this.form.get('type').value); }
+    if (this.form.get('status').value) { params = params.set('orderStatus', this.form.get('status').value); }
+    if (this.form.get('date').value.begin) { params = params.set('startDate', new Date(this.form.get('date').value.begin).toISOString()); }
+    if (this.form.get('date').value.end) { params = params.set('endDate', new Date(this.form.get('date').value.end).toISOString()); }
+    this.http.get('https://localhost:44377/api/Orders/ToFulfill', { params: params }).subscribe(
       (data: any[]) => {
         this.toFulfill = [...data];
       },

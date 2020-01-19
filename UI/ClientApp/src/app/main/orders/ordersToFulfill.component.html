@@ -41,55 +41,62 @@
       </div>
     </form>
   </mat-expansion-panel>
-  <mat-grid-list cols="3" rowHeight="1.5:1" gutterSize="5px" class="gridList">
-    <mat-grid-tile *ngFor="let order of toFulfill">
-      <mat-card fxLayout="column" class="height100 width100">
-        <mat-card-title fxFlex="nogrow">
-          <div class="title">
-            Order: {{order.product.name}}
-          </div>
-          <div class="subtitle" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-            <div>
-              <b>Status:</b> {{typeToString('statuses', order.status)}}
+  <div [ngSwitch]="toFulfill.length">
+    <mat-grid-list *ngSwitchCase="0" cols="1" rowHeight="10:1" gutterSize="5px" class="gridList">
+      <mat-grid-tile>
+        Nothing To Show
+      </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list *ngSwitchDefault cols="3" rowHeight="1.5:1" gutterSize="5px" class="gridList">
+      <mat-grid-tile *ngFor="let order of toFulfill">
+        <mat-card fxLayout="column" class="height100 width100">
+          <mat-card-title fxFlex="nogrow">
+            <div class="title">
+              Order: {{order.product.name}}
             </div>
-            <div>
-              <b>Type:</b> {{typeToString('types', order.product.type)}}
+            <div class="subtitle" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+              <div>
+                <b>Status:</b> {{typeToString('statuses', order.status)}}
+              </div>
+              <div>
+                <b>Type:</b> {{typeToString('types', order.product.type)}}
+              </div>
+              <div>
+                <b>Date:</b> {{order.startDate | date: 'mediumDate'}}
+              </div>
             </div>
-            <div>
-              <b>Date:</b> {{order.startDate | date: 'mediumDate'}}
+          </mat-card-title>
+          <mat-card-content fxFlex="grow" class="overflow">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+              <div><b>Product:</b> {{order.product.name}}</div>
+              <mat-icon class="hoverHand" (click)="onProductDetailClick(order.product.id)">link</mat-icon>
             </div>
-          </div>
-        </mat-card-title>
-        <mat-card-content fxFlex="grow" class="overflow">
-          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-            <div><b>Product:</b> {{order.product.name}}</div>
-            <mat-icon class="hoverHand" (click)="onProductDetailClick(order.product.id)">link</mat-icon>
-          </div>
-          <div><b>Quantity:</b> {{order.quantity}}</div>
-          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-            <div><b>Contact:</b> {{order.deliverToUser.firstName}} {{order.deliverToUser.lastName}}</div>
-            <mat-icon class="hoverHand" (click)="onUserDetailClick(order.deliverToUser.id)">link</mat-icon>
-          </div>
-          <div><b>Phone Number:</b> {{order.deliverToPhoneNumber}}</div>
-          <div><b>Delivery Address:</b> {{order.deliverToAddress}}</div>
-        </mat-card-content>
-        <mat-card-actions fxLayout="row" fxLayoutAlign="space-between center">
-          <button mat-button (click)="onOrderDetailClick(order.id)">
-            <mat-icon>web_asset</mat-icon>
-            <span>Details</span>
-          </button>
-          <div *ngIf="typeToString('statuses', order.status) === 'New'">
-            <button mat-button color="primary" (click)="onOrderCompletedClick(order.id)">
-              <mat-icon>done</mat-icon>
-              <span>Delivered</span>
+            <div><b>Quantity:</b> {{order.quantity}}</div>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+              <div><b>Contact:</b> {{order.deliverToUser.firstName}} {{order.deliverToUser.lastName}}</div>
+              <mat-icon class="hoverHand" (click)="onUserDetailClick(order.deliverToUser.id)">link</mat-icon>
+            </div>
+            <div><b>Phone Number:</b> {{order.deliverToPhoneNumber}}</div>
+            <div><b>Delivery Address:</b> {{order.deliverToAddress}}</div>
+          </mat-card-content>
+          <mat-card-actions fxLayout="row" fxLayoutAlign="space-between center">
+            <button mat-button (click)="onOrderDetailClick(order.id)">
+              <mat-icon>web_asset</mat-icon>
+              <span>Details</span>
             </button>
-            <button mat-button color="warn" (click)="onOrderCancelledClick(order.id)">
-              <mat-icon>cancel</mat-icon>
-              <span>Cancel</span>
-            </button>
-          </div>
-        </mat-card-actions>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
+            <div *ngIf="typeToString('statuses', order.status) === 'New'">
+              <button mat-button color="primary" (click)="onOrderCompletedClick(order.id)">
+                <mat-icon>done</mat-icon>
+                <span>Delivered</span>
+              </button>
+              <button mat-button color="warn" (click)="onOrderCancelledClick(order.id)">
+                <mat-icon>cancel</mat-icon>
+                <span>Cancel</span>
+              </button>
+            </div>
+          </mat-card-actions>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
 </div>

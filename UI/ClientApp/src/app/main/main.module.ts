@@ -7,7 +7,7 @@ import { AppMaterialModule } from '../core/app-material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductsAllComponent } from './products/productsAll.component';
-import { ProductsShopComponent } from './products/productsShop.component';
+import { ProductsHubComponent } from './products/productsHub.component';
 import { OrdersToFulfillComponent } from './orders/ordersToFulfill.component';
 import { OrdersToReceiveComponent } from './orders/ordersToReceive.component';
 
@@ -18,7 +18,7 @@ const routes: Routes = [
     children: [
       { path: 'dash', component: DashComponent },
       { path: 'products-all', component: ProductsAllComponent },
-      { path: 'products-shop', component: ProductsShopComponent },
+      { path: 'products-shop', component: ProductsHubComponent },
       { path: 'orders-to-fulfill', component: OrdersToFulfillComponent },
       { path: 'orders-to-receive', component: OrdersToReceiveComponent }
     ]
@@ -30,7 +30,7 @@ const routes: Routes = [
     LayoutComponent,
     DashComponent,
     ProductsAllComponent,
-    ProductsShopComponent,
+    ProductsHubComponent,
     OrdersToFulfillComponent,
     OrdersToReceiveComponent
   ],

@@ -9,33 +9,33 @@ using API;
 using API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using API.Models.Filters;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
+        private readonly EFContext context;
         private readonly UserManager<User> userManager;
-        private readonly SignInManager<User> signInManager;
 
-        public ProductsController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public ProductsController(EFContext context, UserManager<User> userManager)
         {
+            this.context = context;
             this.userManager = userManager;
-            this.signInManager = signInManager;
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<Object> GetProduct()
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] ProductFilters filters)
         {
-            string userId = User.Claims.First(c => c.Type == "UserID").Value;
-            var user = await userManager.FindByIdAsync(userId);
-            return new
-            {
-                Email = user.Email,
-                Password = user.PasswordHash // testing authorize
-            };
+            var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+
+            var products = context.Products.Include(p => p.Owner);
+
+            return await products.ToListAsync();
         }
     }
 }
