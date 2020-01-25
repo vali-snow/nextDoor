@@ -1,1 +1,61 @@
-<p>products hub works!</p>
+<div fxLayout="column" class="height100">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        My Products
+      </mat-panel-title>
+      <mat-panel-description>
+        Filter Panel
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+      <textarea matInput placeholder="Textarea"></textarea>
+    </mat-form-field>
+    <mat-action-row>
+      <button mat-button (click)="onFilterApplyClick()">
+        <span>Apply</span>
+      </button>
+      <button mat-button (click)="onFilterClearClick()">
+        <span>Clear</span>
+      </button>
+    </mat-action-row>
+  </mat-expansion-panel>
+  <div fxFlex class="overflow">
+    <div [ngSwitch]="myProducts.length">
+      <mat-grid-list *ngSwitchCase="0" cols="1" rowHeight="10:1" gutterSize="5px" class="gridList">
+        <mat-grid-tile>
+          Nothing To Show - Option to add another product
+        </mat-grid-tile>
+      </mat-grid-list>
+      <mat-grid-list *ngSwitchDefault cols="5" rowHeight="1:1.5" gutterSize="5px" class="gridList">
+        <mat-grid-tile *ngFor="let product of myProducts">
+          <mat-card fxLayout="column" class="height100 width100">
+            <mat-card-header>
+              <mat-card-title>
+                Product: {{product.name}}
+              </mat-card-title>
+              <mat-card-subtitle fxLayout="row" fxLayoutGap="5px">
+                <div>
+                  <b>Type:</b> {{typeToString('types', product.type)}}
+                </div>
+                <div [hidden]= "typeToString('types', product.type) == 'Services'">
+                  <b>Quantity:</b> {{product.quantity}}
+                </div>
+              </mat-card-subtitle>
+            </mat-card-header>
+            <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg">
+            <mat-card-content fxFlex class="overflow">
+              <b>Description:</b> {{product.description}}
+            </mat-card-content>
+            <mat-card-actions fxLayout="row" fxLayoutAlign="space-between center">
+              <button mat-button (click)="onProductDetailClick(product.id)">
+                <mat-icon>web_asset</mat-icon>
+                <span>Details</span>
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+</div>

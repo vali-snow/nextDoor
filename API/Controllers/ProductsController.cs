@@ -33,7 +33,8 @@ namespace API.Controllers
         {
             var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
 
-            var products = context.Products.Include(p => p.Owner);
+            var products = context.Products.Include(p => p.Owner)
+                .Where(p => filters.IsOwner == null || p.Owner.Id == user.Id);
 
             return await products.ToListAsync();
         }
