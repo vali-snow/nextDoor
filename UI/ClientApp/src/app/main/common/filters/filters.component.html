@@ -1,0 +1,21 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      {{model.title}}
+    </mat-panel-title>
+    <mat-panel-description>
+      {{model.description}}
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <form [formGroup]="model.formGroup" fxLayout="row" fxLayoutAlign="space-evenly center">
+    <div></div>
+  </form>
+  <mat-action-row>
+    <button mat-button (click)="onFilterApplyClick()">
+      <span>Apply</span>
+    </button>
+    <button mat-button (click)="onFilterClearClick()">
+      <span>Clear</span>
+    </button>
+  </mat-action-row>
+</mat-expansion-panel>

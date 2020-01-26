@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { SatDatepickerRangeValue } from 'saturn-datepicker';
-import { OrderStatus } from 'src/models/enums/orderstatus.enum';
-import { ProductType } from 'src/models/enums/producttype.enums';
+import { EnumService } from 'src/app/core/service/enum.service';
+import { OrdersService } from './orders.service';
+import { OrderFilters } from 'src/models/filters/order.filters.model';
+import { OrderType } from 'src/models/enums/order.type.enum';
 
 @Component({
   templateUrl: './ordersToReceive.component.html',
@@ -11,11 +12,13 @@ import { ProductType } from 'src/models/enums/producttype.enums';
 })
 export class OrdersToReceiveComponent implements OnInit {
   form: FormGroup;
-  statuses = this.getKeysFromEnum('statuses');
-  types = this.getKeysFromEnum('types');
+  statuses: { code: string, des: string }[];
+  types: { code: string, des: string }[];
   toReceive = [];
 
-  constructor(private http: HttpClient, private builder: FormBuilder) {
+  constructor(private orders: OrdersService, private builder: FormBuilder, private enums: EnumService) {
+    this.statuses = this.enums.getKeysFromEnum('statuses');
+    this.types = this.enums.getKeysFromEnum('types');
     this.form = builder.group({
       type: null,
       status: null,
@@ -24,50 +27,45 @@ export class OrdersToReceiveComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('https://localhost:44377/api/Orders/ToReceive').subscribe(
+    const filters = {
+      orderType: OrderType.ToReceive,
+      orderStatus: null,
+      productType: null,
+      date: null
+    } as OrderFilters;
+    this.orders.getOrders(filters).subscribe(
       (data: any[]) => {
         this.toReceive = [...data];
       },
-      (error) => {
-        // if (error.status === 400) {
-        //   this.toastr.error(error.error.message, 'Login failed');
-        // } else {
-        //   console.log(error);
-        // }
-      }
+      (error) => { }
     );
   }
 
-  typeToString(enumStr: string, num: number) {
-    let enumObj;
-    switch (enumStr) {
-      case 'statuses':
-        enumObj = OrderStatus;
-        break;
-      case 'types':
-        enumObj = ProductType;
-        break;
-    }
-    return enumObj[num];
+  onFilterApplyClick(id: string) {
+    alert(id);
   }
 
-  getKeysFromEnum(enumStr: string) {
-    const keys = Object.keys;
-    let enumObj;
-    switch (enumStr) {
-      case 'statuses':
-        enumObj = OrderStatus;
-        break;
-      case 'types':
-        enumObj = ProductType;
-        break;
-    }
-    const values = [];
-    keys(enumObj).filter(key => parseInt(key, 10) >= 0).forEach(key => {
-      values.push({ 'code': key, 'des': enumObj[key] });
-    });
-
-    return values;
+  onFilterClearClick(id: string) {
+    alert(id);
   }
 
+  onProductDetailClick(id: string) {
+    alert(id);
+  }
+
+  onUserDetailClick(id: string) {
+    alert(id);
+  }
+
+  onOrderDetailClick(id: string) {
+    alert(id);
+  }
+
+  onOrderReceivedClick(id: string) {
+    alert(id);
+  }
+
+  onOrderCancelledClick(id: string) {
+    alert(id);
+  }
 }

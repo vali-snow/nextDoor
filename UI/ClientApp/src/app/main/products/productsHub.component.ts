@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { OrderStatus } from 'src/models/enums/orderstatus.enum';
-import { ProductType } from 'src/models/enums/producttype.enums';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { EnumService } from 'src/app/core/service/enum.service';
+import { ProductsService } from './products.service';
+import { ProductFilters } from 'src/models/filters/product.filters.model';
 
 @Component({
   templateUrl: './productsHub.component.html',
@@ -10,57 +10,29 @@ import { ProductType } from 'src/models/enums/producttype.enums';
 export class ProductsHubComponent implements OnInit {
   myProducts = [];
 
-  constructor(private http: HttpClient) { }
+  constructor(private products: ProductsService, private enums: EnumService) { }
 
   ngOnInit() {
-    this.http.get('https://localhost:44377/api/Products/', { params: {'isOwner': 'true'}}).subscribe(
+    const filters = {
+      isOwner: true
+    } as ProductFilters;
+    this.products.getProducts(filters).subscribe(
       (data: any[]) => {
         this.myProducts = [...data];
       },
-      (error) => {
-        // if (error.status === 400) {
-        //   this.toastr.error(error.error.message, 'Login failed');
-        // } else {
-        //   console.log(error);
-        // }
-      }
+      (error) => { }
     );
   }
 
-  typeToString(enumStr: string, num: number) {
-    let enumObj;
-    switch (enumStr) {
-      case 'statuses':
-        enumObj = OrderStatus;
-        break;
-      case 'types':
-        enumObj = ProductType;
-        break;
-    }
-    return enumObj[num];
+  onFilterApplyClick(id: string) {
+    alert(id);
   }
 
-  getKeysFromEnum(enumStr: string) {
-    const keys = Object.keys;
-    let enumObj;
-    switch (enumStr) {
-      case 'statuses':
-        enumObj = OrderStatus;
-        break;
-      case 'types':
-        enumObj = ProductType;
-        break;
-    }
-    const values = [];
-    keys(enumObj).filter(key => parseInt(key, 10) >= 0).forEach(key => {
-      values.push({ 'code': key, 'des': enumObj[key] });
-    });
-
-    return values;
+  onFilterClearClick(id: string) {
+    alert(id);
   }
 
   onProductDetailClick(id: string) {
     alert(id);
   }
-
 }

@@ -10,6 +10,7 @@ import { ProductsAllComponent } from './products/productsAll.component';
 import { ProductsHubComponent } from './products/productsHub.component';
 import { OrdersToFulfillComponent } from './orders/ordersToFulfill.component';
 import { OrdersToReceiveComponent } from './orders/ordersToReceive.component';
+import { FiltersComponent } from './common/filters/filters.component';
 
 const routes: Routes = [
   {
@@ -32,7 +33,8 @@ const routes: Routes = [
     ProductsAllComponent,
     ProductsHubComponent,
     OrdersToFulfillComponent,
-    OrdersToReceiveComponent
+    OrdersToReceiveComponent,
+    FiltersComponent
   ],
   imports: [
     CommonModule,

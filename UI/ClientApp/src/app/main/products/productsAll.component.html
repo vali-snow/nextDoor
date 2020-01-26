@@ -1,5 +1,6 @@
 <div fxLayout="column" class="height100">
-  <mat-expansion-panel>
+  <app-filters [model]="filterModel"></app-filters>
+  <!-- <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
         All Products
@@ -19,7 +20,7 @@
         <span>Clear</span>
       </button>
     </mat-action-row>
-  </mat-expansion-panel>
+  </mat-expansion-panel> -->
   <div fxFlex class="overflow">
     <div [ngSwitch]="allProducts.length">
       <mat-grid-list *ngSwitchCase="0" cols="1" rowHeight="10:1" gutterSize="5px" class="gridList">
@@ -36,9 +37,9 @@
               </mat-card-title>
               <mat-card-subtitle fxLayout="row" fxLayoutGap="5px">
                 <div>
-                  <b>Type:</b> {{typeToString('types', product.type)}}
+                  <b>Type:</b> {{enums.typeToString('types', product.type)}}
                 </div>
-                <div [hidden]= "typeToString('types', product.type) == 'Services'">
+                <div [hidden]= "enums.typeToString('types', product.type) == 'Services'">
                   <b>Quantity:</b> {{product.quantity}}
                 </div>
               </mat-card-subtitle>
@@ -52,9 +53,9 @@
                 <mat-icon>web_asset</mat-icon>
                 <span>Details</span>
               </button>
-              <button [hidden]="userId === product.owner.id" mat-button color="primary" (click)="onProductDetailClick(product.id)">
+              <button [hidden]="userId === product.owner.id" mat-button color="primary" (click)="onProductOrderClick(product.id)">
                 <mat-icon>done</mat-icon>
-                <span>Reserve</span>
+                <span>Order</span>
               </button>
             </mat-card-actions>
           </mat-card>

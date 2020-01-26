@@ -1,4 +1,4 @@
 export enum ProductType {
-  Goods,
-  Services
+  Good,
+  Service
 }

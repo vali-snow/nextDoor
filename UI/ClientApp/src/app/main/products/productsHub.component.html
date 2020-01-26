@@ -36,9 +36,9 @@
               </mat-card-title>
               <mat-card-subtitle fxLayout="row" fxLayoutGap="5px">
                 <div>
-                  <b>Type:</b> {{typeToString('types', product.type)}}
+                  <b>Type:</b> {{enums.typeToString('types', product.type)}}
                 </div>
-                <div [hidden]= "typeToString('types', product.type) == 'Services'">
+                <div [hidden]= "enums.typeToString('types', product.type) == 'Services'">
                   <b>Quantity:</b> {{product.quantity}}
                 </div>
               </mat-card-subtitle>

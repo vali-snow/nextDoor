@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-    public enum ProductType
+    public class DateInterval
     {
-        Good,
-        Service
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
     }
 }

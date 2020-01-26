@@ -56,10 +56,10 @@
             </div>
             <div class="subtitle" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
               <div>
-                <b>Status:</b> {{typeToString('statuses', order.status)}}
+                <b>Status:</b> {{enums.typeToString('statuses', order.status)}}
               </div>
               <div>
-                <b>Type:</b> {{typeToString('types', order.product.type)}}
+                <b>Type:</b> {{enums.typeToString('types', order.product.type)}}
               </div>
               <div>
                 <b>Date:</b> {{order.startDate | date: 'mediumDate'}}
@@ -84,7 +84,7 @@
               <mat-icon>web_asset</mat-icon>
               <span>Details</span>
             </button>
-            <div *ngIf="typeToString('statuses', order.status) === 'New'">
+            <div *ngIf="enums.typeToString('statuses', order.status) === 'New'">
               <button mat-button color="primary" (click)="onOrderCompletedClick(order.id)">
                 <mat-icon>done</mat-icon>
                 <span>Delivered</span>

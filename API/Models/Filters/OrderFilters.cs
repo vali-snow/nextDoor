@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using API.Models.Enums;
+using System;
 
 namespace API.Models.Filters
 {
     public class OrderFilters
     {
+        public OrderType? OrderType { get; set; } = null;
         public ProductType? ProductType { get; set; } = null;
         public OrderStatus? OrderStatus { get; set; } = null;
-        public DateTime? StartDate { get; set; } = null;
-        public DateTime? EndDate { get; set; } = null;
+
+        public DateInterval? Date { get; set; } = null;
+
     }
 }

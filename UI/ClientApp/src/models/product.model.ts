@@ -1,4 +1,4 @@
-import { ProductType } from './enums/producttype.enums';
+import { ProductType } from './enums/product.type.enum';
 import { User } from './user.model';
 
 export class Product {

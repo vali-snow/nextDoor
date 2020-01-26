@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { SatDatepickerRangeValue } from 'saturn-datepicker';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { OrderStatus } from 'src/models/enums/orderstatus.enum';
-import { ProductType } from 'src/models/enums/producttype.enums';
+import { HttpParams } from '@angular/common/http';
+import { EnumService } from 'src/app/core/service/enum.service';
+import { OrdersService } from './orders.service';
+import { OrderType } from 'src/models/enums/order.type.enum';
+import { OrderFilters } from 'src/models/filters/order.filters.model';
+import { OrderStatus } from 'src/models/enums/order.status.enum';
 
 @Component({
   templateUrl: './ordersToFulfill.component.html',
@@ -11,11 +14,13 @@ import { ProductType } from 'src/models/enums/producttype.enums';
 })
 export class OrdersToFulfillComponent implements OnInit {
   form: FormGroup;
-  statuses = this.getKeysFromEnum('statuses');
-  types = this.getKeysFromEnum('types');
+  statuses: any;
+  types: any;
   toFulfill = [];
 
-  constructor(private http: HttpClient, private builder: FormBuilder) {
+  constructor(private orders: OrdersService, private builder: FormBuilder, private enums: EnumService) {
+    this.statuses = this.enums.getKeysFromEnum('statuses');
+    this.types = this.enums.getKeysFromEnum('types');
     this.form = builder.group({
       type: null,
       status: null,
@@ -24,69 +29,35 @@ export class OrdersToFulfillComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('https://localhost:44377/api/Orders/ToFulfill').subscribe(
+    const filters = {
+      orderType: OrderType.ToFulfill,
+      orderStatus: null,
+      productType: null,
+      date: null
+    } as OrderFilters;
+    this.orders.getOrders(filters).subscribe(
       (data: any[]) => {
         this.toFulfill = [...data];
       },
-      (error) => {
-        // if (error.status === 400) {
-        //   this.toastr.error(error.error.message, 'Login failed');
-        // } else {
-        //   console.log(error);
-        // }
-      }
+      (error) => { }
     );
   }
 
-  typeToString(enumStr: string, num: number) {
-    let enumObj;
-    switch (enumStr) {
-      case 'statuses':
-        enumObj = OrderStatus;
-        break;
-      case 'types':
-        enumObj = ProductType;
-        break;
-    }
-    return enumObj[num];
-  }
-
-  getKeysFromEnum(enumStr: string) {
-    const keys = Object.keys;
-    let enumObj;
-    switch (enumStr) {
-      case 'statuses':
-        enumObj = OrderStatus;
-        break;
-      case 'types':
-        enumObj = ProductType;
-        break;
-    }
-    const values = [];
-    keys(enumObj).filter(key => parseInt(key, 10) >= 0).forEach(key => {
-      values.push({ 'code': key, 'des': enumObj[key] });
-    });
-
-    return values;
-  }
-
   onFilterApplyClick() {
-    let params = new HttpParams();
-    if (this.form.get('type').value) { params = params.set('productType', this.form.get('type').value); }
-    if (this.form.get('status').value) { params = params.set('orderStatus', this.form.get('status').value); }
-    if (this.form.get('date').value.begin) { params = params.set('startDate', new Date(this.form.get('date').value.begin).toISOString()); }
-    if (this.form.get('date').value.end) { params = params.set('endDate', new Date(this.form.get('date').value.end).toISOString()); }
-    this.http.get('https://localhost:44377/api/Orders/ToFulfill', { params: params }).subscribe(
+    const filters = {
+      orderType: OrderType.ToFulfill,
+      orderStatus: this.form.get('status').value,
+      productType: this.form.get('type').value,
+      date: {
+        start: this.form.get('date').value.begin,
+        end: this.form.get('date').value.end
+      }
+    } as OrderFilters;
+    this.orders.getOrders(filters).subscribe(
       (data: any[]) => {
         this.toFulfill = [...data];
       },
-      (error) => {
-        // if (error.status === 400) {
-        //   this.toastr.error(error.error.message, 'Login failed');
-        // } else {
-        //   console.log(error);
-        // }
-      }
+      (error) => { }
     );
   }
 

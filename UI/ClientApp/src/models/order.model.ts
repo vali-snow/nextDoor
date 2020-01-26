@@ -1,4 +1,4 @@
-import { OrderStatus } from './enums/orderstatus.enum';
+import { OrderStatus } from './enums/order.status.enum';
 import { User } from './user.model';
 import { Product } from './product.model';
 

@@ -71,19 +71,19 @@ namespace API.Data
                 User user = await userManager.FindByEmailAsync("valens@admin.com");
                 var products = new List<Product>()
                 {
-                    new Product() { Name = "G1 Name", Description = "G1 Description", Type = ProductType.Goods, Owner = user, Quantity = 1 },
-                    new Product() { Name = "G2 Name", Description = "G2 Description", Type = ProductType.Goods, Owner = user, Quantity = 2 },
-                    new Product() { Name = "G3 Name", Description = "G3 Description", Type = ProductType.Goods, Owner = user, Quantity = 3 },
-                    new Product() { Name = "G4 Name", Description = "G4 Description", Type = ProductType.Goods, Owner = user, Quantity = 4 },
-                    new Product() { Name = "G5 Name", Description = "G5 Description", Type = ProductType.Goods, Owner = user, Quantity = 5 },
-                    new Product() { Name = "G6 Name", Description = "G6 Description", Type = ProductType.Goods, Owner = user, Quantity = 6 },
-                    new Product() { Name = "G7 Name", Description = "G7 Description", Type = ProductType.Goods, Owner = user, Quantity = 7 },
-                    new Product() { Name = "G8 Name", Description = "G8 Description", Type = ProductType.Goods, Owner = user, Quantity = 8 },
-                    new Product() { Name = "G9 Name", Description = "G9 Description", Type = ProductType.Goods, Owner = user, Quantity = 9 },
-                    new Product() { Name = "G10 Name", Description = "G10 Description", Type = ProductType.Goods, Owner = user, Quantity = 10 },
-                    new Product() { Name = "S1 Name", Description = "S1 Description", Type = ProductType.Services, Owner = user },
-                    new Product() { Name = "S2 Name", Description = "S2 Description", Type = ProductType.Services, Owner = user },
-                    new Product() { Name = "S3 Name", Description = "S3 Description", Type = ProductType.Services, Owner = user },
+                    new Product() { Name = "G1 Name", Description = "G1 Description", Type = ProductType.Good, Owner = user, Quantity = 1 },
+                    new Product() { Name = "G2 Name", Description = "G2 Description", Type = ProductType.Good, Owner = user, Quantity = 2 },
+                    new Product() { Name = "G3 Name", Description = "G3 Description", Type = ProductType.Good, Owner = user, Quantity = 3 },
+                    new Product() { Name = "G4 Name", Description = "G4 Description", Type = ProductType.Good, Owner = user, Quantity = 4 },
+                    new Product() { Name = "G5 Name", Description = "G5 Description", Type = ProductType.Good, Owner = user, Quantity = 5 },
+                    new Product() { Name = "G6 Name", Description = "G6 Description", Type = ProductType.Good, Owner = user, Quantity = 6 },
+                    new Product() { Name = "G7 Name", Description = "G7 Description", Type = ProductType.Good, Owner = user, Quantity = 7 },
+                    new Product() { Name = "G8 Name", Description = "G8 Description", Type = ProductType.Good, Owner = user, Quantity = 8 },
+                    new Product() { Name = "G9 Name", Description = "G9 Description", Type = ProductType.Good, Owner = user, Quantity = 9 },
+                    new Product() { Name = "G10 Name", Description = "G10 Description", Type = ProductType.Good, Owner = user, Quantity = 10 },
+                    new Product() { Name = "S1 Name", Description = "S1 Description", Type = ProductType.Service, Owner = user },
+                    new Product() { Name = "S2 Name", Description = "S2 Description", Type = ProductType.Service, Owner = user },
+                    new Product() { Name = "S3 Name", Description = "S3 Description", Type = ProductType.Service, Owner = user },
                 };
                 context.Products.AddRange(products);
                 context.SaveChanges();

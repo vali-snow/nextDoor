@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace API.Models.Enums
 {
-    public class UnitOfMeasure
+    public enum OrderType
     {
+        ToFulfill,
+        ToReceive
     }
 }

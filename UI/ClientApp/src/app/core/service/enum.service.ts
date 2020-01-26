@@ -1,0 +1,43 @@
+import { Injectable } from '@angular/core';
+import { OrderStatus } from 'src/models/enums/order.status.enum';
+import { ProductType } from 'src/models/enums/product.type.enum';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class EnumService {
+
+  constructor() { }
+
+  typeToString(enumStr: string, num: number): string {
+    let enumObj;
+    switch (enumStr) {
+      case 'statuses':
+        enumObj = OrderStatus;
+        break;
+      case 'types':
+        enumObj = ProductType;
+        break;
+    }
+    return enumObj[num];
+  }
+
+  getKeysFromEnum(enumStr: string): { code: string, des: string }[] {
+    const keys = Object.keys;
+    let enumObj;
+    switch (enumStr) {
+      case 'statuses':
+        enumObj = OrderStatus;
+        break;
+      case 'types':
+        enumObj = ProductType;
+        break;
+    }
+    const values: { code: string, des: string }[] = [];
+    keys(enumObj).filter(key => parseInt(key, 10) >= 0).forEach(key => {
+      values.push({ code: key, des: enumObj[key] });
+    });
+
+    return values;
+  }
+}

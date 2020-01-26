@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using API.Models.Filters;
+using API.Models.Enums;
 
 namespace API.Controllers
 {
@@ -26,32 +27,22 @@ namespace API.Controllers
             this.userManager = userManager;
         }
 
-        [HttpGet("ToFulfill")]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersToFulfill([FromQuery] OrderFilters filters)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders([FromQuery] OrderFilters filters)
         {
             var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
 
-            var orders = context.Orders.Include(o => o.DeliverToUser).Include(o => o.Product).ThenInclude(p => p.Owner);
-
-            var ordersToFulfill = orders.Where(o => o.Product.Owner.Email == user.Email)
+            return await context.Orders
+                .Include(o => o.DeliverToUser)
+                .Include(o => o.Product)
+                .ThenInclude(p => p.Owner)
+                .Where(o => filters.OrderType == null ||
+                           (filters.OrderType == OrderType.ToReceive && o.DeliverToUser.Id == user.Id) ||
+                           (filters.OrderType == OrderType.ToFulfill && o.Product.Owner.Id == user.Id))
                 .Where(o => filters.OrderStatus == null || o.Status == filters.OrderStatus)
                 .Where(o => filters.ProductType == null || o.Product.Type == filters.ProductType)
-                .Where(o => filters.StartDate == null || filters.EndDate == null || (filters.StartDate < o.StartDate && o.StartDate < filters.EndDate));
-            return await ordersToFulfill.ToListAsync();
-        }
-
-        [HttpGet("ToReceive")]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersToReceive([FromQuery] OrderFilters filters)
-        {
-            var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
-
-            var orders = context.Orders.Include(o => o.DeliverToUser).Include(o => o.Product).ThenInclude(p => p.Owner);
-
-            var ordersToReceive = orders.Where(o => o.DeliverToUser.Id == user.Id)
-                .Where(o => filters.OrderStatus == null || o.Status == filters.OrderStatus)
-                .Where(o => filters.ProductType == null || o.Product.Type == filters.ProductType)
-                .Where(o => filters.StartDate == null || filters.EndDate == null || (filters.StartDate < o.StartDate && o.StartDate < filters.EndDate));
-            return await ordersToReceive.ToListAsync();
+                .Where(o => filters.Date == null || (filters.Date.Start < o.StartDate && o.StartDate < filters.Date.End))
+                .ToListAsync();
         }
 
         [HttpGet("{id}")]
