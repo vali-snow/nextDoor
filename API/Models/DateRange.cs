@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-    public class DateInterval
+    public class DateRange
     {
-        public DateTime Start { get; set; }
+        public DateTime Begin { get; set; }
         public DateTime End { get; set; }
     }
 }

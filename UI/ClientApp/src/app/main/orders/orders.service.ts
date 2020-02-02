@@ -13,21 +13,26 @@ export class OrdersService {
 
   getOrders(filters?: OrderFilters): Observable<any> {
     let params = new HttpParams();
-    if (filters && filters.orderType !== null && filters.orderType !== undefined) {
-      params = params.set('orderType', filters.orderType.toString());
-    }
-    if (filters && filters.orderStatus !== null && filters.orderStatus !== undefined) {
-      params = params.set('orderStatus', filters.orderStatus.toString());
-    }
-    if (filters && filters.productType !== null && filters.productType !== undefined) {
-      params = params.set('productType', filters.productType.toString());
-    }
-    if (filters && filters.date !== null && filters.date !== undefined) {
-      if (filters.date.start) {
-        params = params.set('date.start', filters.date.start.toISOString());
+    if (filters) {
+      if (filters.orderType !== null && filters.orderType !== undefined) {
+        params = params.set('orderType', filters.orderType.toString());
       }
-      if (filters.date.end) {
-        params = params.set('date.end', filters.date.end.toISOString());
+      if (filters.search && filters.search !== '') {
+        params = params.set('search', filters.search);
+      }
+      if (filters.orderStatus !== null && filters.orderStatus !== undefined) {
+        params = params.set('orderStatus', filters.orderStatus.toString());
+      }
+      if (filters.productType !== null && filters.productType !== undefined) {
+        params = params.set('productType', filters.productType.toString());
+      }
+      if (filters.dateRange) {
+        if (filters.dateRange.begin) {
+          params = params.set('dateRange.begin', filters.dateRange.begin.toISOString());
+        }
+        if (filters.dateRange.end) {
+          params = params.set('dateRange.end', filters.dateRange.end.toISOString());
+        }
       }
     }
     return this.http.get('https://localhost:44377/api/Orders/', { params: params }).pipe(single());

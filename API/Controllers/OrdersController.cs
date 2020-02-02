@@ -39,9 +39,10 @@ namespace API.Controllers
                 .Where(o => filters.OrderType == null ||
                            (filters.OrderType == OrderType.ToReceive && o.DeliverToUser.Id == user.Id) ||
                            (filters.OrderType == OrderType.ToFulfill && o.Product.Owner.Id == user.Id))
+                .Where(o => filters.Search == null || o.Product.Name.ToLower().Contains(filters.Search.ToLower()) || o.Product.Description.ToLower().Contains(filters.Search.ToLower()))
                 .Where(o => filters.OrderStatus == null || o.Status == filters.OrderStatus)
                 .Where(o => filters.ProductType == null || o.Product.Type == filters.ProductType)
-                .Where(o => filters.Date == null || (filters.Date.Start < o.StartDate && o.StartDate < filters.Date.End))
+                .Where(o => filters.DateRange == null || (filters.DateRange.Begin < o.StartDate && o.StartDate < filters.DateRange.End))
                 .ToListAsync();
         }
 

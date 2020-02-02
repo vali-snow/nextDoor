@@ -1,25 +1,5 @@
 <div fxLayout="column" class="height100">
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        My Products
-      </mat-panel-title>
-      <mat-panel-description>
-        Filter Panel
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <mat-form-field>
-      <textarea matInput placeholder="Textarea"></textarea>
-    </mat-form-field>
-    <mat-action-row>
-      <button mat-button (click)="onFilterApplyClick()">
-        <span>Apply</span>
-      </button>
-      <button mat-button (click)="onFilterClearClick()">
-        <span>Clear</span>
-      </button>
-    </mat-action-row>
-  </mat-expansion-panel>
+  <app-filters [model]="filterModel" (filtersApply)="onFiltersApply($event)"></app-filters>
   <div fxFlex class="overflow">
     <div [ngSwitch]="myProducts.length">
       <mat-grid-list *ngSwitchCase="0" cols="1" rowHeight="10:1" gutterSize="5px" class="gridList">
@@ -36,9 +16,9 @@
               </mat-card-title>
               <mat-card-subtitle fxLayout="row" fxLayoutGap="5px">
                 <div>
-                  <b>Type:</b> {{enums.typeToString('types', product.type)}}
+                  <b>Type:</b> {{enums.typeToString('productType', product.type)}}
                 </div>
-                <div [hidden]= "enums.typeToString('types', product.type) == 'Services'">
+                <div [hidden]= "enums.typeToString('productType', product.type) == 'Services'">
                   <b>Quantity:</b> {{product.quantity}}
                 </div>
               </mat-card-subtitle>

@@ -13,8 +13,16 @@ export class ProductsService {
 
   getProducts(filters?: ProductFilters): Observable<any> {
     let params = new HttpParams();
-    if (filters && filters.isOwner) {
-      params = params.set('isOwner', filters.isOwner.toString());
+    if (filters) {
+      if (filters.isOwner) {
+        params = params.set('isOwner', filters.isOwner.toString());
+      }
+      if (filters.search && filters.search !== '') {
+        params = params.set('search', filters.search);
+      }
+      if (filters.productType !== null && filters.productType !== undefined) {
+        params = params.set('productType', filters.productType.toString());
+      }
     }
     return this.http.get('https://localhost:44377/api/Products/', { params: params }).pipe(single());
   }

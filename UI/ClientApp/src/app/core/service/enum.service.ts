@@ -12,24 +12,37 @@ export class EnumService {
   typeToString(enumStr: string, num: number): string {
     let enumObj;
     switch (enumStr) {
-      case 'statuses':
+      case 'orderStatus':
         enumObj = OrderStatus;
         break;
-      case 'types':
+      case 'productType':
         enumObj = ProductType;
         break;
     }
     return enumObj[num];
   }
 
+  stringToType(enumStr: string, str: string): number {
+    let enumObj;
+    switch (enumStr) {
+      case 'orderStatus':
+        enumObj = OrderStatus;
+        break;
+      case 'productType':
+        enumObj = ProductType;
+        break;
+    }
+    return enumObj[str];
+  }
+
   getKeysFromEnum(enumStr: string): { code: string, des: string }[] {
     const keys = Object.keys;
     let enumObj;
     switch (enumStr) {
-      case 'statuses':
+      case 'orderStatus':
         enumObj = OrderStatus;
         break;
-      case 'types':
+      case 'productType':
         enumObj = ProductType;
         break;
     }
