@@ -11,6 +11,8 @@ import { ProductsHubComponent } from './products/productsHub.component';
 import { OrdersToFulfillComponent } from './orders/ordersToFulfill.component';
 import { OrdersToReceiveComponent } from './orders/ordersToReceive.component';
 import { FiltersComponent } from './common/filters/filters.component';
+import { DialogComponent } from './common/dialog/dialog.component';
+import { FormComponent } from './common/form/form.component';
 
 const routes: Routes = [
   {
@@ -34,7 +36,9 @@ const routes: Routes = [
     ProductsHubComponent,
     OrdersToFulfillComponent,
     OrdersToReceiveComponent,
-    FiltersComponent
+    FiltersComponent,
+    DialogComponent,
+    FormComponent
   ],
   imports: [
     CommonModule,
@@ -43,7 +47,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     FormsModule,
     RouterModule.forChild(routes)
-  ]
+  ],
+  entryComponents: [DialogComponent]
 })
 
 export class MainModule { }
