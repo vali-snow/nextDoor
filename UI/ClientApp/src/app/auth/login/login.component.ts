@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
     };
     this.http.post<User>('https://localhost:44377/api/User/login', body).subscribe(
       (data: any) => {
-        localStorage.setItem('userId', data.userId)
+        localStorage.setItem('userId', data.userId);
         localStorage.setItem('authToken', data.token);
         this.toastr.success('Login successful', 'Login successful');
         this.router.navigate(['main/dash']);

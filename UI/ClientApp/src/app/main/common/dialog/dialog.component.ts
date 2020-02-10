@@ -29,4 +29,8 @@ export class DialogComponent implements OnInit {
   onClose() {
     this.dialogRef.close();
   }
+
+  getFormValues() {
+    return this.filtersForm.getFormValues();
+  }
 }

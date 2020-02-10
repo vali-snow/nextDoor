@@ -12,27 +12,27 @@
           <mat-card fxLayout="column" class="height100 width100">
             <mat-card-header>
               <mat-card-title>
-                Product: {{product.name}}
+                Product: {{product.Name}}
               </mat-card-title>
               <mat-card-subtitle fxLayout="row" fxLayoutGap="5px">
                 <div>
-                  <b>Type:</b> {{enums.typeToString('productType', product.type)}}
+                  <b>Type:</b> {{enums.typeToString('productType', product.Type)}}
                 </div>
                 <div [hidden]= "enums.typeToString('productType', product.type) == 'Services'">
-                  <b>Quantity:</b> {{product.quantity}}
+                  <b>Quantity:</b> {{product.Quantity}}
                 </div>
               </mat-card-subtitle>
             </mat-card-header>
-            <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg">
+            <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"> -->
             <mat-card-content fxFlex class="overflow">
-              <b>Description:</b> {{product.description}}
+              <b>Description:</b> {{product.Description}}
             </mat-card-content>
             <mat-card-actions fxLayout="row" fxLayoutAlign="space-between center">
-              <button mat-button (click)="onProductDetailClick(product.id)">
+              <button mat-button (click)="onProductDetailClick(product.Id)">
                 <mat-icon>web_asset</mat-icon>
                 <span>Details</span>
               </button>
-              <button [hidden]="userId === product.owner.id" mat-button color="primary" (click)="onProductOrderClick(product.id)">
+              <button [hidden]="userId === product.Owner.Id" mat-button color="primary" (click)="onProductOrderClick(product.Id)">
                 <mat-icon>done</mat-icon>
                 <span>Order</span>
               </button>

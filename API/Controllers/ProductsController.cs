@@ -28,6 +28,14 @@ namespace API.Controllers
             this.userManager = userManager;
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Product>> GetProduct(Guid id)
+        {
+            return await context.Products.Include(p => p.Owner)
+                .Where(p => p.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] ProductFilters filters)
         {

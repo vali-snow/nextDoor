@@ -13,6 +13,10 @@ import { OrdersToReceiveComponent } from './orders/ordersToReceive.component';
 import { FiltersComponent } from './common/filters/filters.component';
 import { DialogComponent } from './common/dialog/dialog.component';
 import { FormComponent } from './common/form/form.component';
+import { ProductDetailComponent } from './products/product-detail/product-detail.component';
+import { OrderDetailComponent } from './orders/order-detail/order-detail.component';
+import { ProductDetailResolver } from './products/product-detail/product-detail.resolver';
+import { ProductsService } from './products/products.service';
 
 const routes: Routes = [
   {
@@ -22,8 +26,10 @@ const routes: Routes = [
       { path: 'dash', component: DashComponent },
       { path: 'products-all', component: ProductsAllComponent },
       { path: 'products-shop', component: ProductsHubComponent },
+      { path: 'product-detail/:id', component: ProductDetailComponent, resolve: { product: ProductDetailResolver } },
       { path: 'orders-to-fulfill', component: OrdersToFulfillComponent },
-      { path: 'orders-to-receive', component: OrdersToReceiveComponent }
+      { path: 'orders-to-receive', component: OrdersToReceiveComponent },
+      { path: 'order-detail/:id', component: ProductDetailComponent },
     ]
   }
 ];
@@ -38,7 +44,9 @@ const routes: Routes = [
     OrdersToReceiveComponent,
     FiltersComponent,
     DialogComponent,
-    FormComponent
+    FormComponent,
+    ProductDetailComponent,
+    OrderDetailComponent
   ],
   imports: [
     CommonModule,
@@ -48,7 +56,11 @@ const routes: Routes = [
     FormsModule,
     RouterModule.forChild(routes)
   ],
-  entryComponents: [DialogComponent]
+  entryComponents: [DialogComponent],
+  providers: [
+    ProductsService,
+    ProductDetailResolver
+  ]
 })
 
 export class MainModule { }

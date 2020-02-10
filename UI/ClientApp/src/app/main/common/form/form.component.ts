@@ -9,19 +9,21 @@ import { FormGroup, FormControl } from '@angular/forms';
 export class FormComponent implements OnInit {
   form: FormGroup;
   @Input() rows: [];
+  private formRows: any[] = [];
 
-  constructor() {
-
-  }
+  constructor() {}
 
   ngOnInit() {
     const formGroup = {};
-    this.rows.forEach( (row: []) => {
-      row.forEach((filter: any) => {
-        if (filter.key) {
-          formGroup[filter.key] = new FormControl(filter.value || '');
+    this.rows.forEach((row: any[]) => {
+      Object.keys(row).forEach((key: string) => {
+        if (row[key].type !== 'placeholder') {
+          formGroup[key] = new FormControl(row[key].value || '');
         }
       });
+      this.formRows.push(Object.keys(row).map(key => {
+        return Object.assign({}, { key: key }, row[key]);
+      }));
     });
     this.form = new FormGroup(formGroup);
   }
@@ -32,5 +34,17 @@ export class FormComponent implements OnInit {
       values[key] = this.form.controls[key].value;
     });
     return values;
+  }
+
+  getFormObj(searchKey: string) {
+    let found = null;
+    for (const row of this.rows) {
+      for (const key of Object.keys(row)) {
+        if (searchKey === key) {
+          return found = row[key];
+        }
+      }
+    }
+    return null;
   }
 }

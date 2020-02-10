@@ -4,7 +4,13 @@
 </div>
 <div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between stretch">
   <div fxFlex fxLayout="row">
-    <button mat-button *ngFor="let button of buttons" (click)="onClick(button.key)">{{button.label}}</button>
+    <button mat-button *ngFor="let button of buttons" (click)="onClick(button.key)">
+      <mat-icon *ngIf="button.icon">{{button.icon}}</mat-icon>
+      {{button.label}}
+    </button>
   </div>
-  <button mat-button (click)="onClose()">Cancel</button>
+  <button mat-button (click)="onClose()">
+    <mat-icon>cancel</mat-icon>
+    Cancel
+  </button>
 </div>

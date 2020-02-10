@@ -4,14 +4,15 @@ import { ProductsService } from './products.service';
 import { FilterModel } from 'src/models/filters/filter.model';
 import { ProductFilters } from 'src/models/filters/product.filters.model';
 import { MatDialog } from '@angular/material';
-import { DialogComponent } from '../common/dialog/dialog.component';
+import { Product } from 'src/models/product.model';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: './productsAll.component.html',
   styleUrls: ['./productsAll.component.css']
 })
 export class ProductsAllComponent implements OnInit {
-  allProducts = [];
+  allProducts: Product[] = [];
   userId: string;
   filterModel: FilterModel = {
     title: 'All Products',
@@ -22,13 +23,13 @@ export class ProductsAllComponent implements OnInit {
     }
   };
 
-  constructor(private products: ProductsService, private enums: EnumService, public dialog: MatDialog) {
+  constructor(private products: ProductsService, private enums: EnumService, public dialog: MatDialog, private router: Router) {
     this.userId = localStorage.getItem('userId');
   }
 
   ngOnInit() {
     this.products.getProducts().subscribe(
-      (prods: any[]) => {
+      (prods: Product[]) => {
         this.allProducts = [...prods];
       },
       (error) => { }
@@ -60,68 +61,7 @@ export class ProductsAllComponent implements OnInit {
   }
 
   onProductDetailClick(id: string) {
-    const product = this.allProducts.filter(prod => prod.id = id)[0];
-    const dialogRef = this.dialog.open(DialogComponent, {
-      width: '80%',
-      data: {
-        title: 'Product Detail',
-        product,
-        dynamic: {
-          filters: [
-            [
-              {
-                key: 'search1',
-                label: 'Search1',
-                type: 'text',
-                size: '80',
-                options: null,
-                value: 'test1'
-              },
-              {
-                key: 'search2',
-                label: 'Search2',
-                type: 'text',
-                size: '20',
-                options: null,
-                value: 'test2'
-              }
-            ],
-            [
-              {
-                key: null,
-                label: null,
-                type: 'placeholder',
-                size: '10',
-                options: null,
-                value: null
-              },
-              {
-                key: 'search3',
-                label: 'Search3',
-                type: 'text',
-                size: '90',
-                options: null,
-                value: 'test3'
-              }
-            ]
-          ],
-          buttons: [
-            {
-              key: '1',
-              label: 'First'
-            },
-            {
-              key: '2',
-              label: 'Second'
-            }
-          ]
-        }
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
+    this.router.navigate(['main/product-detail', id]);
   }
 
   onProductOrderClick(id: string) {

@@ -7,5 +7,5 @@ export class Product {
   Description: string;
   Type: ProductType;
   Quantity: number;
-  Owner: User;
+  Owner?: User;
 }

@@ -11,6 +11,10 @@ export class ProductsService {
 
   constructor(private http: HttpClient) { }
 
+  getProduct(id: string): Observable<any> {
+    return this.http.get(`https://localhost:44377/api/Products/${id}`).pipe(single());
+  }
+
   getProducts(filters?: ProductFilters): Observable<any> {
     let params = new HttpParams();
     if (filters) {
