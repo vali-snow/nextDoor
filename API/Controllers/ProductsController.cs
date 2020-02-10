@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using API;
-using API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using API.Models;
 using API.Models.Filters;
 
 namespace API.Controllers
@@ -46,6 +44,33 @@ namespace API.Controllers
                 .Where(p => filters.Search == null || p.Name.ToLower().Contains(filters.Search.ToLower()) || p.Description.ToLower().Contains(filters.Search.ToLower()))
                 .Where(p => filters.ProductType == null || p.Type == filters.ProductType)
                 .ToListAsync();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Product>> PostProduct(Product product)
+        {
+            try
+            {
+                if (ProductExists(product.Id))
+                {
+                    context.Entry(product).State = EntityState.Modified;
+                }
+                else
+                {
+                    context.Products.Add(product);
+                }
+                await context.SaveChangesAsync();
+                return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        private bool ProductExists(Guid id)
+        {
+            return context.Products.Any(p => p.Id == id);
         }
     }
 }

@@ -4,6 +4,7 @@ import { EnumService } from 'src/app/core/service/enum.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/models/product.model';
 import { FormComponent } from '../../common/form/form.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product-detail',
@@ -22,7 +23,8 @@ export class ProductDetailComponent implements OnInit {
   };
 
   @ViewChild('filtersForm', { static: false }) filtersForm: FormComponent;
-  constructor(private route: ActivatedRoute, private products: ProductsService, private enums: EnumService, private router: Router) {
+  constructor(private route: ActivatedRoute, private products: ProductsService, private enums: EnumService, private router: Router,
+              private toastr: ToastrService) {
 
   }
 
@@ -118,6 +120,18 @@ export class ProductDetailComponent implements OnInit {
   onClick(buttonKey: string) {
     switch (buttonKey) {
       case 'save':
+        this.updateValuesFromForm();
+        this.products.saveProduct(this.product).subscribe(
+          (prod: Product) => {
+            this.product = prod;
+            this.editable = false;
+            this.toastr.success('Save successful', 'Product save successful');
+          },
+          (error: any) => {
+            this.toastr.error('Save failed', 'Product save failed');
+            console.log(error);
+          }
+        );
         break;
       case 'edit':
         this.editable = !this.editable;
@@ -131,6 +145,7 @@ export class ProductDetailComponent implements OnInit {
             description: this.initial.description
           });
         }
+        this.buttons['save'].disabled = !this.editable;
         break;
       case 'remove':
         // logic missing for removing the product, don't cancel the existing orders
@@ -141,6 +156,12 @@ export class ProductDetailComponent implements OnInit {
       default:
         break;
     }
+  }
+
+  updateValuesFromForm() {
+    this.product.Name = this.filtersForm.form.get('name').value;
+    this.product.Quantity = Number(this.filtersForm.form.get('quantity').value);
+    this.product.Description = this.filtersForm.form.get('description').value;
   }
 
   getInOrder(a, b) {
