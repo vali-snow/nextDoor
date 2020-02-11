@@ -35,4 +35,8 @@ export class ProductsService {
   saveProduct(product: Product) {
     return this.http.post<Product>('https://localhost:44377/api/Products/', product).pipe(single());
   }
+
+  removeProduct(id: string) {
+    return this.http.delete<Product>(`https://localhost:44377/api/Products/${id}`).pipe(single());
+  }
 }

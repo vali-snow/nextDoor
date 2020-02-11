@@ -148,7 +148,16 @@ export class ProductDetailComponent implements OnInit {
         this.buttons['save'].disabled = !this.editable;
         break;
       case 'remove':
-        // logic missing for removing the product, don't cancel the existing orders
+        this.products.removeProduct(this.product.Id).subscribe(
+          () => {
+            this.toastr.success('Delete successful', 'Product delete successful');
+            this.router.navigate(['main/products-all']);
+          },
+          (error: any) => {
+            this.toastr.error('Delete failed', 'Product delete failed');
+            console.log(error);
+          }
+        );
         break;
       case 'back':
         this.router.navigate(['main/products-all']);

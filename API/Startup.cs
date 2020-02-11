@@ -40,8 +40,6 @@ namespace API
                     .AddEntityFrameworkStores<EFContext>()
                     .AddDefaultTokenProviders();
             
-
-            
             services.AddDbContext<EFContext>(options => options.UseSqlServer(Configuration["ConnectionString:nextDoor"]));
             services.AddTransient<Seeder>();
 

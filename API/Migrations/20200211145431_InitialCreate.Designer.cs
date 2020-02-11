@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20200101202042_InitialCreate")]
+    [Migration("20200211145431_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,6 +76,9 @@ namespace API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<int>("Type")

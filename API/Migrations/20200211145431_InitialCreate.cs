@@ -159,6 +159,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Type = table.Column<int>(nullable: false),

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using API.Models;
 using API.Models.Filters;
+using API.Models.Enums;
 
 namespace API.Controllers
 {
@@ -66,6 +67,29 @@ namespace API.Controllers
             {
                 return BadRequest(ex);
             }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(Guid id)
+        {
+            try
+            {
+                var product = await context.Products.FindAsync(id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                product.Status = ProductStatus.Unlisted;
+                await context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500,ex.Message);
+            }
+            
         }
 
         private bool ProductExists(Guid id)

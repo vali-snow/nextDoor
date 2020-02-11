@@ -5,15 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20191110193716_Initial.cs" />
-    <Compile Remove="Migrations\20191110193716_Initial.Designer.cs" />
-    <Compile Remove="Migrations\20191231001836_InitialCreate.cs" />
-    <Compile Remove="Migrations\20191231001836_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20191231005905_InitialCreate.cs" />
-    <Compile Remove="Migrations\20191231005905_InitialCreate.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
