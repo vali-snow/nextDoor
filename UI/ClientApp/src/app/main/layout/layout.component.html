@@ -18,10 +18,12 @@
         <mat-list-item [routerLinkActive]="['active']">
           <a routerLink="/main/dash">Dashboard</a>
         </mat-list-item>
-        <mat-list-item [routerLinkActive]="['active']">
-          <a routerLink="/main/products-all">All Products</a>
+        <mat-list-item [routerLinkActive]="['active']" fxLayout="row" fxLayoutAlign="space-between stretch">
+          <a fxFlex routerLink="/main/products-all">All Products</a>
+          <button mat-icon-button color="warn" (click)="onProductAdd()">
+            <mat-icon>add_circle</mat-icon>
+          </button>
         </mat-list-item>
-        
         <mat-list-item style="color: #0366D6;">
           My Hub
         </mat-list-item>

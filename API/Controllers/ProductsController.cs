@@ -41,6 +41,7 @@ namespace API.Controllers
             var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
 
             return await context.Products.Include(p => p.Owner)
+                .Where(p => p.Status == ProductStatus.Listed)
                 .Where(p => filters.IsOwner == null || p.Owner.Id == user.Id)
                 .Where(p => filters.Search == null || p.Name.ToLower().Contains(filters.Search.ToLower()) || p.Description.ToLower().Contains(filters.Search.ToLower()))
                 .Where(p => filters.ProductType == null || p.Type == filters.ProductType)
@@ -52,12 +53,15 @@ namespace API.Controllers
         {
             try
             {
+                var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+
                 if (ProductExists(product.Id))
                 {
                     context.Entry(product).State = EntityState.Modified;
                 }
                 else
                 {
+                    product.Owner = user;
                     context.Products.Add(product);
                 }
                 await context.SaveChangesAsync();

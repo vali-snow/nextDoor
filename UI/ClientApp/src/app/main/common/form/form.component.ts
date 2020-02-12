@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-form',
@@ -11,14 +11,14 @@ export class FormComponent implements OnInit {
   @Input() rows: [];
   private formRows: any[] = [];
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
     const formGroup = {};
     this.rows.forEach((row: any[]) => {
       Object.keys(row).forEach((key: string) => {
         if (row[key].type !== 'placeholder') {
-          formGroup[key] = new FormControl(row[key].value || '');
+          formGroup[key] = new FormControl(row[key].value || '', this.getValidators(row[key].validation));
         }
       });
       this.formRows.push(Object.keys(row).map(key => {
@@ -26,6 +26,20 @@ export class FormComponent implements OnInit {
       }));
     });
     this.form = new FormGroup(formGroup);
+  }
+
+  getValidators(validationObj) {
+    const validators = [];
+    if (validationObj) {
+      for (const key of Object.keys(validationObj)) {
+        if (key === 'required') {
+          validators.push(Validators.required);
+        } else if (key === 'min') {
+          validators.push(Validators.min(validationObj[key]));
+        }
+      }
+    }
+    return validators;
   }
 
   getFormValues() {

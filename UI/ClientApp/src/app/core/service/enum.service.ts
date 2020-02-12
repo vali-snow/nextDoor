@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OrderStatus } from 'src/models/enums/order.status.enum';
 import { ProductType } from 'src/models/enums/product.type.enum';
+import { ProductStatus } from 'src/models/enums/product.status.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,9 @@ export class EnumService {
       case 'orderStatus':
         enumObj = OrderStatus;
         break;
+      case 'productStatus':
+        enumObj = ProductStatus;
+        break;
       case 'productType':
         enumObj = ProductType;
         break;
@@ -27,6 +31,9 @@ export class EnumService {
     switch (enumStr) {
       case 'orderStatus':
         enumObj = OrderStatus;
+        break;
+      case 'productStatus':
+        enumObj = ProductStatus;
         break;
       case 'productType':
         enumObj = ProductType;
@@ -41,6 +48,9 @@ export class EnumService {
     switch (enumStr) {
       case 'orderStatus':
         enumObj = OrderStatus;
+        break;
+      case 'productStatus':
+        enumObj = ProductStatus;
         break;
       case 'productType':
         enumObj = ProductType;

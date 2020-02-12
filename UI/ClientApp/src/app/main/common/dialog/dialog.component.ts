@@ -13,7 +13,7 @@ export class DialogComponent implements OnInit {
 
   @Output() buttonClicked: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild('filtersForm', {static: false}) filtersForm: FormComponent;
+  @ViewChild('dialogForm', {static: false}) dialogForm: FormComponent;
 
   constructor(public dialogRef: MatDialogRef<DialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
     this.rows = data.dynamic.filters;
@@ -31,6 +31,10 @@ export class DialogComponent implements OnInit {
   }
 
   getFormValues() {
-    return this.filtersForm.getFormValues();
+    return this.dialogForm.getFormValues();
+  }
+
+  getInOrder(a, b) {
+    return a.order > b.order ? a : b;
   }
 }

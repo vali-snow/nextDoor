@@ -1,12 +1,12 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content>
-  <app-form #filtersForm [rows]="rows"></app-form>
+  <app-form #dialogForm [rows]="rows"></app-form>
 </div>
 <div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between stretch">
   <div fxFlex fxLayout="row">
-    <button mat-button *ngFor="let button of buttons" (click)="onClick(button.key)">
-      <mat-icon *ngIf="button.icon">{{button.icon}}</mat-icon>
-      {{button.label}}
+    <button mat-button *ngFor="let button of buttons| keyvalue: getInOrder" [disabled]="button.value.disabled" (click)="onClick(button.key)">
+      <mat-icon *ngIf="button.value.icon">{{button.value.icon}}</mat-icon>
+      {{button.value.label}}
     </button>
   </div>
   <button mat-button (click)="onClose()">
