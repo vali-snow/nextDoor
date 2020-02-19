@@ -107,8 +107,14 @@ export class ProductDetailComponent implements OnInit {
           icon: 'edit',
           disabled: false,
         },
-        remove: {
+        copy: {
           order: 3,
+          label: 'Copy',
+          icon: 'file_copy',
+          disabled: false
+        },
+        remove: {
+          order: 4,
           label: 'Remove',
           icon: 'remove_circle',
           disabled: false,
@@ -145,7 +151,11 @@ export class ProductDetailComponent implements OnInit {
             description: this.initial.description
           });
         }
+        this.buttons['copy'].disabled = this.editable;
         this.buttons['save'].disabled = !this.editable;
+        break;
+      case 'copy':
+        this.products.addProductPopup(this.product);
         break;
       case 'remove':
         this.products.removeProduct(this.product.Id).subscribe(

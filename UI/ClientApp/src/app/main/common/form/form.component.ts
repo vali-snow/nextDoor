@@ -17,8 +17,15 @@ export class FormComponent implements OnInit {
     const formGroup = {};
     this.rows.forEach((row: any[]) => {
       Object.keys(row).forEach((key: string) => {
-        if (row[key].type !== 'placeholder') {
-          formGroup[key] = new FormControl(row[key].value || '', this.getValidators(row[key].validation));
+        switch (key) {
+          case 'placeholder':
+            break;
+          case 'select':
+            formGroup[key] = new FormControl(row[key].value || '', this.getValidators(row[key].validation));
+            break;
+          default:
+            formGroup[key] = new FormControl(row[key].value || '', this.getValidators(row[key].validation));
+            break;
         }
       });
       this.formRows.push(Object.keys(row).map(key => {
@@ -61,4 +68,8 @@ export class FormComponent implements OnInit {
     }
     return null;
   }
+
+  // onCompareWith(o1: any, o2: any): boolean {
+  //   return o1.des === o2.des;
+  // }
 }
