@@ -7,10 +7,13 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class Image9Component implements OnInit {
 
-  @Input() images;
+  @Input() images: [];
   constructor() { }
 
   ngOnInit() {
   }
 
+  onRemoveImage(index: number) {
+    this.images.splice(index, 1);
+  }
 }

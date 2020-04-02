@@ -2,3 +2,21 @@ img {
   height:100%;
   width:100%;
 }
+
+.imgContainer {
+  position: relative;
+  height:100%;
+  width:100%;
+}
+
+.imgContainer button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  cursor: pointer;
+  color: lightsalmon;
+}
+
+.imgContainer button:hover {
+  color: red;
+}
