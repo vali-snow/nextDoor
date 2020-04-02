@@ -68,8 +68,4 @@ export class FormComponent implements OnInit {
     }
     return null;
   }
-
-  // onCompareWith(o1: any, o2: any): boolean {
-  //   return o1.des === o2.des;
-  // }
 }

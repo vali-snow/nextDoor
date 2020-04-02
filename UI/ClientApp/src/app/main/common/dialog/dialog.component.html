@@ -1,6 +1,13 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content>
-  <app-form #dialogForm [rows]="rows"></app-form>
+  <mat-grid-list cols="4">
+    <mat-grid-tile [colspan] = 1>
+
+    </mat-grid-tile>
+    <mat-grid-tile [colspan] = 3>
+      <app-form #dialogForm [rows]="rows"></app-form>
+    </mat-grid-tile>
+  </mat-grid-list>
 </div>
 <div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between stretch">
   <div fxFlex fxLayout="row">
