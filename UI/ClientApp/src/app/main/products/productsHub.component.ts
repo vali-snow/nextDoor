@@ -3,6 +3,7 @@ import { EnumService } from 'src/app/core/service/enum.service';
 import { ProductsService } from './products.service';
 import { ProductFilters } from 'src/models/filters/product.filters.model';
 import { FilterModel } from 'src/models/filters/filter.model';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: './productsHub.component.html',
@@ -19,7 +20,7 @@ export class ProductsHubComponent implements OnInit {
     }
   };
 
-  constructor(private products: ProductsService, private enums: EnumService) { }
+  constructor(private products: ProductsService, private enums: EnumService, private router: Router) { }
 
   ngOnInit() {
     const filters = {
@@ -57,11 +58,7 @@ export class ProductsHubComponent implements OnInit {
     );
   }
 
-  onFilterClearClick(id: string) {
-    alert(id);
-  }
-
   onProductDetailClick(id: string) {
-    alert(id);
+    this.router.navigate(['main/product-detail', id]);
   }
 }
