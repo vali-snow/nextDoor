@@ -22,10 +22,12 @@ export class ProductDetailComponent implements OnInit {
     description: string
   };
 
+  private backURL: string;
+
   @ViewChild('filtersForm', { static: false }) filtersForm: FormComponent;
   constructor(private route: ActivatedRoute, private products: ProductsService, private enums: EnumService, private router: Router,
               private toastr: ToastrService) {
-
+    this.backURL = this.router.getCurrentNavigation().extras.state.backURL;
   }
 
   ngOnInit() {
@@ -170,7 +172,7 @@ export class ProductDetailComponent implements OnInit {
         );
         break;
       case 'back':
-        this.router.navigate(['main/products-all']);
+        this.router.navigate([this.backURL]);
         break;
       default:
         break;

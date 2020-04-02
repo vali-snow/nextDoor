@@ -61,7 +61,7 @@ export class ProductsAllComponent implements OnInit {
   }
 
   onProductDetailClick(id: string) {
-    this.router.navigate(['main/product-detail', id]);
+    this.router.navigate(['main/product-detail', id], {state: {backURL: 'main/products-all'}});
   }
 
   onProductOrderClick(id: string) {

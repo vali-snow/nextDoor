@@ -59,6 +59,6 @@ export class ProductsHubComponent implements OnInit {
   }
 
   onProductDetailClick(id: string) {
-    this.router.navigate(['main/product-detail', id]);
+    this.router.navigate(['main/product-detail', id], {state: {backURL: 'main/products-shop'}});
   }
 }
