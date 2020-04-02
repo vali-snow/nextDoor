@@ -10,6 +10,7 @@ import { FormComponent } from '../form/form.component';
 export class DialogComponent implements OnInit {
   rows = [];
   buttons = [];
+  images = [];
 
   @Output() buttonClicked: EventEmitter<any> = new EventEmitter();
 
@@ -36,5 +37,17 @@ export class DialogComponent implements OnInit {
 
   getInOrder(a, b) {
     return a.order > b.order ? a : b;
+  }
+
+  onSelectFile(event) {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+
+      reader.readAsDataURL(event.target.files[0]);
+
+      reader.onload = () => {
+        this.images.push(reader.result);
+      };
+    }
   }
 }

@@ -17,6 +17,7 @@ import { ProductDetailComponent } from './products/product-detail/product-detail
 import { OrderDetailComponent } from './orders/order-detail/order-detail.component';
 import { ProductDetailResolver } from './products/product-detail/product-detail.resolver';
 import { ProductsService } from './products/products.service';
+import { Image9Component } from './common/image9/image9.component';
 
 const routes: Routes = [
   {
@@ -46,7 +47,8 @@ const routes: Routes = [
     DialogComponent,
     FormComponent,
     ProductDetailComponent,
-    OrderDetailComponent
+    OrderDetailComponent,
+    Image9Component
   ],
   imports: [
     CommonModule,

@@ -1,19 +1,24 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
-<div mat-dialog-content>
-  <mat-grid-list cols="4">
-    <mat-grid-tile [colspan] = 1>
-
-    </mat-grid-tile>
-    <mat-grid-tile [colspan] = 3>
-      <app-form #dialogForm [rows]="rows"></app-form>
-    </mat-grid-tile>
-  </mat-grid-list>
+<div mat-dialog-content fxLayout="row" fxLayoutAlign="space-between stretch" fxLayoutGap="20px">
+  <div [ngSwitch]="images.length" class="square">
+    <div *ngSwitchCase="0" fxLayout="row" fxLayoutAlign="center center" class="percent100">
+      <mat-icon class="sizex4">cloud</mat-icon>
+    </div>
+    <app-image9 *ngSwitchDefault [(images)]="images"></app-image9>
+  </div>
+  <app-form fxFlex #dialogForm [rows]="rows"></app-form>
 </div>
 <div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between stretch">
   <div fxFlex fxLayout="row">
-    <button mat-button *ngFor="let button of buttons| keyvalue: getInOrder" [disabled]="button.value.disabled" (click)="onClick(button.key)">
+    <button mat-button *ngFor="let button of buttons| keyvalue: getInOrder" [disabled]="button.value.disabled"
+      (click)="onClick(button.key)">
       <mat-icon *ngIf="button.value.icon">{{button.value.icon}}</mat-icon>
       {{button.value.label}}
+    </button>
+    <button mat-button [disabled]="images.length>=9"(click)="fileInput.click()">
+      <mat-icon>cloud</mat-icon>
+      Upload Image
+      <input #fileInput type="file" (change)="onSelectFile($event)" style="display:none;"/>
     </button>
   </div>
   <button mat-button (click)="onClose()">
