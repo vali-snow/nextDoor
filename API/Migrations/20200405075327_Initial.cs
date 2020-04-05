@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -178,6 +178,26 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ImageDetails",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    Image = table.Column<byte[]>(nullable: true),
+                    ProductId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImageDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ImageDetails_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
@@ -248,6 +268,11 @@ namespace API.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ImageDetails_ProductId",
+                table: "ImageDetails",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_DeliverToUserId",
                 table: "Orders",
                 column: "DeliverToUserId");
@@ -279,6 +304,9 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "ImageDetails");
 
             migrationBuilder.DropTable(
                 name: "Orders");

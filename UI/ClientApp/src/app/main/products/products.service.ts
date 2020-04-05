@@ -37,8 +37,13 @@ export class ProductsService {
     return this.http.get<Product[]>('https://localhost:44377/api/Products/', { params: params }).pipe(single());
   }
 
-  saveProduct(product: Product) {
-    return this.http.post<Product>('https://localhost:44377/api/Products/', product).pipe(single());
+  saveProduct(product: Product, images?: File[]) {
+    const formData = new FormData();
+    formData.append('product', JSON.stringify(product));
+    for (const image of images) {
+      formData.append(image.name, image);
+    }
+    return this.http.post<Product>('https://localhost:44377/api/Products/', formData).pipe(single());
   }
 
   removeProduct(id: string) {
@@ -127,6 +132,7 @@ export class ProductsService {
         switch (buttonKey) {
           case 'add':
             const values = newProductDialogRef.componentInstance.getFormValues();
+            const images = newProductDialogRef.componentInstance.getImages();
             const prod = {
               Status: ProductStatus.Listed,
               Name: values['name'],
@@ -134,7 +140,7 @@ export class ProductsService {
               Type: Number(values['productType']),
               Quantity: Number(values['quantity'])
             } as Product;
-            this.saveProduct(prod).subscribe(
+            this.saveProduct(prod, images).subscribe(
               () => {
                 newProductDialogRef.close();
                 this.toastr.success('Save successful', 'Product added successful');

@@ -7,7 +7,10 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class Image9Component implements OnInit {
 
-  @Input() images: [];
+  @Input() images: {
+    imgURL: string | ArrayBuffer,
+    file: File
+  }[];
   constructor() { }
 
   ngOnInit() {

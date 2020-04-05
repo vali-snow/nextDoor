@@ -1,5 +1,6 @@
 ﻿using API.Models.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace API.Models
 {
@@ -12,5 +13,6 @@ namespace API.Models
         public ProductType Type { get; set; }
         public int Quantity { get; set; }
         public User Owner { get; set; }
+        public ICollection<ImageDetail> Images { get; set; }
     }
 }

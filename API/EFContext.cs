@@ -8,6 +8,7 @@ namespace API
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<ImageDetail> ImageDetails { get; set; }
         public EFContext(DbContextOptions options) : base(options)
         {
         }      

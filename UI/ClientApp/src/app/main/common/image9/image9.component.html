@@ -1,7 +1,7 @@
 <mat-grid-list cols="3" gutterSize="10px">
   <mat-grid-tile *ngFor="let image of images | keyvalue">
     <div class="imgContainer">
-      <img [src]="image.value">
+      <img [src]="image.value.imgURL">
       <button mat-icon-button (click)="onRemoveImage(image.key)">
         <mat-icon>remove_circle_outline</mat-icon>
       </button>

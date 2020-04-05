@@ -10,6 +10,8 @@ using System.Security.Claims;
 using API.Models;
 using API.Models.Filters;
 using API.Models.Enums;
+using System.Text.Json;
+using System.IO;
 
 namespace API.Controllers
 {
@@ -30,8 +32,10 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(Guid id)
         {
-            return await context.Products.Include(p => p.Owner)
+            return await context.Products
                 .Where(p => p.Id == id)
+                .Include(p => p.Owner)
+                .Include(p => p.Images)
                 .FirstOrDefaultAsync();
         }
 
@@ -40,20 +44,24 @@ namespace API.Controllers
         {
             var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
 
-            return await context.Products.Include(p => p.Owner)
+            return await context.Products
                 .Where(p => p.Status == ProductStatus.Listed)
-                .Where(p => filters.IsOwner == null || p.Owner.Id == user.Id)
                 .Where(p => filters.Search == null || p.Name.ToLower().Contains(filters.Search.ToLower()) || p.Description.ToLower().Contains(filters.Search.ToLower()))
                 .Where(p => filters.ProductType == null || p.Type == filters.ProductType)
+                .Include(p => p.Owner)
+                .Where(p => filters.IsOwner == null || p.Owner.Id == user.Id)
+                .Include(p => p.Images)
                 .ToListAsync();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<Product>> PostProduct()
         {
             try
             {
+                var form = Request.Form;
                 var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+                var product = JsonSerializer.Deserialize<Product>(form["product"]);
 
                 if (ProductExists(product.Id))
                 {
@@ -63,6 +71,18 @@ namespace API.Controllers
                 {
                     product.Owner = user;
                     context.Products.Add(product);
+                }
+                using (var memoryStream = new MemoryStream())
+                {
+                    foreach (var file in form.Files)
+                    {
+                        await file.CopyToAsync(memoryStream);
+                        context.ImageDetails.Add(new ImageDetail {
+                            ProductId = product.Id,
+                            Description = file.FileName,
+                            Image = memoryStream.ToArray()
+                        });
+                    }
                 }
                 await context.SaveChangesAsync();
                 return CreatedAtAction("GetProduct", new { id = product.Id }, product);
