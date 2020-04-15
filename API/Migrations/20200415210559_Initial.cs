@@ -183,6 +183,7 @@ namespace API.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Description = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true),
                     Image = table.Column<byte[]>(nullable: true),
                     ProductId = table.Column<Guid>(nullable: false)
                 },

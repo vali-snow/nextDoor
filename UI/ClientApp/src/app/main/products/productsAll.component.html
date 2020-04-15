@@ -23,7 +23,13 @@
                 </div>
               </mat-card-subtitle>
             </mat-card-header>
-            <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg">
+            <div [ngSwitch]="product.Images.length" class="imgContainer">
+              <div *ngSwitchCase="0" fxLayout="row" fxLayoutAlign="center center" class="percent100">
+                <mat-icon class="sizex4">cloud_off</mat-icon>
+              </div>
+              <img *ngSwitchDefault mat-card-image src="{{onGetSafeLogoURL(product)}}">
+            </div>
+            <!-- <img class="cardImg" *ngIf="product.Images.length > 0" mat-card-image src="{{onGetSafeLogoURL(product)}}"> -->
             <mat-card-content fxFlex class="overflow">
               <b>Description:</b> {{product.Description}}
             </mat-card-content>

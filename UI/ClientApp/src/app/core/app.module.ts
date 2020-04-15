@@ -12,12 +12,20 @@ import { AppComponent } from './component/app.component';
 import { AccessGuard } from './guard/access.guard';
 import { AuthInterceptor } from '../auth/auth.interceptor';
 
-
-
 const routes: Routes = [
-  { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
-  { path: 'auth', loadChildren: () => import('../auth/auth.module').then(m => m.AuthModule) },
-  { path: 'main', loadChildren: () => import('../main/main.module').then(m => m.MainModule), data: { requiresLogin: true }, canActivate: [AccessGuard] }
+  {
+    path: '', redirectTo: '/auth/login', pathMatch: 'full'
+  },
+  {
+    path: 'auth',
+    loadChildren: () => import('../auth/auth.module').then(m => m.AuthModule)
+  },
+  {
+    path: 'main',
+    loadChildren: () => import('../main/main.module').then(m => m.MainModule),
+    data: { requiresLogin: true },
+    canActivate: [AccessGuard]
+  }
   // { path: '**', component: NotFoundComponent }
 ];
 

@@ -40,3 +40,39 @@ mat-card-content > div {
 :host ::ng-deep .mat-form-field-wrapper{
   margin-bottom: -1.25em;
 }
+
+.mat-card-header .mat-card-title .mat-card-subtitle {
+  margin: 0px;
+}
+
+.mat-card-image:first-child {
+  margin-top: 0px;
+}
+
+.imgContainer{
+  margin: 8px 0px;
+  max-height: 166px;
+  height: 166px;
+  min-height: 166px;
+  box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.75);
+}
+
+.mat-card-content {
+  margin-bottom: 0px;
+}
+
+.mat-card-image {
+  object-fit: cover;
+  margin: 0px;
+  height: inherit;
+  width: 100%;
+}
+
+.sizex4{
+  transform: scale(4);
+}
+
+.percent100{
+  height:100%;
+  width:100%;
+}

@@ -80,6 +80,7 @@ namespace API.Controllers
                         context.ImageDetails.Add(new ImageDetail {
                             ProductId = product.Id,
                             Description = file.FileName,
+                            Type = file.ContentType,
                             Image = memoryStream.ToArray()
                         });
                     }

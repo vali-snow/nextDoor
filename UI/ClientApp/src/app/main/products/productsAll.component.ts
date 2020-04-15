@@ -67,4 +67,8 @@ export class ProductsAllComponent implements OnInit {
   onProductOrderClick(id: string) {
     alert(id);
   }
+
+  onGetSafeLogoURL(prod: Product): string {
+    return this.products.getSafeLogoURL(prod);
+  }
 }
