@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/models/product.model';
 import { FormComponent } from '../../common/form/form.component';
 import { ToastrService } from 'ngx-toastr';
+import { ImageDetail } from 'src/models/imagedetail.model';
 
 @Component({
   selector: 'app-product-detail',
@@ -22,12 +23,15 @@ export class ProductDetailComponent implements OnInit {
     description: string
   };
 
-  private backURL: string;
+  private backURL = 'main/dash';
 
   @ViewChild('filtersForm', { static: false }) filtersForm: FormComponent;
   constructor(private route: ActivatedRoute, private products: ProductsService, private enums: EnumService, private router: Router,
               private toastr: ToastrService) {
-    this.backURL = this.router.getCurrentNavigation().extras.state.backURL;
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation && navigation.extras && navigation.extras.state && navigation.extras.state.backURL) {
+      this.backURL = this.router.getCurrentNavigation().extras.state.backURL;
+    }
   }
 
   ngOnInit() {

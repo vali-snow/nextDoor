@@ -2,17 +2,3 @@ app-form {
   height: 100%;
   width: 100%;
 }
-
-.sizex4{
-  transform: scale(4);
-}
-
-.percent100{
-  height:100%;
-  width:100%;
-}
-
-.square{
-  height:20vw;
-  width:20vw;
-}

@@ -1,78 +1,47 @@
-.title {
-  font-size: 20px;
-}
-
-.subtitle {
-  font-size: 12px;
-}
 .height100 {
   height: 100%;
 }
 
-.hoverHand{
+.content {
+  overflow: auto;
+  padding: 5px 0px 0px 0px;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+}
+
+.titleRow {
+  font-size: 1.5em;
+}
+.subtitleRow {
+  font-size: 1.1em;
+}
+
+.imageRow {
+  height: 100px;
+  border-radius: 7.5px;
+  background-color: rgba(0,0,0,.87);
+}
+
+.imageIcon {
+  color: #fafafa;
+  transform: scale(3.5);
+}
+
+.imageRow img {
+  border-radius: 7.5px;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.imageRow img:hover{
   cursor: pointer;
 }
 
-.width100 {
-  width: 100%;
-}
-
-.header {
-  padding: 0px 50px;
-}
-
-form p {
-  margin: auto 0;
-}
-
-.gridList {
-  padding: 5px 0px;
-}
-
-.overflow {
+.descriptionRow {
   overflow: auto;
-}
-
-mat-card-content > div {
-  height: 24px;
-}
-
-:host ::ng-deep .mat-form-field-wrapper{
-  margin-bottom: -1.25em;
-}
-
-.mat-card-header .mat-card-title .mat-card-subtitle {
-  margin: 0px;
-}
-
-.mat-card-image:first-child {
-  margin-top: 0px;
-}
-
-.imgContainer{
-  margin: 8px 0px;
-  max-height: 166px;
-  height: 166px;
-  min-height: 166px;
-  box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.75);
-}
-
-.mat-card-content {
-  margin-bottom: 0px;
-}
-
-.mat-card-image {
-  object-fit: cover;
-  margin: 0px;
-  height: inherit;
-  width: 100%;
-}
-
-.sizex4{
-  transform: scale(4);
-}
-
-.percent100{
-  height:100%;
-  width:100%;
 }

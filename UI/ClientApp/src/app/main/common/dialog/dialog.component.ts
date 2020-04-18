@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormComponent } from '../form/form.component';
-import { ImageDetail } from 'src/models/imagedetail.model';
 
 @Component({
   selector: 'app-dialog',
@@ -12,9 +11,12 @@ export class DialogComponent implements OnInit {
   rows = [];
   buttons = [];
   images: {
-    imgURL: string | ArrayBuffer,
-    file: File
-  }[] = [];
+    imgURL: (string | ArrayBuffer) [],
+    file: File[]
+  } = {
+    imgURL: [],
+    file: []
+  };
 
   @Output() buttonClicked: EventEmitter<any> = new EventEmitter();
 
@@ -40,7 +42,7 @@ export class DialogComponent implements OnInit {
   }
 
   getImages() {
-    return this.images.map(i => i.file);
+    return this.images.file;
   }
 
   getInOrder(a, b) {
@@ -52,11 +54,14 @@ export class DialogComponent implements OnInit {
       const reader = new FileReader();
       reader.readAsDataURL(event.target.files[0]);
       reader.onload = () => {
-        this.images.push({
-          imgURL: reader.result,
-          file: event.target.files[0]
-        });
+        this.images.imgURL.push(reader.result);
+        this.images.file.push(event.target.files[0]);
       };
     }
+  }
+
+  onRemoveImage(index: number) {
+    this.images.imgURL.splice(index, 1);
+    this.images.file.splice(index, 1);
   }
 }

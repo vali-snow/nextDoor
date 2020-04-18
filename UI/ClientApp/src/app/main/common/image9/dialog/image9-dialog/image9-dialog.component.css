@@ -1,0 +1,14 @@
+.imgContainer {
+  object-fit: contain;
+  height: 700px;
+  width: 700px;
+}
+
+.imgContainer > img {
+  height: 100%;
+  width: 100%;
+}
+
+mat-icon:hover{
+  cursor: pointer;
+}

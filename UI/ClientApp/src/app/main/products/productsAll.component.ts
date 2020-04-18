@@ -6,6 +6,7 @@ import { ProductFilters } from 'src/models/filters/product.filters.model';
 import { MatDialog } from '@angular/material';
 import { Product } from 'src/models/product.model';
 import { Router } from '@angular/router';
+import { Image9DialogComponent } from '../common/image9/dialog/image9-dialog/image9-dialog.component';
 
 @Component({
   templateUrl: './productsAll.component.html',
@@ -70,5 +71,16 @@ export class ProductsAllComponent implements OnInit {
 
   onGetSafeLogoURL(prod: Product): string {
     return this.products.getSafeLogoURL(prod);
+  }
+
+  onImageClick(product: Product) {
+    const images = this.products.getProductImages(product);
+    this.dialog.open(Image9DialogComponent, {
+      width: '806px',
+      data: {
+        images: images,
+        index: 0
+      }
+    });
   }
 }

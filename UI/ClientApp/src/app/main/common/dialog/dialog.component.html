@@ -1,11 +1,10 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content fxLayout="row" fxLayoutAlign="space-between stretch" fxLayoutGap="20px">
-  <div [ngSwitch]="images.length" class="square">
-    <div *ngSwitchCase="0" fxLayout="row" fxLayoutAlign="center center" class="percent100">
-      <mat-icon class="sizex4">cloud_off</mat-icon>
-    </div>
-    <app-image9 *ngSwitchDefault [(images)]="images"></app-image9>
-  </div>
+  <app-image9
+    [isEditable]=true
+    [(images)]="images.imgURL"
+    (removeImage)="onRemoveImage(index)">
+  </app-image9>
   <app-form fxFlex #dialogForm [rows]="rows"></app-form>
 </div>
 <div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between stretch">

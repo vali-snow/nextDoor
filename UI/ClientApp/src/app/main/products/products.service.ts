@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { EnumService } from 'src/app/core/service/enum.service';
 import { ProductStatus } from 'src/models/enums/product.status.enum';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ImageDetail } from 'src/models/imagedetail.model';
 
 @Injectable({
   providedIn: 'root'
@@ -159,8 +160,16 @@ export class ProductsService {
   }
 
   getSafeLogoURL(prod: Product): string {
-    const unsafeURL = 'data:' + prod.Images[0].Type + ';base64,' + prod.Images[0].Image;
+    return this.getSafeURLFromImageDetail(prod.Images[0]);
+  }
+
+  getSafeURLFromImageDetail(img: ImageDetail): string {
+    const unsafeURL = 'data:' + img.Type + ';base64,' + img.Image;
     const safeURL = this.sanitizer.sanitize(SecurityContext.URL, this.sanitizer.bypassSecurityTrustResourceUrl(unsafeURL));
     return safeURL;
+  }
+
+  getProductImages(product: Product) {
+    return product.Images.map((img: ImageDetail) => this.getSafeURLFromImageDetail(img));
   }
 }

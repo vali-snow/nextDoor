@@ -1,10 +1,16 @@
-<mat-grid-list cols="3" gutterSize="10px">
-  <mat-grid-tile *ngFor="let image of images | keyvalue">
-    <div class="imgContainer">
-      <img [src]="image.value.imgURL">
-      <button mat-icon-button (click)="onRemoveImage(image.key)">
-        <mat-icon>remove_circle_outline</mat-icon>
-      </button>
-    </div>
-  </mat-grid-tile>
-</mat-grid-list>
+<div [ngSwitch]="images.length" class="square">
+  <div *ngSwitchCase="0" fxLayout="row" fxLayoutAlign="center center" class="percent100">
+    <mat-icon class="sizex4">cloud_off</mat-icon>
+  </div>
+  <mat-grid-list cols="3" gutterSize="10px">
+    <mat-grid-tile *ngFor="let image of images | keyvalue">
+      <div class="imgContainer">
+        <img [src]="image.value" (click)="onImageClick(image.key)">
+        <button mat-icon-button [hidden]="isEditable === false" (click)="onRemoveImage(image.key)">
+          <mat-icon>remove_circle_outline</mat-icon>
+        </button>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+
