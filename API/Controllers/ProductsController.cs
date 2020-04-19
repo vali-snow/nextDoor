@@ -71,20 +71,20 @@ namespace API.Controllers
                 {
                     product.Owner = user;
                     context.Products.Add(product);
-                }
-                foreach (var file in form.Files)
-                {
-                    using var memoryStream = new MemoryStream();
-                    await file.CopyToAsync(memoryStream);
-                    context.ImageDetails.Add(new ImageDetail
+                    foreach (var file in form.Files)
                     {
-                        ProductId = product.Id,
-                        Description = file.FileName,
-                        Type = file.ContentType,
-                        Image = memoryStream.ToArray()
-                    });
+                        using var memoryStream = new MemoryStream();
+                        await file.CopyToAsync(memoryStream);
+                        context.ImageDetails.Add(new ImageDetail
+                        {
+                            ProductId = product.Id,
+                            Description = file.FileName,
+                            Type = file.ContentType,
+                            Image = memoryStream.ToArray()
+                        });
+                    }
+                    await context.SaveChangesAsync();
                 }
-                await context.SaveChangesAsync();
                 return CreatedAtAction("GetProduct", new { id = product.Id }, product);
             }
             catch (Exception ex)

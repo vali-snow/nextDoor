@@ -11,6 +11,9 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppComponent } from './component/app.component';
 import { AccessGuard } from './guard/access.guard';
 import { AuthInterceptor } from '../auth/auth.interceptor';
+import { SpinnerComponent } from './spinner/spinner.component';
+import { SpinnerService } from './spinner/spinner.service';
+import { SpinnerInterceptor } from './spinner/spinner.interceptor';
 
 const routes: Routes = [
   {
@@ -32,6 +35,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -49,7 +53,9 @@ const routes: Routes = [
     })
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: SpinnerInterceptor, multi: true },
+    SpinnerService
   ],
   bootstrap: [AppComponent]
 })
