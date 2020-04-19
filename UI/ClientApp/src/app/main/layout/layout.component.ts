@@ -19,7 +19,7 @@ export class LayoutComponent {
 
   @ViewChild('sidenav', { static: false }) sidenav: any;
 
-  constructor(private products: ProductsService) {
+  constructor(private productsService: ProductsService) {
   }
 
   toggleNavbar() {
@@ -43,6 +43,6 @@ export class LayoutComponent {
   }
 
   onProductAdd() {
-    this.products.addProductPopup();
+    this.productsService.addProductPopup();
   }
 }

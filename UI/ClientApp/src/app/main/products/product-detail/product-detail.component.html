@@ -4,7 +4,7 @@
     <div fxFlex="25" [ngSwitch]="product.Images.length">
       <app-image9 fxFlex="25"
         [isEditable]=false
-        [images]="products.getProductImages(product)">
+        [images]="productsService.getProductImages(product)">
       </app-image9>
     </div>
     <app-form fxFlex #filtersForm [rows]="rows"></app-form>

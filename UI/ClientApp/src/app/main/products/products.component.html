@@ -1,14 +1,14 @@
 <div fxLayout="column" class="height100">
   <app-filters [model]="filterModel" (filtersApply)="onFiltersApply($event)"></app-filters>
   <div fxFlex class="content">
-    <div [ngSwitch]="allProducts.length"> 
+    <div [ngSwitch]="products.length"> 
       <mat-grid-list *ngSwitchCase="0" cols="1" rowHeight="10:1" gutterSize="5px">
         <mat-grid-tile>
           Nothing To Show
         </mat-grid-tile>
       </mat-grid-list>
       <mat-grid-list *ngSwitchDefault cols="4" rowHeight="1:1.5" gutterSize="5px">
-        <mat-grid-tile *ngFor="let product of allProducts">
+        <mat-grid-tile *ngFor="let product of products">
           <div class="card">
             <div class="header" fxLayout="column" fxLayoutAlign=" stretch" fxLayoutGap="5px">
               <div class="titleRow" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">

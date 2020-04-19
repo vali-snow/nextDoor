@@ -5,10 +5,10 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class ProductDetailResolver implements Resolve<any> {
-  constructor(private products: ProductsService) {}
+  constructor(private productsService: ProductsService) {}
 
   resolve( route: ActivatedRouteSnapshot): Observable<any>|Promise<any>|any {
     const id = route.paramMap.get('id');
-    return this.products.getProduct(id);
+    return this.productsService.getProduct(id);
   }
 }

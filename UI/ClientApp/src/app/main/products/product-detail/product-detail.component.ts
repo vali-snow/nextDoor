@@ -26,7 +26,7 @@ export class ProductDetailComponent implements OnInit {
   private backURL = 'main/dash';
 
   @ViewChild('filtersForm', { static: false }) filtersForm: FormComponent;
-  constructor(private route: ActivatedRoute, private products: ProductsService, private enums: EnumService, private router: Router,
+  constructor(private route: ActivatedRoute, private productsService: ProductsService, private enums: EnumService, private router: Router,
               private toastr: ToastrService) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state && navigation.extras.state.backURL) {
@@ -133,7 +133,7 @@ export class ProductDetailComponent implements OnInit {
     switch (buttonKey) {
       case 'save':
         this.updateValuesFromForm();
-        this.products.saveProduct(this.product).subscribe(
+        this.productsService.saveProduct(this.product).subscribe(
           (prod: Product) => {
             this.product = prod;
             this.editable = false;
@@ -161,10 +161,10 @@ export class ProductDetailComponent implements OnInit {
         this.buttons['save'].disabled = !this.editable;
         break;
       case 'copy':
-        this.products.addProductPopup(this.product);
+        this.productsService.addProductPopup(this.product);
         break;
       case 'remove':
-        this.products.removeProduct(this.product.Id).subscribe(
+        this.productsService.removeProduct(this.product.Id).subscribe(
           () => {
             this.toastr.success('Delete successful', 'Product delete successful');
             this.router.navigate(['main/products-all']);

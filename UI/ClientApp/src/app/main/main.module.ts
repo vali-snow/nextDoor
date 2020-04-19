@@ -6,8 +6,7 @@ import { DashComponent } from './dash/dash.component';
 import { AppMaterialModule } from '../core/app-material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ProductsAllComponent } from './products/productsAll.component';
-import { ProductsHubComponent } from './products/productsHub.component';
+import { ProductsComponent } from './products/products.component';
 import { OrdersToFulfillComponent } from './orders/ordersToFulfill.component';
 import { OrdersToReceiveComponent } from './orders/ordersToReceive.component';
 import { FiltersComponent } from './common/filters/filters.component';
@@ -19,6 +18,7 @@ import { ProductDetailResolver } from './products/product-detail/product-detail.
 import { ProductsService } from './products/products.service';
 import { Image9Component } from './common/image9/image9.component';
 import { Image9DialogComponent } from './common/image9/dialog/image9-dialog/image9-dialog.component';
+import { ProductsResolver } from './products/products.resolver';
 
 const routes: Routes = [
   {
@@ -26,8 +26,22 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: 'dash', component: DashComponent },
-      { path: 'products-all', component: ProductsAllComponent },
-      { path: 'products-shop', component: ProductsHubComponent },
+      {
+        path: 'products-all', component: ProductsComponent,
+        resolve: { products: ProductsResolver },
+        data: {
+          show: 'all',
+          title: 'All Products'
+        }
+      },
+      {
+        path: 'products-shop', component: ProductsComponent,
+        resolve: { products: ProductsResolver },
+        data: {
+          show: 'mine',
+          title: 'My Products'
+        }
+      },
       { path: 'product-detail/:id', component: ProductDetailComponent, resolve: { product: ProductDetailResolver } },
       { path: 'orders-to-fulfill', component: OrdersToFulfillComponent },
       { path: 'orders-to-receive', component: OrdersToReceiveComponent },
@@ -40,8 +54,7 @@ const routes: Routes = [
   declarations: [
     LayoutComponent,
     DashComponent,
-    ProductsAllComponent,
-    ProductsHubComponent,
+    ProductsComponent,
     OrdersToFulfillComponent,
     OrdersToReceiveComponent,
     FiltersComponent,
@@ -66,6 +79,7 @@ const routes: Routes = [
   ],
   providers: [
     ProductsService,
+    ProductsResolver,
     ProductDetailResolver
   ]
 })
