@@ -35,14 +35,14 @@
             <div fxFlex class="descriptionRow">
               <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                 <div><b>Product:</b> {{order.Product.Name}}</div>
-                <mat-icon class="hoverHand" (click)="onProductDetailClick(order.product.id)">link</mat-icon>
+                <mat-icon (click)="onProductDetailClick(order.Product.Id)">link</mat-icon>
               </div>
               <div><b>Quantity:</b> {{order.Quantity}}</div>
               <div [ngSwitch]="ordersType">
                 <div *ngSwitchCase="'toFulfill'">
                   <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                     <div><b>Contact:</b> {{order.AdditionalDetail.ContactName}}</div>
-                    <mat-icon class="hoverHand" (click)="onUserDetailClick(order.Buyer.Id)">link</mat-icon>
+                    <mat-icon (click)="onUserDetailClick(order.Buyer.Id)">link</mat-icon>
                   </div>
                   <div><b>Phone Number:</b> {{order.AdditionalDetail.ContactPhone}}</div>
                   <div><b>Delivery Address:</b> {{order.AdditionalDetail.ContactAddress}}</div>
@@ -50,7 +50,7 @@
                 <div *ngSwitchCase="'toReceive'">
                   <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
                     <div><b>Seller:</b> {{order.Seller.FirstName}} {{order.Seller.LastName}}</div>
-                    <mat-icon class="hoverHand" (click)="onUserDetailClick(order.Seller.Id)">link</mat-icon>
+                    <mat-icon (click)="onUserDetailClick(order.Seller.Id)">link</mat-icon>
                   </div>
                 </div>
               </div>

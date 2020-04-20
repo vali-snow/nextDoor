@@ -45,3 +45,7 @@
 .descriptionRow {
   overflow: auto;
 }
+
+.descriptionRow mat-icon:hover{
+  cursor: pointer;
+}
