@@ -49,6 +49,20 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrderDetail",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ContactName = table.Column<string>(nullable: true),
+                    ContactPhone = table.Column<string>(nullable: true),
+                    ContactAddress = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderDetail", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -206,18 +220,27 @@ namespace API.Migrations
                     ProductId = table.Column<Guid>(nullable: true),
                     Quantity = table.Column<int>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    DeliverToUserId = table.Column<string>(nullable: true),
-                    DeliverToAddress = table.Column<string>(nullable: true),
-                    DeliverToPhoneNumber = table.Column<string>(nullable: true),
-                    StartDate = table.Column<DateTime>(nullable: false),
-                    EndDate = table.Column<DateTime>(nullable: false)
+                    SellerId = table.Column<string>(nullable: true),
+                    BuyerId = table.Column<string>(nullable: true),
+                    AdditionalDetailId = table.Column<Guid>(nullable: true),
+                    DatePlaced = table.Column<DateTime>(nullable: false),
+                    DateCompleted = table.Column<DateTime>(nullable: true),
+                    DateCancelled = table.Column<DateTime>(nullable: true),
+                    CancelledBy = table.Column<string>(nullable: true),
+                    ReasonCancelled = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_DeliverToUserId",
-                        column: x => x.DeliverToUserId,
+                        name: "FK_Orders_OrderDetail_AdditionalDetailId",
+                        column: x => x.AdditionalDetailId,
+                        principalTable: "OrderDetail",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_BuyerId",
+                        column: x => x.BuyerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -225,6 +248,12 @@ namespace API.Migrations
                         name: "FK_Orders_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_SellerId",
+                        column: x => x.SellerId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -274,14 +303,24 @@ namespace API.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_DeliverToUserId",
+                name: "IX_Orders_AdditionalDetailId",
                 table: "Orders",
-                column: "DeliverToUserId");
+                column: "AdditionalDetailId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_BuyerId",
+                table: "Orders",
+                column: "BuyerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ProductId",
                 table: "Orders",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_SellerId",
+                table: "Orders",
+                column: "SellerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_OwnerId",
@@ -314,6 +353,9 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "OrderDetail");
 
             migrationBuilder.DropTable(
                 name: "Products");

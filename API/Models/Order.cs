@@ -11,10 +11,13 @@ namespace API.Models
         public Product Product { get; set; }
         public int Quantity { get; set; }
         public OrderStatus Status { get; set; }
-        public User DeliverToUser { get; set; }
-        public string DeliverToAddress { get; set; }
-        public string DeliverToPhoneNumber { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public User Seller { get; set; }
+        public User Buyer { get; set; }
+        public OrderDetail AdditionalDetail { get; set;}
+        public DateTime DatePlaced { get; set; }
+        public DateTime? DateCompleted { get; set; }
+        public DateTime? DateCancelled { get; set; }
+        public string? CancelledBy { get; set; }
+        public string? ReasonCancelled { get; set; }
     }
 }

@@ -33,28 +33,31 @@ namespace API.Controllers
             var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
 
             return await context.Orders
-                .Include(o => o.DeliverToUser)
-                .Include(o => o.Product)
-                .ThenInclude(p => p.Owner)
-                .Where(o => filters.OrderType == null ||
-                           (filters.OrderType == OrderType.ToReceive && o.DeliverToUser.Id == user.Id) ||
-                           (filters.OrderType == OrderType.ToFulfill && o.Product.Owner.Id == user.Id))
-                .Where(o => filters.Search == null || o.Product.Name.ToLower().Contains(filters.Search.ToLower()) || o.Product.Description.ToLower().Contains(filters.Search.ToLower()))
                 .Where(o => filters.OrderStatus == null || o.Status == filters.OrderStatus)
+                .Where(o => filters.DateRange == null || (filters.DateRange.Begin < o.DatePlaced && o.DatePlaced < filters.DateRange.End))
+                .Include(o => o.Buyer)
+                .Include(o => o.Seller)
+                .Where(o => filters.OrderType == null ||
+                           (filters.OrderType == OrderType.ToReceive && o.Buyer.Id == user.Id) ||
+                           (filters.OrderType == OrderType.ToFulfill && o.Seller.Id == user.Id))
+                .Include(o => o.Product)
                 .Where(o => filters.ProductType == null || o.Product.Type == filters.ProductType)
-                .Where(o => filters.DateRange == null || (filters.DateRange.Begin < o.StartDate && o.StartDate < filters.DateRange.End))
+                .Where(o => filters.Search == null || o.Product.Name.ToLower().Contains(filters.Search.ToLower()) || o.Product.Description.ToLower().Contains(filters.Search.ToLower()))
+                .Include(o => o.AdditionalDetail)
                 .ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(Guid id)
         {
-            var order = await context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            return order;
+            return await context.Orders
+                .Where(o => o.Id == id)
+                .Include(o => o.Product)
+                .ThenInclude(p => p.Owner)
+                .Include(o => o.Product)
+                .ThenInclude(p => p.Images)
+                .FirstOrDefaultAsync();
         }
+
     }
 }

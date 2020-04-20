@@ -1,18 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { EnumService } from 'src/app/core/service/enum.service';
 import { OrdersService } from './orders.service';
-import { OrderType } from 'src/models/enums/order.type.enum';
-import { OrderFilters } from 'src/models/filters/order.filters.model';
+import { EnumService } from 'src/app/core/service/enum.service';
 import { FilterModel } from 'src/models/filters/filter.model';
+import { OrderFilters } from 'src/models/filters/order.filters.model';
+import { OrderType } from 'src/models/enums/order.type.enum';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Order } from 'src/models/order.model';
 
 @Component({
-  templateUrl: './ordersToFulfill.component.html',
-  styleUrls: ['./ordersToFulfill.component.css']
+  selector: 'app-orders',
+  templateUrl: './orders.component.html',
+  styleUrls: ['./orders.component.css']
 })
-export class OrdersToFulfillComponent implements OnInit {
-  toFulfill = [];
+export class OrdersComponent implements OnInit {
+  ordersType: string = this.route.snapshot.data.show;
+  orders: Order[] = [];
   filterModel: FilterModel = {
-    title: 'Orders To Fulfill',
+    title: this.route.snapshot.data.title,
     description: 'Filter Panel',
     array: {
       search: { label: 'Search', type: 'text', size: 40 },
@@ -22,22 +26,10 @@ export class OrdersToFulfillComponent implements OnInit {
     }
   };
 
-  constructor(private orders: OrdersService, private enums: EnumService) { }
+  constructor(private ordersService: OrdersService, private enums: EnumService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
-    const filters = {
-      orderType: OrderType.ToFulfill,
-      search: null,
-      orderStatus: null,
-      productType: null,
-      dateRange: null
-    } as OrderFilters;
-    this.orders.getOrders(filters).subscribe(
-      (ords: any[]) => {
-        this.toFulfill = [...ords];
-      },
-      (error) => { }
-    );
+    this.orders = this.route.snapshot.data.orders;
   }
 
   onFiltersApply(values: any) {
@@ -65,9 +57,9 @@ export class OrdersToFulfillComponent implements OnInit {
           break;
       }
     });
-    this.orders.getOrders(filters).subscribe(
+    this.ordersService.getOrders(filters).subscribe(
       (ords: any[]) => {
-        this.toFulfill = [...ords];
+        this.orders = [...ords];
       },
       (error) => { }
     );

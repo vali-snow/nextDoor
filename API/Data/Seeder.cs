@@ -69,22 +69,23 @@ namespace API.Data
         {
             if (context.Products.Count() == 0)
             {
-                User user = await userManager.FindByEmailAsync("valens@admin.com");
+                var admin = await userManager.FindByEmailAsync("valens@admin.com");
+                var user1 = await userManager.FindByEmailAsync("bot1@user.com");
+                var user2 = await userManager.FindByEmailAsync("bot2@user.com");
                 var products = new List<Product>()
                 {
-                    new Product() { Status = ProductStatus.Listed, Name = "G1 Name", Description = "G1 Description", Type = ProductType.Good, Owner = user, Quantity = 1 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G2 Name", Description = "G2 Description", Type = ProductType.Good, Owner = user, Quantity = 2 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G3 Name", Description = "G3 Description", Type = ProductType.Good, Owner = user, Quantity = 3 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G4 Name", Description = "G4 Description", Type = ProductType.Good, Owner = user, Quantity = 4 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G5 Name", Description = "G5 Description", Type = ProductType.Good, Owner = user, Quantity = 5 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G6 Name", Description = "G6 Description", Type = ProductType.Good, Owner = user, Quantity = 6 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G7 Name", Description = "G7 Description", Type = ProductType.Good, Owner = user, Quantity = 7 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G8 Name", Description = "G8 Description", Type = ProductType.Good, Owner = user, Quantity = 8 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G9 Name", Description = "G9 Description", Type = ProductType.Good, Owner = user, Quantity = 9 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G10 Name", Description = "G10 Description", Type = ProductType.Good, Owner = user, Quantity = 10 },
-                    new Product() { Status = ProductStatus.Listed, Name = "S1 Name", Description = "S1 Description", Type = ProductType.Service, Owner = user },
-                    new Product() { Status = ProductStatus.Listed, Name = "S2 Name", Description = "S2 Description", Type = ProductType.Service, Owner = user },
-                    new Product() { Status = ProductStatus.Listed, Name = "S3 Name", Description = "S3 Description", Type = ProductType.Service, Owner = user },
+                    new Product() { Status = ProductStatus.Listed, Name = "G1 Name", Description = "G1 Description", Type = ProductType.Good, Owner = admin, Quantity = 1 },
+                    new Product() { Status = ProductStatus.Listed, Name = "G2 Name", Description = "G2 Description", Type = ProductType.Good, Owner = admin, Quantity = 2 },
+                    new Product() { Status = ProductStatus.Listed, Name = "G3 Name", Description = "G3 Description", Type = ProductType.Good, Owner = admin, Quantity = 3 },
+                    new Product() { Status = ProductStatus.Listed, Name = "G4 Name", Description = "G4 Description", Type = ProductType.Good, Owner = user1, Quantity = 4 },
+                    new Product() { Status = ProductStatus.Listed, Name = "G5 Name", Description = "G5 Description", Type = ProductType.Good, Owner = user1, Quantity = 5 },
+                    new Product() { Status = ProductStatus.Listed, Name = "G6 Name", Description = "G6 Description", Type = ProductType.Good, Owner = user1, Quantity = 6 },
+                    new Product() { Status = ProductStatus.Listed, Name = "G7 Name", Description = "G7 Description", Type = ProductType.Good, Owner = user2, Quantity = 7 },
+                    new Product() { Status = ProductStatus.Listed, Name = "G8 Name", Description = "G8 Description", Type = ProductType.Good, Owner = user2, Quantity = 8 },
+                    new Product() { Status = ProductStatus.Listed, Name = "G9 Name", Description = "G9 Description", Type = ProductType.Good, Owner = user2, Quantity = 9 },
+                    new Product() { Status = ProductStatus.Listed, Name = "S1 Name", Description = "S1 Description", Type = ProductType.Service, Owner = admin },
+                    new Product() { Status = ProductStatus.Listed, Name = "S2 Name", Description = "S2 Description", Type = ProductType.Service, Owner = user1 },
+                    new Product() { Status = ProductStatus.Listed, Name = "S3 Name", Description = "S3 Description", Type = ProductType.Service, Owner = user2 },
                 };
                 context.Products.AddRange(products);
                 context.SaveChanges();
@@ -95,29 +96,65 @@ namespace API.Data
         {
             if (context.Orders.Count() == 0)
             {
+                var admin = await userManager.FindByEmailAsync("valens@admin.com");
                 var user1 = await userManager.FindByEmailAsync("bot1@user.com");
                 var user2 = await userManager.FindByEmailAsync("bot2@user.com");
 
-                var product1 = context.Products.Where(p1 => p1.Name == "G7 Name").FirstOrDefault();
+                var product1 = context.Products.Where(p1 => p1.Name == "G1 Name").FirstOrDefault();
                 if (product1 != null)
                 {
-                    var orders1 = new List<Order>()
+                    var orders = new List<Order>()
                     {
-                        new Order () { Product = product1, Quantity = 2, Status = OrderStatus.New, DeliverToUser = user1, DeliverToAddress = "Address 1", DeliverToPhoneNumber = "0770111111", StartDate = DateTime.UtcNow },
-                        new Order () { Product = product1, Quantity = 1, Status = OrderStatus.New, DeliverToUser = user2, DeliverToAddress = "Address 2", DeliverToPhoneNumber = "0770222222", StartDate = DateTime.UtcNow }
+                        new Order ()
+                        {
+                            Product = product1, Quantity = 2, Status = OrderStatus.New, Seller = product1.Owner, Buyer = user1, DatePlaced = DateTime.UtcNow,
+                            AdditionalDetail = new OrderDetail { ContactName = "user3", ContactPhone = "0770333333", ContactAddress = "Str. X3" }
+                        },
+                        new Order ()
+                        {
+                            Product = product1, Quantity = 2, Status = OrderStatus.New, Seller = product1.Owner, Buyer = user2, DatePlaced = DateTime.UtcNow,
+                            AdditionalDetail = new OrderDetail { ContactName = "user4", ContactPhone = "0770444444", ContactAddress = "Str. X4" }
+                        },
                     };
-                    context.Orders.AddRange(orders1);
+                    context.Orders.AddRange(orders);
                 }
 
-                var product2 = context.Products.Where(p1 => p1.Name == "S1 Name").FirstOrDefault();
+                var product2 = context.Products.Where(p1 => p1.Name == "G4 Name").FirstOrDefault();
                 if (product2 != null)
                 {
-                    var orders2 = new List<Order>()
+                    var orders = new List<Order>()
                     {
-                        new Order () { Product = product2, Quantity = 1, Status = OrderStatus.New, DeliverToUser = user1, DeliverToAddress = "Address 1", DeliverToPhoneNumber = "0770111111", StartDate = DateTime.UtcNow },
-                        new Order () { Product = product2, Quantity = 1, Status = OrderStatus.New, DeliverToUser = user2, DeliverToAddress = "Address 2", DeliverToPhoneNumber = "0770222222", StartDate = DateTime.UtcNow }
+                        new Order ()
+                        {
+                            Product = product2, Quantity = 2, Status = OrderStatus.New, Seller = product2.Owner, Buyer = admin, DatePlaced = DateTime.UtcNow,
+                            AdditionalDetail = new OrderDetail { ContactName = "admin", ContactPhone = "0770777777", ContactAddress = "Str. X7" }
+                        },
+                        new Order ()
+                        {
+                            Product = product2, Quantity = 2, Status = OrderStatus.New, Seller = product2.Owner, Buyer = user2, DatePlaced = DateTime.UtcNow,
+                            AdditionalDetail = new OrderDetail { ContactName = "user4", ContactPhone = "0770444444", ContactAddress = "Str. X4" }
+                        },
                     };
-                    context.Orders.AddRange(orders2);
+                    context.Orders.AddRange(orders);
+                }
+
+                var product3 = context.Products.Where(p1 => p1.Name == "G7 Name").FirstOrDefault();
+                if (product3 != null)
+                {
+                    var orders = new List<Order>()
+                    {
+                        new Order ()
+                        {
+                            Product = product3, Quantity = 2, Status = OrderStatus.New, Seller = product3.Owner, Buyer = admin, DatePlaced = DateTime.UtcNow,
+                            AdditionalDetail = new OrderDetail { ContactName = "admin", ContactPhone = "0770777777", ContactAddress = "Str. X7" }
+                        },
+                        new Order ()
+                        {
+                            Product = product3, Quantity = 2, Status = OrderStatus.New, Seller = product3.Owner, Buyer = user2, DatePlaced = DateTime.UtcNow,
+                            AdditionalDetail = new OrderDetail { ContactName = "user3", ContactPhone = "0770333333", ContactAddress = "Str. X3" }
+                        },
+                    };
+                    context.Orders.AddRange(orders);
                 }
 
                 context.SaveChanges();

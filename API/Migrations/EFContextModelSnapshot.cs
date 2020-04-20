@@ -50,16 +50,22 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("DeliverToAddress")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("AdditionalDetailId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("DeliverToPhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DeliverToUserId")
+                    b.Property<string>("BuyerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<string>("CancelledBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateCancelled")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateCompleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DatePlaced")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("ProductId")
@@ -68,19 +74,46 @@ namespace API.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("ReasonCancelled")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SellerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DeliverToUserId");
+                    b.HasIndex("AdditionalDetailId");
+
+                    b.HasIndex("BuyerId");
 
                     b.HasIndex("ProductId");
 
+                    b.HasIndex("SellerId");
+
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("API.Models.OrderDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContactAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactPhone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderDetail");
                 });
 
             modelBuilder.Entity("API.Models.Product", b =>
@@ -327,13 +360,21 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Order", b =>
                 {
-                    b.HasOne("API.Models.User", "DeliverToUser")
+                    b.HasOne("API.Models.OrderDetail", "AdditionalDetail")
                         .WithMany()
-                        .HasForeignKey("DeliverToUserId");
+                        .HasForeignKey("AdditionalDetailId");
+
+                    b.HasOne("API.Models.User", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId");
 
                     b.HasOne("API.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId");
+
+                    b.HasOne("API.Models.User", "Seller")
+                        .WithMany()
+                        .HasForeignKey("SellerId");
                 });
 
             modelBuilder.Entity("API.Models.Product", b =>

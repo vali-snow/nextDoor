@@ -1,0 +1,81 @@
+<div fxLayout="column" class="height100">
+  <app-filters [model]="filterModel" (filtersApply)="onFiltersApply($event)"></app-filters>
+  <div fxFlex class="content">
+    <div [ngSwitch]="orders.length">
+      <mat-grid-list *ngSwitchCase="0" cols="1" rowHeight="10:1" gutterSize="5px">
+        <mat-grid-tile>
+          Nothing To Show
+        </mat-grid-tile>
+      </mat-grid-list>
+      <mat-grid-list *ngSwitchDefault cols="4" rowHeight="1:1.1" gutterSize="5px">
+        <mat-grid-tile *ngFor="let order of orders">
+          <div class="card" fxLayout="column" fxLayoutAlign=" stretch" fxLayoutGap="5px">
+            <div class="titleRow" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+              <mat-icon>shopping_basket</mat-icon>
+              <div>{{order.Product.Name}}</div>
+            </div>
+            <div class="subtitleRow" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+              <div fxFlex>
+                <b matTooltip="Status" matTooltipPosition="after">S:</b>
+                {{enums.typeToString('orderStatus', order.Status)}}
+              </div>
+              <div fxFlex>
+                <b matTooltip="Type" matTooltipPosition="after">T:</b>
+                {{enums.typeToString('productType', order.Product.Type)}}
+              </div>
+              <div fxFlex>
+                <b matTooltip="Date" matTooltipPosition="after">D:</b> {{order.DatePlaced | date: 'mediumDate'}}
+              </div>
+            </div>
+            <div class="imageRow" fxLayout="row" fxLayoutAlign="center center"
+              [ngSwitch]="order.AdditionalDetail.ProductImage">
+              <mat-icon *ngSwitchCase="" class="imageIcon">panorama</mat-icon>
+              <img *ngSwitchDefault src="{{onGetSafeLogoURL(order.AdditionalDetail.ProductImage)}}">
+            </div>
+            <div fxFlex class="descriptionRow">
+              <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                <div><b>Product:</b> {{order.Product.Name}}</div>
+                <mat-icon class="hoverHand" (click)="onProductDetailClick(order.product.id)">link</mat-icon>
+              </div>
+              <div><b>Quantity:</b> {{order.Quantity}}</div>
+              <div [ngSwitch]="ordersType">
+                <div *ngSwitchCase="'toFulfill'">
+                  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                    <div><b>Contact:</b> {{order.AdditionalDetail.ContactName}}</div>
+                    <mat-icon class="hoverHand" (click)="onUserDetailClick(order.Buyer.Id)">link</mat-icon>
+                  </div>
+                  <div><b>Phone Number:</b> {{order.AdditionalDetail.ContactPhone}}</div>
+                  <div><b>Delivery Address:</b> {{order.AdditionalDetail.ContactAddress}}</div>
+                </div>
+                <div *ngSwitchCase="'toReceive'">
+                  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                    <div><b>Seller:</b> {{order.Seller.FirstName}} {{order.Seller.LastName}}</div>
+                    <mat-icon class="hoverHand" (click)="onUserDetailClick(order.Seller.Id)">link</mat-icon>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="actionRow" fxLayout="row" fxLayoutAlign="space-between center">
+              <button mat-button (click)="onOrderDetailClick(order.Id)">
+                <mat-icon>web_asset</mat-icon>
+                <span>Details</span>
+              </button>
+              <div *ngIf="enums.typeToString('orderStatus', order.Status) === 'New'">
+                <button [ngSwitch]="ordersType" mat-button color="primary" (click)="onOrderCompletedClick(order.Id)">
+                  <mat-icon>done</mat-icon>
+                  <span *ngSwitchCase="'toFulfill'">Delivered</span>
+                  <span *ngSwitchCase="'toReceive'">Received</span>
+                </button>
+                <button mat-button color="warn" (click)="onOrderCancelledClick(order.Id)">
+                  <mat-icon>cancel</mat-icon>
+                  <span>Cancel</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+</div>

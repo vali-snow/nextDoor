@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { OrderFilters } from 'src/models/filters/order.filters.model';
 import { single } from 'rxjs/operators';
+import { Order } from 'src/models/order.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,10 @@ import { single } from 'rxjs/operators';
 export class OrdersService {
 
   constructor(private http: HttpClient) { }
+
+  getOrder(id: string): Observable<Order> {
+    return this.http.get<Order>(`https://localhost:44377/api/Orders/${id}`).pipe(single());
+  }
 
   getOrders(filters?: OrderFilters): Observable<any> {
     let params = new HttpParams();

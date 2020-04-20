@@ -15,7 +15,14 @@ import { Image9DialogComponent } from '../common/image9/dialog/image9-dialog/ima
 export class ProductsComponent implements OnInit {
   products: Product[] = [];
   userId: string;
-  filterModel: FilterModel;
+  filterModel: FilterModel = {
+    title: this.route.snapshot.data.title,
+    description: 'Filter Panel',
+    array: {
+      search: { label: 'Search', type: 'text', size: 80 },
+      productType: { label: 'Product Type', type: 'select', size: 20, options: this.enums.getKeysFromEnum('productType') }
+    }
+  };
 
   constructor(private productsService: ProductsService, private enums: EnumService, public dialog: MatDialog,
     private route: ActivatedRoute, private router: Router) {
@@ -23,15 +30,7 @@ export class ProductsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.filterModel = {
-      title: this.route.snapshot.data.title,
-      description: 'Filter Panel',
-      array: {
-        search: { label: 'Search', type: 'text', size: 80 },
-        productType: { label: 'Product Type', type: 'select', size: 20, options: this.enums.getKeysFromEnum('productType') }
-      }
-    };
-    this.products = this.route.snapshot.data['products'];
+    this.products = this.route.snapshot.data.products;
   }
 
   onFiltersApply(values: any) {
