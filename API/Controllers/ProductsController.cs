@@ -83,8 +83,8 @@ namespace API.Controllers
                             Image = memoryStream.ToArray()
                         });
                     }
-                    await context.SaveChangesAsync();
                 }
+                await context.SaveChangesAsync();
                 return CreatedAtAction("GetProduct", new { id = product.Id }, product);
             }
             catch (Exception ex)

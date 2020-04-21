@@ -40,12 +40,12 @@ export class ProductsService {
     return this.http.get<Product[]>('https://localhost:44377/api/Products/', { params: params }).pipe(single());
   }
 
-  saveProduct(product: Product, images?: File[]) {
+  saveProduct(product: Product, images: File[] = []) {
     const formData = new FormData();
     formData.append('product', JSON.stringify(product));
-    for (const image of images) {
+    images.forEach((image: File) => {
       formData.append(image.name, image);
-    }
+    });
     return this.http.post<Product>('https://localhost:44377/api/Products/', formData).pipe(single());
   }
 
