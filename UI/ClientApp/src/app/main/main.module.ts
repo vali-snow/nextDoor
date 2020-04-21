@@ -15,11 +15,13 @@ import { OrderDetailComponent } from './orders/order-detail/order-detail.compone
 import { ProductDetailResolver } from './products/product-detail/product-detail.resolver';
 import { ProductsService } from './products/products.service';
 import { Image9Component } from './common/image9/image9.component';
-import { Image9DialogComponent } from './common/image9/dialog/image9-dialog/image9-dialog.component';
+import { Image9DialogComponent } from './common/image9/dialog/image9-dialog.component';
 import { ProductsResolver } from './products/products.resolver';
 import { OrdersComponent } from './orders/orders.component';
 import { OrdersResolver } from './orders/orders.resolver';
 import { OrderDetailResolver } from './orders/order-detail/order-detail.resolver';
+import { UserDetailComponent } from './users/user-detail/user-detail.component';
+import { UserDetailResolver } from './users/user-detail/user-detail.resolver';
 
 const routes: Routes = [
   {
@@ -67,6 +69,10 @@ const routes: Routes = [
         path: 'order-detail/:id', component: OrderDetailComponent,
         resolve: { order: OrderDetailResolver }
       },
+      {
+        path: 'user-detail/:id', component: UserDetailComponent,
+        resolve: { user: UserDetailResolver }
+      },
     ]
   }
 ];
@@ -84,6 +90,7 @@ const routes: Routes = [
     Image9Component,
     Image9DialogComponent,
     OrdersComponent,
+    UserDetailComponent,
   ],
   imports: [
     CommonModule,
@@ -102,7 +109,8 @@ const routes: Routes = [
     ProductsResolver,
     ProductDetailResolver,
     OrdersResolver,
-    OrderDetailResolver
+    OrderDetailResolver,
+    UserDetailResolver
   ]
 })
 

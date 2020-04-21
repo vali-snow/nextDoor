@@ -7,7 +7,7 @@
     <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon aria-label="Example home icon">account_box</mat-icon>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>My Profile</button>
+        <button mat-menu-item (click)="onMyProfileClick()">My Profile</button>
         <button mat-menu-item>Logout</button>
       </mat-menu>
     </button>

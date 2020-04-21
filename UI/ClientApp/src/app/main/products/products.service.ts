@@ -58,6 +58,7 @@ export class ProductsService {
       width: '80%',
       data: {
         title: 'Add New Product',
+        withImage: true,
         dynamic: {
           filters: [
             {

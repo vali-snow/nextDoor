@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content fxLayout="row" fxLayoutAlign="space-between stretch" fxLayoutGap="20px">
-  <app-image9
+  <app-image9 *ngIf="withImage===true"
     [isEditable]=true
     [(images)]="images.imgURL"
     (removeImage)="onRemoveImage(index)">

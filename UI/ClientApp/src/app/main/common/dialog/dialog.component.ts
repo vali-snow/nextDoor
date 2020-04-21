@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, Output, EventEmitter, ViewChild, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormComponent } from '../form/form.component';
 
@@ -10,6 +10,7 @@ import { FormComponent } from '../form/form.component';
 export class DialogComponent implements OnInit {
   rows = [];
   buttons = [];
+  withImage = false;
   images: {
     imgURL: (string | ArrayBuffer) [],
     file: File[]
@@ -23,6 +24,7 @@ export class DialogComponent implements OnInit {
   @ViewChild('dialogForm', {static: false}) dialogForm: FormComponent;
 
   constructor(public dialogRef: MatDialogRef<DialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
+    this.withImage = data.withImage;
     this.rows = data.dynamic.filters;
     this.buttons = data.dynamic.buttons;
   }

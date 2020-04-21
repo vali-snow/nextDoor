@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { ProductsService } from '../products/products.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
@@ -19,7 +20,7 @@ export class LayoutComponent {
 
   @ViewChild('sidenav', { static: false }) sidenav: any;
 
-  constructor(private productsService: ProductsService) {
+  constructor(private productsService: ProductsService, private router: Router) {
   }
 
   toggleNavbar() {
@@ -44,5 +45,9 @@ export class LayoutComponent {
 
   onProductAdd() {
     this.productsService.addProductPopup();
+  }
+
+  onMyProfileClick() {
+    this.router.navigate(['main/user-detail', localStorage.getItem('userId')], { state: { backURL: 'main/dash' } });
   }
 }

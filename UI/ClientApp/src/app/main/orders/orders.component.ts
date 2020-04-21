@@ -77,7 +77,14 @@ export class OrdersComponent implements OnInit {
   }
 
   onUserDetailClick(id: string) {
-    alert(id);
+    switch (this.ordersType) {
+      case 'toFulfill':
+        this.router.navigate(['main/user-detail', id], { state: { backURL: 'main/orders-to-fulfill' } });
+        break;
+      case 'toReceive':
+        this.router.navigate(['main/user-detail', id], { state: { backURL: 'main/orders-to-receive' } });
+        break;
+    }
   }
 
   onOrderDetailClick(id: string) {

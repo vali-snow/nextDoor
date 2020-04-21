@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -15,15 +17,32 @@ namespace API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly EFContext context;
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
         private readonly AppSettings appSettings;
 
-        public UserController(UserManager<User> userManager, SignInManager<User> signInManager, IOptions<AppSettings> appSettings)
+        public UserController(EFContext context, UserManager<User> userManager, SignInManager<User> signInManager, IOptions<AppSettings> appSettings)
         {
+            this.context = context;
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.appSettings = appSettings.Value;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> GetUser(string id)
+        {
+            return await context.Users
+                .Where(u => u.Id == id)
+                .Select(u => new User {
+                    Id = u.Id,
+                    FirstName= u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    PhoneNumber = u.PhoneNumber
+                })
+                .FirstOrDefaultAsync();
         }
 
         [HttpPost]
@@ -79,5 +98,7 @@ namespace API.Controllers
                 return Unauthorized();
             }
         }
+
+
     }
 }

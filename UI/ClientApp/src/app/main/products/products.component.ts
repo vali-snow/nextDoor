@@ -6,7 +6,7 @@ import { ProductFilters } from 'src/models/filters/product.filters.model';
 import { MatDialog } from '@angular/material';
 import { Product } from 'src/models/product.model';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Image9DialogComponent } from '../common/image9/dialog/image9-dialog/image9-dialog.component';
+import { Image9DialogComponent } from '../common/image9/dialog/image9-dialog.component';
 
 @Component({
   templateUrl: './products.component.html',

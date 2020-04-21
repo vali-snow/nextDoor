@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { Image9DialogComponent } from './dialog/image9-dialog/image9-dialog.component';
+import { Image9DialogComponent } from './dialog/image9-dialog.component';
 
 @Component({
   selector: 'app-image9',

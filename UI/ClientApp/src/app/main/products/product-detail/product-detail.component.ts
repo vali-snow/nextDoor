@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/models/product.model';
 import { FormComponent } from '../../common/form/form.component';
 import { ToastrService } from 'ngx-toastr';
-import { ImageDetail } from 'src/models/imagedetail.model';
 
 @Component({
   selector: 'app-product-detail',
@@ -35,7 +34,7 @@ export class ProductDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.product = this.route.snapshot.data['product'];
+    this.product = this.route.snapshot.data.product;
     this.backupEditableValues(this.product);
     this.generateFormTemplate(this.product);
     this.generateButtons(this.product);
@@ -136,6 +135,7 @@ export class ProductDetailComponent implements OnInit {
         this.productsService.saveProduct(this.product).subscribe(
           (prod: Product) => {
             this.product = prod;
+            this.backupEditableValues(this.product);
             this.editable = false;
             this.toastr.success('Save successful', 'Product save successful');
           },
