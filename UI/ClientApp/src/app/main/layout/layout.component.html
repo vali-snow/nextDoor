@@ -42,7 +42,7 @@
         </mat-list>
       </mat-list>
     </mat-sidenav>
-    <mat-sidenav-content>
+    <mat-sidenav-content [ngClass]="{'navPadding': toggle.enabled==true}">
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
