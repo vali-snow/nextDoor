@@ -1,7 +1,7 @@
 <form [formGroup]="form">
   <div *ngFor="let row of rows">
     <div fxLayout="row" fxLayoutAlign="space-evenly stretch" fxLayoutGap="10px">
-      <ng-container *ngFor="let filter of row| keyvalue" [ngSwitch]="filter.value.type">
+      <ng-container *ngFor="let filter of row| keyvalue: getInOrder" [ngSwitch]="filter.value.type">
         <div [fxFlex]="filter.value.size">
           <!-- Text -->
           <mat-form-field *ngSwitchCase="'text'">
@@ -13,7 +13,7 @@
           <mat-form-field *ngSwitchCase="'number'">
             <mat-label>{{filter.value.label}}</mat-label>
             <input matInput [formControlName]="filter.key" [id]="filter.key" [type]="filter.value.type"
-              [min]="filter.value.minValue" [readonly]="filter.value.disabled">
+              [min]="filter.value.min" [max]="filter.value.max" [readonly]="filter.value.disabled">
           </mat-form-field>
           <!-- TextArea -->
           <mat-form-field *ngSwitchCase="'textarea'">
@@ -24,7 +24,7 @@
           <!-- Select -->
           <mat-form-field *ngSwitchCase="'select'">
             <mat-label>{{filter.value.label}}</mat-label>
-            <mat-select *ngSwitchCase="'select'" [formControlName]="filter.key">
+            <mat-select *ngSwitchCase="'select'" [formControlName]="filter.key" [disabled]="filter.value.disabled">
               <mat-option *ngFor="let option of filter.value.options" [value]="option.code">
                 {{option.des}}
               </mat-option>
@@ -39,6 +39,8 @@
           </mat-form-field>
           <!-- Placeholder -->
           <div *ngSwitchCase="'placeholder'"></div>
+          <!-- Horizontal Line -->
+          <hr *ngSwitchCase="'horizontalLine'">
           <!-- Errors -->
           <div class="error" *ngIf="form.get(filter.key).invalid && (form.get(filter.key).dirty || form.get(filter.key).touched)">
             <div *ngIf="form.get(filter.key).errors.required">
@@ -46,6 +48,9 @@
             </div>
             <div *ngIf="form.get(filter.key).errors.min">
               {{ filter.value.label }} should be atleast {{filter.value.validation.min}}.
+            </div>
+            <div *ngIf="form.get(filter.key).errors.max">
+              {{ filter.value.label }} should be at most {{filter.value.validation.max}}.
             </div>
           </div>
         </div>

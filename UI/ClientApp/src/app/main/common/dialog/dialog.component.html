@@ -1,9 +1,7 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content fxLayout="row" fxLayoutAlign="space-between stretch" fxLayoutGap="20px">
-  <app-image9 *ngIf="withImage===true"
-    [isEditable]=true
-    [(images)]="images.imgURL"
-    (removeImage)="onRemoveImage(index)">
+  <app-image9 *ngIf="withImage===true" [isEditable]="editableImages"
+    [(images)]="images.imgURL" (removeImage)="onRemoveImage(index)">
   </app-image9>
   <app-form fxFlex #dialogForm [rows]="rows"></app-form>
 </div>
@@ -14,10 +12,10 @@
       <mat-icon *ngIf="button.value.icon">{{button.value.icon}}</mat-icon>
       {{button.value.label}}
     </button>
-    <button mat-button [disabled]="images.length>=9"(click)="fileInput.click()">
+    <button *ngIf="editableImages" mat-button [disabled]="images.length>=9" (click)="fileInput.click()">
       <mat-icon>cloud</mat-icon>
       Upload Image
-      <input #fileInput type="file" accept="image/*" (change)="onSelectFile($event)" style="display:none;"/>
+      <input #fileInput type="file" accept="image/*" (change)="onSelectFile($event)" style="display:none;" />
     </button>
   </div>
   <button mat-button (click)="onClose()">

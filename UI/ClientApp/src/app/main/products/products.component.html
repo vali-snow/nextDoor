@@ -36,7 +36,7 @@
                 <span>Details</span>
               </button>
               <button [hidden]="userId === product.Owner.Id" mat-button color="primary"
-                (click)="onProductOrderClick(product.Id)">
+                (click)="onProductOrderClick(product)">
                 <mat-icon>done</mat-icon>
                 <span>Order</span>
               </button>

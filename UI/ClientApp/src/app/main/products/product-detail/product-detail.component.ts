@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/models/product.model';
 import { FormComponent } from '../../common/form/form.component';
 import { ToastrService } from 'ngx-toastr';
+import { OrdersService } from '../../orders/orders.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -25,8 +26,9 @@ export class ProductDetailComponent implements OnInit {
   private backURL = 'main/dash';
 
   @ViewChild('filtersForm', { static: false }) filtersForm: FormComponent;
-  constructor(private route: ActivatedRoute, private productsService: ProductsService, private enums: EnumService, private router: Router,
-              private toastr: ToastrService) {
+  constructor(private route: ActivatedRoute, private router: Router,
+              private productsService: ProductsService, private ordersService: OrdersService,
+              private enums: EnumService, private toastr: ToastrService) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state && navigation.extras.state.backURL) {
       this.backURL = this.router.getCurrentNavigation().extras.state.backURL;
@@ -125,6 +127,15 @@ export class ProductDetailComponent implements OnInit {
           disabled: false,
         }
       };
+    } else {
+      this.buttons = {
+        order: {
+          order: 1,
+          label: 'Order',
+          icon: 'save',
+          disabled: false,
+        }
+      };
     }
   }
 
@@ -177,6 +188,9 @@ export class ProductDetailComponent implements OnInit {
         break;
       case 'back':
         this.router.navigate([this.backURL]);
+        break;
+      case 'order':
+        this.productsService.orderProductPopup(this.product);
         break;
       default:
         break;

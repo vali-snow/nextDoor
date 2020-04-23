@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material';
 import { Product } from 'src/models/product.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Image9DialogComponent } from '../common/image9/dialog/image9-dialog.component';
+import { OrdersService } from '../orders/orders.service';
 
 @Component({
   templateUrl: './products.component.html',
@@ -24,8 +25,9 @@ export class ProductsComponent implements OnInit {
     }
   };
 
-  constructor(private productsService: ProductsService, private enums: EnumService, public dialog: MatDialog,
-    private route: ActivatedRoute, private router: Router) {
+  constructor(private productsService: ProductsService, private ordersService: OrdersService,
+              private enums: EnumService, public dialog: MatDialog,
+              private route: ActivatedRoute, private router: Router) {
     this.userId = localStorage.getItem('userId');
   }
 
@@ -55,8 +57,8 @@ export class ProductsComponent implements OnInit {
     }
   }
 
-  onProductOrderClick(id: string) {
-    alert(id);
+  onProductOrderClick(product: Product) {
+    this.productsService.orderProductPopup(product);
   }
 
   onGetSafeLogoURL(prod: Product): string {

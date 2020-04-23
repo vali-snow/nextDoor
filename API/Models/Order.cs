@@ -16,6 +16,7 @@ namespace API.Models
         public OrderDetail AdditionalDetail { get; set;}
         public DateTime DatePlaced { get; set; }
         public DateTime? DateCompleted { get; set; }
+        public string? CompletedBy { get; set; }
         public DateTime? DateCancelled { get; set; }
         public string? CancelledBy { get; set; }
         public string? ReasonCancelled { get; set; }

@@ -43,6 +43,8 @@ export class FormComponent implements OnInit {
           validators.push(Validators.required);
         } else if (key === 'min') {
           validators.push(Validators.min(validationObj[key]));
+        } else if (key === 'max') {
+          validators.push(Validators.max(validationObj[key]));
         }
       }
     }
@@ -67,5 +69,9 @@ export class FormComponent implements OnInit {
       }
     }
     return null;
+  }
+
+  getInOrder(a, b) {
+    return a.order > b.order ? a : b;
   }
 }

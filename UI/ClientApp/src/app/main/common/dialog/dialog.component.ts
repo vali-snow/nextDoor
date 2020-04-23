@@ -11,6 +11,7 @@ export class DialogComponent implements OnInit {
   rows = [];
   buttons = [];
   withImage = false;
+  editableImages = true;
   images: {
     imgURL: (string | ArrayBuffer) [],
     file: File[]
@@ -27,6 +28,10 @@ export class DialogComponent implements OnInit {
     this.withImage = data.withImage;
     this.rows = data.dynamic.filters;
     this.buttons = data.dynamic.buttons;
+    if (data.images) {
+      this.images.imgURL = data.images;
+      this.editableImages = false;
+    }
   }
 
   ngOnInit() {}

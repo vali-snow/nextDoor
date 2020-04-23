@@ -11,6 +11,9 @@ import { EnumService } from 'src/app/core/service/enum.service';
 import { ProductStatus } from 'src/models/enums/product.status.enum';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ImageDetail } from 'src/models/imagedetail.model';
+import { Order } from 'src/models/order.model';
+import { OrderDetail } from 'src/models/orderDetail.model';
+import { OrdersService } from '../orders/orders.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +21,7 @@ import { ImageDetail } from 'src/models/imagedetail.model';
 export class ProductsService {
 
   constructor(private http: HttpClient, public dialog: MatDialog, private toastr: ToastrService, private enums: EnumService,
-              private sanitizer: DomSanitizer) { }
+              private ordersService: OrdersService, private sanitizer: DomSanitizer) { }
 
   getProduct(id: string): Observable<Product> {
     return this.http.get<Product>(`https://localhost:44377/api/Products/${id}`).pipe(single());
@@ -63,6 +66,7 @@ export class ProductsService {
           filters: [
             {
               name: {
+                order: 1,
                 label: 'Name',
                 type: 'text',
                 size: '100',
@@ -75,6 +79,7 @@ export class ProductsService {
             },
             {
               productType: {
+                order: 2,
                 label: 'Type',
                 type: 'select',
                 size: '50',
@@ -86,19 +91,21 @@ export class ProductsService {
                 value: product ? product.Type.toString() : '0'
               },
               quantity: {
+                order: 3,
                 label: 'Quantity',
                 type: 'number',
                 size: '50',
                 disabled: false,
                 validation: {
                   required: true,
-                  min: 1
+                  minValue: 1
                 },
                 value: product ? product.Quantity : 1
               }
             },
             {
               description: {
+                order: 4,
                 label: 'Description',
                 type: 'textarea',
                 size: '100',
@@ -172,5 +179,162 @@ export class ProductsService {
 
   getProductImages(product: Product) {
     return product.Images.map((img: ImageDetail) => this.getSafeURLFromImageDetail(img));
+  }
+
+  orderProductPopup(product: Product) {
+    const orderProductDialogRef = this.dialog.open(DialogComponent, {
+      width: '80%',
+      data: {
+        title: 'Order Product',
+        withImage: true,
+        images: this.getProductImages(product),
+        product: product,
+        dynamic: {
+          filters: [
+            {
+              name: {
+                order: 1,
+                label: 'Name',
+                type: 'text',
+                size: '50',
+                disabled: true,
+                value: product.Name
+              },
+              productType: {
+                order: 2,
+                label: 'Type',
+                type: 'select',
+                size: '30',
+                disabled: true,
+                options: this.enums.getKeysFromEnum('productType'),
+                value: product.Type.toString()
+              },
+              availableqty: {
+                order: 3,
+                label: 'Available',
+                type: 'number',
+                size: '20',
+                disabled: true,
+                value: product.Quantity
+              }
+            },
+            {
+              description: {
+                order: 4,
+                label: 'Description',
+                type: 'textarea',
+                size: '100',
+                rows: 1,
+                disabled: true,
+                value: product.Description
+              }
+            },
+            {
+              line: {
+                order: 5,
+                type: 'horizontalLine',
+                size: '100'
+              }
+            },
+            {
+              contactName: {
+                order: 6,
+                label: 'Name',
+                type: 'text',
+                size: '50',
+                disabled: false,
+                validation: {
+                  required: true,
+                },
+                value: ''
+              },
+              contactPhone: {
+                order: 7,
+                label: 'Phone',
+                type: 'text',
+                size: '30',
+                disabled: false,
+                validation: {
+                  required: true,
+                },
+                value: ''
+              },
+              quantity: {
+                order: 8,
+                label: 'Quantity',
+                type: 'number',
+                size: '20',
+                disabled: false,
+                validation: {
+                  required: true,
+                  min: 0,
+                  max: product.Quantity
+                },
+                value: 1
+              }
+            },
+            {
+              contactAddress: {
+                label: 'Deliver To Address',
+                type: 'textarea',
+                size: '100',
+                rows: 2,
+                disabled: false,
+                validation: {
+                  required: true,
+                },
+                value: ''
+              }
+            }
+          ],
+          buttons: {
+            order: {
+              order: 1,
+              label: 'Order',
+              icon: 'add_circle',
+              disabled: true
+            }
+          }
+        }
+      }
+    });
+
+    orderProductDialogRef.afterOpened().pipe(single()).subscribe(() => {
+      const dialogForm = orderProductDialogRef.componentInstance.dialogForm.form;
+      dialogForm.valueChanges.subscribe(() => {
+        const buttons = orderProductDialogRef.componentInstance.buttons;
+        buttons['order'].disabled = !dialogForm.valid;
+      });
+    });
+
+    orderProductDialogRef.componentInstance.buttonClicked.subscribe(
+      (buttonKey: string) => {
+        switch (buttonKey) {
+          case 'order':
+            const values = orderProductDialogRef.componentInstance.getFormValues();
+            const order = {
+              Product: orderProductDialogRef.componentInstance.data.product,
+              Quantity: values[''],
+              AdditionalDetail: {
+                ContactName: values[''],
+                ContactPhone: values[''],
+                ContactAddress: values['']
+              } as OrderDetail,
+              DatePlaced: new Date(),
+            } as Order;
+            this.ordersService.saveOrder(order).subscribe(
+              () => {
+                orderProductDialogRef.close();
+                this.toastr.success('Save successful', 'Order added successful');
+              },
+              (error: any) => {
+                this.toastr.error('Save failed', 'Order failed');
+                console.log(error);
+              }
+            );
+            break;
+        }
+      }
+    );
   }
 }

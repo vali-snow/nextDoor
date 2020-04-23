@@ -4,16 +4,27 @@ import { Observable } from 'rxjs';
 import { OrderFilters } from 'src/models/filters/order.filters.model';
 import { single } from 'rxjs/operators';
 import { Order } from 'src/models/order.model';
+import { OrderDetail } from 'src/models/orderDetail.model';
+import { Product } from 'src/models/product.model';
+import { MatDialog } from '@angular/material';
+import { ToastrService } from 'ngx-toastr';
+import { EnumService } from 'src/app/core/service/enum.service';
+import { ProductsService } from '../products/products.service';
+import { DialogComponent } from '../common/dialog/dialog.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrdersService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, public dialog: MatDialog) { }
 
   getOrder(id: string): Observable<Order> {
     return this.http.get<Order>(`https://localhost:44377/api/Orders/${id}`).pipe(single());
+  }
+
+  saveOrder(order: Order) {
+    return this.http.post<Order>('https://localhost:44377/api/Orders/', order).pipe(single());
   }
 
   getOrders(filters?: OrderFilters): Observable<any> {
