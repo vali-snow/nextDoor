@@ -59,6 +59,9 @@ namespace API.Migrations
                     b.Property<string>("CancelledBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CompletedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("DateCancelled")
                         .HasColumnType("datetime2");
 
@@ -80,7 +83,7 @@ namespace API.Migrations
                     b.Property<string>("SellerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Status")
+                    b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -111,7 +114,12 @@ namespace API.Migrations
                     b.Property<string>("ContactPhone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("ProductImageId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductImageId");
 
                     b.ToTable("OrderDetail");
                 });
@@ -375,6 +383,13 @@ namespace API.Migrations
                     b.HasOne("API.Models.User", "Seller")
                         .WithMany()
                         .HasForeignKey("SellerId");
+                });
+
+            modelBuilder.Entity("API.Models.OrderDetail", b =>
+                {
+                    b.HasOne("API.Models.ImageDetail", "ProductImage")
+                        .WithMany()
+                        .HasForeignKey("ProductImageId");
                 });
 
             modelBuilder.Entity("API.Models.Product", b =>

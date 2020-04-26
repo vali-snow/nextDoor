@@ -6,6 +6,8 @@ import { OrderFilters } from 'src/models/filters/order.filters.model';
 import { OrderType } from 'src/models/enums/order.type.enum';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Order } from 'src/models/order.model';
+import { ImageDetail } from 'src/models/imagedetail.model';
+import { ProductsService } from '../products/products.service';
 
 @Component({
   selector: 'app-orders',
@@ -26,7 +28,8 @@ export class OrdersComponent implements OnInit {
     }
   };
 
-  constructor(private ordersService: OrdersService, private enums: EnumService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private ordersService: OrdersService, private productsService: ProductsService,
+              private enums: EnumService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     this.orders = this.route.snapshot.data.orders;
@@ -88,7 +91,14 @@ export class OrdersComponent implements OnInit {
   }
 
   onOrderDetailClick(id: string) {
-    alert(id);
+    switch (this.ordersType) {
+      case 'toFulfill':
+        this.router.navigate(['main/order-detail', id], { state: { backURL: 'main/orders-to-fulfill' } });
+        break;
+      case 'toReceive':
+        this.router.navigate(['main/order-detail', id], { state: { backURL: 'main/orders-to-receive' } });
+        break;
+    }
   }
 
   onOrderCompletedClick(id: string) {
@@ -97,5 +107,9 @@ export class OrdersComponent implements OnInit {
 
   onOrderCancelledClick(id: string) {
     alert(id);
+  }
+
+  onGetSafeLogoURL(imageDetail: ImageDetail) {
+    return this.productsService.getSafeURLFromImageDetail(imageDetail);
   }
 }

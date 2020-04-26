@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Models
+namespace API.Models.DTOs
 {
-    public class OrderDetail
+    public class OrderDTO
     {
-        public Guid Id { get; set; }
-        public ImageDetail? ProductImage { get; set; }
+        public Guid ProductId { get; set; }
+        public int Quantity { get; set; }
         public string ContactName { get; set; }
         public string ContactPhone { get; set; }
         public string ContactAddress { get; set; }

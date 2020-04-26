@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { EnumService } from 'src/app/core/service/enum.service';
 import { ProductsService } from '../products/products.service';
 import { DialogComponent } from '../common/dialog/dialog.component';
+import { OrderDTO } from 'src/models/dto/orderDTO.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +24,8 @@ export class OrdersService {
     return this.http.get<Order>(`https://localhost:44377/api/Orders/${id}`).pipe(single());
   }
 
-  saveOrder(order: Order) {
-    return this.http.post<Order>('https://localhost:44377/api/Orders/', order).pipe(single());
+  saveOrder(orderDTO: OrderDTO) {
+    return this.http.post<OrderDTO>('https://localhost:44377/api/Orders/', orderDTO).pipe(single());
   }
 
   getOrders(filters?: OrderFilters): Observable<any> {

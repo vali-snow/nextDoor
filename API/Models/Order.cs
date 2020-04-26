@@ -10,9 +10,9 @@ namespace API.Models
         public Guid Id { get; set; }
         public Product Product { get; set; }
         public int Quantity { get; set; }
-        public OrderStatus Status { get; set; }
-        public User Seller { get; set; }
-        public User Buyer { get; set; }
+        public OrderStatus? Status { get; set; }
+        public User? Seller { get; set; }
+        public User? Buyer { get; set; }
         public OrderDetail AdditionalDetail { get; set;}
         public DateTime DatePlaced { get; set; }
         public DateTime? DateCompleted { get; set; }

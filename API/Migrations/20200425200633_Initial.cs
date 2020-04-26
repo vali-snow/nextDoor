@@ -49,20 +49,6 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderDetail",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    ContactName = table.Column<string>(nullable: true),
-                    ContactPhone = table.Column<string>(nullable: true),
-                    ContactAddress = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderDetail", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -213,18 +199,40 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrderDetail",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ProductImageId = table.Column<Guid>(nullable: true),
+                    ContactName = table.Column<string>(nullable: true),
+                    ContactPhone = table.Column<string>(nullable: true),
+                    ContactAddress = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderDetail", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderDetail_ImageDetails_ProductImageId",
+                        column: x => x.ProductImageId,
+                        principalTable: "ImageDetails",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
                     ProductId = table.Column<Guid>(nullable: true),
                     Quantity = table.Column<int>(nullable: false),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: true),
                     SellerId = table.Column<string>(nullable: true),
                     BuyerId = table.Column<string>(nullable: true),
                     AdditionalDetailId = table.Column<Guid>(nullable: true),
                     DatePlaced = table.Column<DateTime>(nullable: false),
                     DateCompleted = table.Column<DateTime>(nullable: true),
+                    CompletedBy = table.Column<string>(nullable: true),
                     DateCancelled = table.Column<DateTime>(nullable: true),
                     CancelledBy = table.Column<string>(nullable: true),
                     ReasonCancelled = table.Column<string>(nullable: true)
@@ -303,6 +311,11 @@ namespace API.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderDetail_ProductImageId",
+                table: "OrderDetail",
+                column: "ProductImageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_AdditionalDetailId",
                 table: "Orders",
                 column: "AdditionalDetailId");
@@ -346,9 +359,6 @@ namespace API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ImageDetails");
-
-            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
@@ -356,6 +366,9 @@ namespace API.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrderDetail");
+
+            migrationBuilder.DropTable(
+                name: "ImageDetails");
 
             migrationBuilder.DropTable(
                 name: "Products");

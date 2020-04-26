@@ -11,9 +11,9 @@ import { EnumService } from 'src/app/core/service/enum.service';
 import { ProductStatus } from 'src/models/enums/product.status.enum';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ImageDetail } from 'src/models/imagedetail.model';
-import { Order } from 'src/models/order.model';
-import { OrderDetail } from 'src/models/orderDetail.model';
 import { OrdersService } from '../orders/orders.service';
+import { OrderDTO } from 'src/models/dto/orderDTO.model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ import { OrdersService } from '../orders/orders.service';
 export class ProductsService {
 
   constructor(private http: HttpClient, public dialog: MatDialog, private toastr: ToastrService, private enums: EnumService,
-              private ordersService: OrdersService, private sanitizer: DomSanitizer) { }
+              private ordersService: OrdersService, private sanitizer: DomSanitizer, private router: Router) { }
 
   getProduct(id: string): Observable<Product> {
     return this.http.get<Product>(`https://localhost:44377/api/Products/${id}`).pipe(single());
@@ -152,9 +152,10 @@ export class ProductsService {
               Quantity: Number(values['quantity'])
             } as Product;
             this.saveProduct(prod, images).subscribe(
-              () => {
+              (received: Product) => {
                 newProductDialogRef.close();
                 this.toastr.success('Save successful', 'Product added successful');
+                this.router.navigate(['main/product-detail', received.Id], { state: { backURL: 'main/products-all' } });
               },
               (error: any) => {
                 this.toastr.error('Save failed', 'Product add failed');
@@ -312,17 +313,14 @@ export class ProductsService {
         switch (buttonKey) {
           case 'order':
             const values = orderProductDialogRef.componentInstance.getFormValues();
-            const order = {
-              Product: orderProductDialogRef.componentInstance.data.product,
-              Quantity: values[''],
-              AdditionalDetail: {
-                ContactName: values[''],
-                ContactPhone: values[''],
-                ContactAddress: values['']
-              } as OrderDetail,
-              DatePlaced: new Date(),
-            } as Order;
-            this.ordersService.saveOrder(order).subscribe(
+            const orderDTO = {
+              ProductId: orderProductDialogRef.componentInstance.data.product.Id,
+              Quantity: values['quantity'],
+              ContactName: values['contactName'],
+              ContactPhone: values['contactPhone'],
+              ContactAddress: values['contactAddress']
+            } as OrderDTO;
+            this.ordersService.saveOrder(orderDTO).subscribe(
               () => {
                 orderProductDialogRef.close();
                 this.toastr.success('Save successful', 'Order added successful');
