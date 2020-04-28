@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Order } from 'src/models/order.model';
 import { ImageDetail } from 'src/models/imagedetail.model';
 import { ProductsService } from '../products/products.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-orders',
@@ -29,7 +30,7 @@ export class OrdersComponent implements OnInit {
   };
 
   constructor(private ordersService: OrdersService, private productsService: ProductsService,
-              private enums: EnumService, private route: ActivatedRoute, private router: Router) { }
+              private enums: EnumService, private route: ActivatedRoute, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit() {
     this.orders = this.route.snapshot.data.orders;
@@ -37,7 +38,14 @@ export class OrdersComponent implements OnInit {
 
   onFiltersApply(values: any) {
     const filters: OrderFilters = new OrderFilters();
-    filters.orderType = OrderType.ToFulfill;
+    switch (this.ordersType) {
+      case 'toFulfill':
+        filters.orderType = OrderType.ToFulfill;
+        break;
+      case 'toReceive':
+        filters.orderType = OrderType.ToReceive;
+        break;
+    }
     Object.keys(values).forEach(key => {
       switch (key) {
         case 'search':
@@ -60,6 +68,10 @@ export class OrdersComponent implements OnInit {
           break;
       }
     });
+    this.getOrders(filters);
+  }
+
+  getOrders(filters: OrderFilters) {
     this.ordersService.getOrders(filters).subscribe(
       (ords: any[]) => {
         this.orders = [...ords];
@@ -102,7 +114,25 @@ export class OrdersComponent implements OnInit {
   }
 
   onOrderCompletedClick(id: string) {
-    alert(id);
+    this.ordersService.completeOrder(id).subscribe(
+      () => {
+        this.toastr.success('Order complete successfull', 'Order complete successfull');
+        const filters: OrderFilters = new OrderFilters();
+        switch (this.ordersType) {
+          case 'toFulfill':
+            filters.orderType = OrderType.ToFulfill;
+            break;
+          case 'toReceive':
+            filters.orderType = OrderType.ToReceive;
+            break;
+        }
+        this.getOrders(filters);
+      },
+      (error) => {
+        this.toastr.success('Order complete failed', 'Order complete failed');
+        console.log(error);
+      }
+    );
   }
 
   onOrderCancelledClick(id: string) {

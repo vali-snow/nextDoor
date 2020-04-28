@@ -14,6 +14,7 @@ import { ImageDetail } from 'src/models/imagedetail.model';
 import { OrdersService } from '../orders/orders.service';
 import { OrderDTO } from 'src/models/dto/orderDTO.model';
 import { Router } from '@angular/router';
+import { Order } from 'src/models/order.model';
 
 @Injectable({
   providedIn: 'root'
@@ -321,9 +322,10 @@ export class ProductsService {
               ContactAddress: values['contactAddress']
             } as OrderDTO;
             this.ordersService.saveOrder(orderDTO).subscribe(
-              () => {
+              (received: Order) => {
                 orderProductDialogRef.close();
                 this.toastr.success('Save successful', 'Order added successful');
+                this.router.navigate(['main/order-detail', received.Id], { state: { backURL: 'main/orders-to-receive' } });
               },
               (error: any) => {
                 this.toastr.error('Save failed', 'Order failed');

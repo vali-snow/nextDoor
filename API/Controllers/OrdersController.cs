@@ -33,7 +33,6 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders([FromQuery] OrderFilters filters)
         {
             var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
-
             return await context.Orders
                 .Where(o => filters.OrderStatus == null || o.Status == filters.OrderStatus)
                 .Where(o => filters.DateRange == null || (filters.DateRange.Begin < o.DatePlaced && o.DatePlaced < filters.DateRange.End))
@@ -86,7 +85,8 @@ namespace API.Controllers
                 else
                 {
                     product.Quantity -= orderDTO.Quantity;
-                    var order = new Order() {
+                    var order = new Order()
+                    {
                         Product = product,
                         Quantity = orderDTO.Quantity,
                         Status = OrderStatus.New,
@@ -99,16 +99,55 @@ namespace API.Controllers
                             ContactPhone = orderDTO.ContactPhone,
                             ContactAddress = orderDTO.ContactAddress
                         },
-                        DatePlaced = DateTime.Now        
+                        DatePlaced = DateTime.Now
                     };
                     context.Orders.Add(order);
                     await context.SaveChangesAsync();
                     return CreatedAtAction("GetOrder", new { id = order.Id }, order);
-                }                
+                }
             }
             catch (Exception ex)
             {
                 return BadRequest(ex);
+            }
+        }
+
+        [HttpGet("Complete/{id}")]
+        public async Task<ActionResult<Order>> CompleteOrder(Guid id)
+        {
+            var order = context.Orders.Where(o => o.Id == id).FirstOrDefault();
+            if (order == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+                order.Status = OrderStatus.Completed;
+                order.DateCompleted = DateTime.Now;
+                order.CompletedBy = $"{user.FirstName} {user.LastName}";
+                await context.SaveChangesAsync();
+                return Ok();
+            }
+        }
+
+        [HttpPost("Cancel/{id}")]
+        public async Task<ActionResult<Order>> CancelOrder(Guid id, string reason)
+        {
+            var order = context.Orders.Where(o => o.Id == id).FirstOrDefault();
+            if (order == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+                order.Status = OrderStatus.Cancelled;
+                order.DateCancelled = DateTime.Now;
+                order.CancelledBy = $"{user.FirstName} {user.LastName}";
+                order.ReasonCancelled = reason;
+                await context.SaveChangesAsync();
+                return Ok();
             }
         }
     }

@@ -25,7 +25,11 @@ export class OrdersService {
   }
 
   saveOrder(orderDTO: OrderDTO) {
-    return this.http.post<OrderDTO>('https://localhost:44377/api/Orders/', orderDTO).pipe(single());
+    return this.http.post<Order>('https://localhost:44377/api/Orders/', orderDTO).pipe(single());
+  }
+
+  completeOrder(id: string) {
+    return this.http.get<Order>(`https://localhost:44377/api/Orders/Complete/${id}`).pipe(single());
   }
 
   getOrders(filters?: OrderFilters): Observable<any> {

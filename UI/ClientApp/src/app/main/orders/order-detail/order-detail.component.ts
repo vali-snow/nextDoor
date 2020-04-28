@@ -184,11 +184,27 @@ export class OrderDetailComponent implements OnInit {
 
   generateButtons(order: Order) {
     const userId = localStorage.getItem('userId');
-    if (order.Seller.Id === userId || order.Buyer.Id === userId) {
+    if (order.Seller.Id === userId) {
       this.buttons = {
         complete: {
           order: 1,
-          label: 'Complete',
+          label: 'Delivered',
+          icon: 'remove_circle',
+          disabled: false,
+        },
+        cancel: {
+          order: 2,
+          label: 'Cancel',
+          icon: 'remove_circle',
+          disabled: false,
+        }
+      };
+    }
+    if (order.Buyer.Id === userId) {
+      this.buttons = {
+        complete: {
+          order: 1,
+          label: 'Received',
           icon: 'remove_circle',
           disabled: false,
         },
@@ -205,6 +221,22 @@ export class OrderDetailComponent implements OnInit {
   onClick(buttonKey: string) {
     switch (buttonKey) {
       case 'complete':
+        this.ordersService.completeOrder(this.order.Id).subscribe(
+          () => {
+            this.toastr.success('Order complete successfull', 'Order complete successfull');
+            const userId = localStorage.getItem('userId');
+            if (this.order.Seller.Id === userId) {
+              this.router.navigate(['main/orders-to-fulfill']);
+            }
+            if (this.order.Buyer.Id === userId) {
+              this.router.navigate(['main/orders-to-receive']);
+            }
+          },
+          (error) => {
+            this.toastr.success('Order complete failed', 'Order complete failed');
+            console.log(error);
+          }
+        );
         break;
       case 'cancel':
         break;
