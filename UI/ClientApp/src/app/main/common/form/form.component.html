@@ -24,7 +24,7 @@
           <!-- Select -->
           <mat-form-field *ngSwitchCase="'select'">
             <mat-label>{{filter.value.label}}</mat-label>
-            <mat-select *ngSwitchCase="'select'" [formControlName]="filter.key" [disabled]="filter.value.disabled">
+            <mat-select *ngSwitchCase="'select'" [formControlName]="filter.key" [disabled]="filter.value.disabled" [(value)]="filter.value.value">
               <mat-option *ngFor="let option of filter.value.options" [value]="option.code">
                 {{option.des}}
               </mat-option>

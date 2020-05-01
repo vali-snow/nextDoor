@@ -9,6 +9,8 @@ import { Order } from 'src/models/order.model';
 import { ImageDetail } from 'src/models/imagedetail.model';
 import { ProductsService } from '../products/products.service';
 import { ToastrService } from 'ngx-toastr';
+import { DialogComponent } from '../common/dialog/dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-orders',
@@ -29,7 +31,7 @@ export class OrdersComponent implements OnInit {
     }
   };
 
-  constructor(private ordersService: OrdersService, private productsService: ProductsService,
+  constructor(private ordersService: OrdersService, private productsService: ProductsService, public dialog: MatDialog,
               private enums: EnumService, private route: ActivatedRoute, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit() {
@@ -114,29 +116,139 @@ export class OrdersComponent implements OnInit {
   }
 
   onOrderCompletedClick(id: string) {
-    this.ordersService.completeOrder(id).subscribe(
-      () => {
-        this.toastr.success('Order complete successfull', 'Order complete successfull');
-        const filters: OrderFilters = new OrderFilters();
-        switch (this.ordersType) {
-          case 'toFulfill':
-            filters.orderType = OrderType.ToFulfill;
-            break;
-          case 'toReceive':
-            filters.orderType = OrderType.ToReceive;
+    let buttons: {};
+    let title: string;
+    let text: string;
+    switch (this.ordersType) {
+      case 'toFulfill':
+        buttons = {
+          complete: {
+            order: 1,
+            label: 'Delivered',
+            icon: 'done',
+            disabled: false,
+          }
+        };
+        title = 'Delivered';
+        text = 'Did you fullfill the order?';
+        break;
+      case 'toReceive':
+        buttons = {
+          complete: {
+            order: 1,
+            label: 'Received',
+            icon: 'done',
+            disabled: false,
+          }
+        };
+        title = 'Received';
+        text = 'Did you receive the order?';
+        break;
+    }
+    const confirmCompleteDialog = this.dialog.open(DialogComponent, {
+      width: '400px',
+      data: {
+        title: title,
+        text: text,
+        withImage: false,
+        dynamic: {
+          buttons: buttons
+        }
+      }
+    });
+
+    confirmCompleteDialog.componentInstance.buttonClicked.subscribe(
+      (buttonKey: string) => {
+        switch (buttonKey) {
+          case 'complete':
+            this.ordersService.completeOrder(id).subscribe(
+              () => {
+                this.toastr.success('Order complete successfull', 'Order complete successfull');
+                const filters: OrderFilters = new OrderFilters();
+                switch (this.ordersType) {
+                  case 'toFulfill':
+                    filters.orderType = OrderType.ToFulfill;
+                    break;
+                  case 'toReceive':
+                    filters.orderType = OrderType.ToReceive;
+                    break;
+                }
+                this.getOrders(filters);
+                confirmCompleteDialog.close();
+              },
+              (error) => {
+                this.toastr.success('Order complete failed', 'Order complete failed');
+                console.log(error);
+              }
+            );
             break;
         }
-        this.getOrders(filters);
-      },
-      (error) => {
-        this.toastr.success('Order complete failed', 'Order complete failed');
-        console.log(error);
       }
     );
   }
 
   onOrderCancelledClick(id: string) {
-    alert(id);
+    const cancelDialog = this.dialog.open(DialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Cancel Order',
+        text: 'You are about to cancel the order. Continue?',
+        withImage: false,
+        dynamic: {
+          filters: [
+            {
+              reason: {
+                order: 1,
+                label: 'Cancel Reason',
+                type: 'textarea',
+                size: '100',
+                rows: 3,
+                disabled: false,
+                value: ''
+              }
+            }
+          ],
+          buttons: {
+            cancel: {
+              order: 1,
+              label: 'Ok',
+              icon: 'cancel',
+              disabled: false,
+            }
+          }
+        }
+      }
+    });
+
+    cancelDialog.componentInstance.buttonClicked.subscribe(
+      (buttonKey: string) => {
+        switch (buttonKey) {
+          case 'cancel':
+            const reason = cancelDialog.componentInstance.getFormValue('reason');
+            this.ordersService.cancelOrder(id, reason).subscribe(
+              () => {
+                this.toastr.success('Order cancel successfull', 'Order cancel successfull');
+                const filters: OrderFilters = new OrderFilters();
+                switch (this.ordersType) {
+                  case 'toFulfill':
+                    filters.orderType = OrderType.ToFulfill;
+                    break;
+                  case 'toReceive':
+                    filters.orderType = OrderType.ToReceive;
+                    break;
+                }
+                this.getOrders(filters);
+                cancelDialog.close();
+              },
+              (error) => {
+                this.toastr.success('Order cancel failed', 'Order cancel failed');
+                console.log(error);
+              }
+            );
+            break;
+        }
+      }
+    );
   }
 
   onGetSafeLogoURL(imageDetail: ImageDetail) {

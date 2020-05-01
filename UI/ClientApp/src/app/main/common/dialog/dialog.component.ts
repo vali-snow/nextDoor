@@ -48,6 +48,10 @@ export class DialogComponent implements OnInit {
     return this.dialogForm.getFormValues();
   }
 
+  getFormValue(key: string) {
+    return this.dialogForm.getFormValue(key);
+  }
+
   getImages() {
     return this.images.file;
   }

@@ -8,30 +8,32 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class FormComponent implements OnInit {
   form: FormGroup;
-  @Input() rows: [];
+  @Input() rows: [] = [];
   private formRows: any[] = [];
 
   constructor() { }
 
   ngOnInit() {
     const formGroup = {};
-    this.rows.forEach((row: any[]) => {
-      Object.keys(row).forEach((key: string) => {
-        switch (key) {
-          case 'placeholder':
-            break;
-          case 'select':
-            formGroup[key] = new FormControl(row[key].value || '', this.getValidators(row[key].validation));
-            break;
-          default:
-            formGroup[key] = new FormControl(row[key].value || '', this.getValidators(row[key].validation));
-            break;
-        }
+    if (this.rows) {
+      this.rows.forEach((row: any[]) => {
+        Object.keys(row).forEach((key: string) => {
+          switch (key) {
+            case 'placeholder':
+              break;
+            case 'select':
+              formGroup[key] = new FormControl(row[key].value || '', this.getValidators(row[key].validation));
+              break;
+            default:
+              formGroup[key] = new FormControl(row[key].value || '', this.getValidators(row[key].validation));
+              break;
+          }
+        });
+        this.formRows.push(Object.keys(row).map(key => {
+          return Object.assign({}, { key: key }, row[key]);
+        }));
       });
-      this.formRows.push(Object.keys(row).map(key => {
-        return Object.assign({}, { key: key }, row[key]);
-      }));
-    });
+    }
     this.form = new FormGroup(formGroup);
   }
 
@@ -57,6 +59,13 @@ export class FormComponent implements OnInit {
       values[key] = this.form.controls[key].value;
     });
     return values;
+  }
+
+  getFormValue(key: string) {
+    if (this.form.controls[key]) {
+      return this.form.controls[key].value;
+    }
+    return null;
   }
 
   getFormObj(searchKey: string) {

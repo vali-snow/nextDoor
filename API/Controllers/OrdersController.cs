@@ -139,16 +139,20 @@ namespace API.Controllers
             {
                 return BadRequest();
             }
-            else
+            if (order.Status != OrderStatus.New)
             {
-                var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
-                order.Status = OrderStatus.Cancelled;
-                order.DateCancelled = DateTime.Now;
-                order.CancelledBy = $"{user.FirstName} {user.LastName}";
-                order.ReasonCancelled = reason;
-                await context.SaveChangesAsync();
-                return Ok();
+                return BadRequest();
             }
+            var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+            order.Status = OrderStatus.Cancelled;
+            order.DateCancelled = DateTime.Now;
+            order.CancelledBy = $"{user.FirstName} {user.LastName}";
+            if (reason != null)
+            {
+                order.ReasonCancelled = reason;
+            }
+            await context.SaveChangesAsync();
+            return Ok();
         }
     }
 }

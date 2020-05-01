@@ -32,6 +32,10 @@ export class OrdersService {
     return this.http.get<Order>(`https://localhost:44377/api/Orders/Complete/${id}`).pipe(single());
   }
 
+  cancelOrder(id: string, reason: string) {
+    return this.http.post<Order>(`https://localhost:44377/api/Orders/Cancel/${id}`, reason).pipe(single());
+  }
+
   getOrders(filters?: OrderFilters): Observable<any> {
     let params = new HttpParams();
     if (filters) {

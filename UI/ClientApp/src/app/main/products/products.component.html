@@ -35,7 +35,7 @@
                 <mat-icon>web_asset</mat-icon>
                 <span>Details</span>
               </button>
-              <button [hidden]="userId === product.Owner.Id" mat-button color="primary"
+              <button [hidden]="product.Quantity === 0 || userId === product.Owner.Id" mat-button color="primary"
                 (click)="onProductOrderClick(product)">
                 <mat-icon>done</mat-icon>
                 <span>Order</span>

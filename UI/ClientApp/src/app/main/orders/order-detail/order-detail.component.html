@@ -1,7 +1,7 @@
 <mat-card class="height100" fxLayout="column">
   <mat-card-title>Order Detail</mat-card-title>
   <mat-card-content fxFlex class="overflow" fxLayout="row" fxLayoutAlign="space-between stretch" fxLayoutGap="15px">
-    <div fxFlex="25" [ngSwitch]="order.Product.Images.length">
+    <div fxFlex="25" *ngIf="order.Product.Images.length > 0">
       <app-image9 fxFlex="25"
         [isEditable]=false
         [images]="productsService.getProductImages(order.Product)">

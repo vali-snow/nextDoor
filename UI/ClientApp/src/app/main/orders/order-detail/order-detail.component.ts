@@ -6,6 +6,9 @@ import { ProductsService } from '../../products/products.service';
 import { OrdersService } from '../orders.service';
 import { EnumService } from 'src/app/core/service/enum.service';
 import { ToastrService } from 'ngx-toastr';
+import { DialogComponent } from '../../common/dialog/dialog.component';
+import { MatDialog } from '@angular/material';
+import { OrderStatus } from 'src/models/enums/order.status.enum';
 
 @Component({
   selector: 'app-order-detail',
@@ -23,7 +26,7 @@ export class OrderDetailComponent implements OnInit {
   @ViewChild('form', { static: false }) form: FormComponent;
 
   constructor(private route: ActivatedRoute, private router: Router,
-    private productsService: ProductsService, private ordersService: OrdersService,
+    public dialog: MatDialog, private ordersService: OrdersService, private productsService: ProductsService,
     private enums: EnumService, private toastr: ToastrService) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state && navigation.extras.state.backURL) {
@@ -190,13 +193,13 @@ export class OrderDetailComponent implements OnInit {
           order: 1,
           label: 'Delivered',
           icon: 'remove_circle',
-          disabled: false,
+          disabled: this.order.Status !== OrderStatus.New,
         },
         cancel: {
           order: 2,
           label: 'Cancel',
           icon: 'remove_circle',
-          disabled: false,
+          disabled: this.order.Status !== OrderStatus.New,
         }
       };
     }
@@ -206,13 +209,13 @@ export class OrderDetailComponent implements OnInit {
           order: 1,
           label: 'Received',
           icon: 'remove_circle',
-          disabled: false,
+          disabled: this.order.Status !== OrderStatus.New,
         },
         cancel: {
           order: 2,
           label: 'Cancel',
           icon: 'remove_circle',
-          disabled: false,
+          disabled: this.order.Status !== OrderStatus.New,
         }
       };
     }
@@ -221,24 +224,133 @@ export class OrderDetailComponent implements OnInit {
   onClick(buttonKey: string) {
     switch (buttonKey) {
       case 'complete':
-        this.ordersService.completeOrder(this.order.Id).subscribe(
-          () => {
-            this.toastr.success('Order complete successfull', 'Order complete successfull');
-            const userId = localStorage.getItem('userId');
-            if (this.order.Seller.Id === userId) {
-              this.router.navigate(['main/orders-to-fulfill']);
+        const userId = localStorage.getItem('userId');
+        let orderType: string;
+        if (this.order.Seller.Id === userId) {
+          orderType = 'toFulfill';
+        } else if (this.order.Buyer.Id === userId) {
+          orderType = 'toReceive';
+        }
+        let buttons: {};
+        let title: string;
+        let text: string;
+        switch (orderType) {
+          case 'toFulfill':
+            buttons = {
+              complete: {
+                order: 1,
+                label: 'Delivered',
+                icon: 'done',
+                disabled: false,
+              }
+            };
+            title = 'Delivered';
+            text = 'Did you fullfill the order?';
+            break;
+          case 'toReceive':
+            buttons = {
+              complete: {
+                order: 1,
+                label: 'Received',
+                icon: 'done',
+                disabled: false,
+              }
+            };
+            title = 'Received';
+            text = 'Did you receive the order?';
+            break;
+        }
+        const confirmCompleteDialog = this.dialog.open(DialogComponent, {
+          width: '400px',
+          data: {
+            title: title,
+            text: text,
+            withImage: false,
+            dynamic: {
+              buttons: buttons
             }
-            if (this.order.Buyer.Id === userId) {
-              this.router.navigate(['main/orders-to-receive']);
+          }
+        });
+
+        confirmCompleteDialog.componentInstance.buttonClicked.subscribe(
+          (btnKey: string) => {
+            switch (btnKey) {
+              case 'complete':
+                this.ordersService.completeOrder(this.order.Id).subscribe(
+                  () => {
+                    this.toastr.success('Order complete successfull', 'Order complete successfull');
+                    this.order.Status = OrderStatus.Completed;
+                    this.rows[2].orderStatus.value = this.order.Status.toString();
+                    this.buttons['complete'].disabled = true;
+                    this.buttons['cancel'].disabled = true;
+                    confirmCompleteDialog.close();
+                  },
+                  (error) => {
+                    this.toastr.success('Order complete failed', 'Order complete failed');
+                    console.log(error);
+                  }
+                );
+                break;
             }
-          },
-          (error) => {
-            this.toastr.success('Order complete failed', 'Order complete failed');
-            console.log(error);
           }
         );
         break;
       case 'cancel':
+        const cancelDialog = this.dialog.open(DialogComponent, {
+          width: '400px',
+          data: {
+            title: 'Cancel Order',
+            text: 'You are about to cancel the order. Continue?',
+            withImage: false,
+            dynamic: {
+              filters: [
+                {
+                  reason: {
+                    order: 1,
+                    label: 'Cancel Reason',
+                    type: 'textarea',
+                    size: '100',
+                    rows: 3,
+                    disabled: false,
+                    value: ''
+                  }
+                }
+              ],
+              buttons: {
+                cancel: {
+                  order: 1,
+                  label: 'Ok',
+                  icon: 'cancel',
+                  disabled: false,
+                }
+              }
+            }
+          }
+        });
+
+        cancelDialog.componentInstance.buttonClicked.subscribe(
+          (btnKey: string) => {
+            switch (btnKey) {
+              case 'cancel':
+                const reason = cancelDialog.componentInstance.getFormValue('reason');
+                this.ordersService.cancelOrder(this.order.Id, reason).subscribe(
+                  () => {
+                    this.toastr.success('Order cancel successfull', 'Order cancel successfull');
+                    this.order.Status = OrderStatus.Cancelled;
+                    this.rows[2].orderStatus.value = this.order.Status.toString();
+                    this.buttons['complete'].disabled = true;
+                    this.buttons['cancel'].disabled = true;
+                    cancelDialog.close();
+                  },
+                  (error) => {
+                    this.toastr.success('Order cancel failed', 'Order cancel failed');
+                    console.log(error);
+                  }
+                );
+                break;
+            }
+          }
+        );
         break;
       case 'back':
         this.router.navigate([this.backURL]);

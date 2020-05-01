@@ -41,7 +41,9 @@ export class ProductsComponent implements OnInit {
       (prods: any[]) => {
         this.products = [...prods];
       },
-      (error) => { }
+      (error) => {
+        console.log(error);
+      }
     );
   }
 

@@ -1,9 +1,12 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
-<div mat-dialog-content fxLayout="row" fxLayoutAlign="space-between stretch" fxLayoutGap="20px">
-  <app-image9 *ngIf="withImage===true" [isEditable]="editableImages"
-    [(images)]="images.imgURL" (removeImage)="onRemoveImage(index)">
-  </app-image9>
-  <app-form fxFlex #dialogForm [rows]="rows"></app-form>
+<div mat-dialog-content fxLayout="column">
+  <div *ngIf="data.text">{{data.text}}</div>
+  <div fxFlex fxLayout="row" fxLayoutAlign="space-between stretch" fxLayoutGap="20px">
+    <app-image9 *ngIf="withImage===true" [isEditable]="editableImages" [(images)]="images.imgURL"
+      (removeImage)="onRemoveImage(index)">
+    </app-image9>
+    <app-form fxFlex #dialogForm [rows]="rows"></app-form>
+  </div>
 </div>
 <div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between stretch">
   <div fxFlex fxLayout="row">
@@ -12,7 +15,7 @@
       <mat-icon *ngIf="button.value.icon">{{button.value.icon}}</mat-icon>
       {{button.value.label}}
     </button>
-    <button *ngIf="editableImages" mat-button [disabled]="images.length>=9" (click)="fileInput.click()">
+    <button *ngIf="withImage && editableImages" mat-button [disabled]="images.length>=9" (click)="fileInput.click()">
       <mat-icon>cloud</mat-icon>
       Upload Image
       <input #fileInput type="file" accept="image/*" (change)="onSelectFile($event)" style="display:none;" />
