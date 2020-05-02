@@ -6,6 +6,8 @@ import { Product } from 'src/models/product.model';
 import { FormComponent } from '../../common/form/form.component';
 import { ToastrService } from 'ngx-toastr';
 import { OrdersService } from '../../orders/orders.service';
+import { DialogComponent } from '../../common/dialog/dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-product-detail',
@@ -26,7 +28,7 @@ export class ProductDetailComponent implements OnInit {
   private backURL = 'main/dash';
 
   @ViewChild('filtersForm', { static: false }) filtersForm: FormComponent;
-  constructor(private route: ActivatedRoute, private router: Router,
+  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog,
               private productsService: ProductsService, private ordersService: OrdersService,
               private enums: EnumService, private toastr: ToastrService) {
     const navigation = this.router.getCurrentNavigation();
@@ -175,14 +177,45 @@ export class ProductDetailComponent implements OnInit {
         this.productsService.addProductPopup(this.product);
         break;
       case 'remove':
-        this.productsService.removeProduct(this.product.Id).subscribe(
-          () => {
-            this.toastr.success('Delete successful', 'Product delete successful');
-            this.router.navigate(['main/products-all']);
-          },
-          (error: any) => {
-            this.toastr.error('Delete failed', 'Product delete failed');
-            console.log(error);
+        const removeDialog = this.dialog.open(DialogComponent, {
+          width: '400px',
+          data: {
+            title: 'Remove Product',
+            text: [
+              'You are about to remove the product. Continue?',
+              'Orders based on this product will not be removed.*'
+            ],
+            withImage: false,
+            dynamic: {
+              buttons: {
+                remove: {
+                  order: 1,
+                  label: 'Ok',
+                  icon: 'done',
+                  disabled: false,
+                }
+              }
+            }
+          }
+        });
+
+        removeDialog.componentInstance.buttonClicked.subscribe(
+          (btnKey: string) => {
+            switch (btnKey) {
+              case 'remove':
+                this.productsService.removeProduct(this.product.Id).subscribe(
+                  () => {
+                    this.toastr.success('Delete successful', 'Product delete successful');
+                    this.router.navigate(['main/products-all']);
+                    removeDialog.close();
+                  },
+                  (error: any) => {
+                    this.toastr.error('Delete failed', 'Product delete failed');
+                    console.log(error);
+                  }
+                );
+                break;
+            }
           }
         );
         break;

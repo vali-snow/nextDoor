@@ -192,7 +192,9 @@ export class OrdersComponent implements OnInit {
       width: '400px',
       data: {
         title: 'Cancel Order',
-        text: 'You are about to cancel the order. Continue?',
+        text: [
+          'You are about to cancel the order. Continue?'
+        ],
         withImage: false,
         dynamic: {
           filters: [
@@ -212,7 +214,7 @@ export class OrdersComponent implements OnInit {
             cancel: {
               order: 1,
               label: 'Ok',
-              icon: 'cancel',
+              icon: 'done',
               disabled: false,
             }
           }
