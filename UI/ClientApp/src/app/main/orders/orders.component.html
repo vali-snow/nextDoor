@@ -15,11 +15,11 @@
               <div>{{order.Product.Name}}</div>
             </div>
             <div class="subtitleRow" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-              <div fxFlex>
+              <div>
                 <b matTooltip="Status" matTooltipPosition="after">S:</b>
                 {{enums.typeToString('orderStatus', order.Status)}}
               </div>
-              <div fxFlex>
+              <div>
                 <b matTooltip="Type" matTooltipPosition="after">T:</b>
                 {{enums.typeToString('productType', order.Product.Type)}}
               </div>

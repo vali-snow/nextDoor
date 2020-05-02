@@ -1,7 +1,10 @@
 <mat-card class="height100" fxLayout="column">
   <mat-card-title>User Detail</mat-card-title>
-  <mat-card-content fxFlex class="overflow">
+  <mat-card-content fxFlex fxLayout="column">
     <app-form #filtersForm [rows]="rows"></app-form>
+    <hr>
+    <div class="aTitle">Activity</div>
+    <app-activity fxFlex class="overflow" [activity]="user.Activity"></app-activity>
   </mat-card-content>
   <mat-card-actions fxLayout="row" fxLayoutAlign="space-between stretch">
     <div fxFlex fxLayout="row">

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using API.Models;
@@ -21,12 +20,10 @@ namespace API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly EFContext context;
-        private readonly UserManager<User> userManager;
 
-        public ProductsController(EFContext context, UserManager<User> userManager)
+        public ProductsController(EFContext context)
         {
             this.context = context;
-            this.userManager = userManager;
         }
 
         [HttpGet("{id}")]
@@ -42,7 +39,9 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] ProductFilters filters)
         {
-            var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+            var user = context.Users
+                .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
+                .FirstOrDefault();
 
             return await context.Products
                 .Where(p => p.Status == ProductStatus.Listed)
@@ -60,12 +59,22 @@ namespace API.Controllers
             try
             {
                 var form = Request.Form;
-                var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+                var user = context.Users
+                    .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
+                    .Include(u => u.Activity)
+                    .FirstOrDefault();
                 var product = JsonSerializer.Deserialize<Product>(form["product"]);
 
                 if (ProductExists(product.Id))
                 {
                     context.Entry(product).State = EntityState.Modified;
+                    user.Activity.Add(new Activity()
+                    {
+                        Date = DateTime.Now,
+                        Type = ActivityType.ProductEdit,
+                        Message = $"Product edited:  {product.Name}",
+                        Reference = product.Id
+                    });
                 }
                 else
                 {
@@ -83,6 +92,13 @@ namespace API.Controllers
                             Image = memoryStream.ToArray()
                         });
                     }
+                    user.Activity.Add(new Activity()
+                    {
+                        Date = DateTime.Now,
+                        Type = ActivityType.ProductCreate,
+                        Message = $"Product created:  {product.Name}",
+                        Reference = product.Id
+                    });
                 }
                 await context.SaveChangesAsync();
                 return CreatedAtAction("GetProduct", new { id = product.Id }, product);
@@ -98,13 +114,26 @@ namespace API.Controllers
         {
             try
             {
+                var user = context.Users
+                    .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
+                    .Include(u => u.Activity)
+                    .FirstOrDefault();
                 var product = await context.Products.FindAsync(id);
+
                 if (product == null)
                 {
                     return NotFound();
                 }
 
                 product.Status = ProductStatus.Unlisted;
+                user.Activity.Add(new Activity()
+                {
+                    Date = DateTime.Now,
+                    Type = ActivityType.ProductRemove,
+                    Message = $"Product removed:  {product.Name}",
+                    Reference = product.Id
+                });
+
                 await context.SaveChangesAsync();
 
                 return NoContent();

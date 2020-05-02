@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using API.Models.Filters;
 using API.Models.Enums;
@@ -21,18 +20,18 @@ namespace API.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly EFContext context;
-        private readonly UserManager<User> userManager;
 
-        public OrdersController(EFContext context, UserManager<User> userManager)
+        public OrdersController(EFContext context)
         {
             this.context = context;
-            this.userManager = userManager;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders([FromQuery] OrderFilters filters)
         {
-            var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+            var user = context.Users
+                    .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
+                    .FirstOrDefault();
             return await context.Orders
                 .Where(o => filters.OrderStatus == null || o.Status == filters.OrderStatus)
                 .Where(o => filters.DateRange == null || (filters.DateRange.Begin < o.DatePlaced && o.DatePlaced < filters.DateRange.End))
@@ -67,13 +66,17 @@ namespace API.Controllers
         {
             try
             {
-                var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+                var buyer = context.Users
+                    .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
+                    .Include(u => u.Activity)
+                    .FirstOrDefault();
                 var product = context.Products
                     .Where(p => p.Id == orderDTO.ProductId)
                     .Include(p => p.Owner)
+                        .ThenInclude(o => o.Activity)
                     .Include(p => p.Images)
                     .FirstOrDefault();
-
+                var seller = product.Owner;
                 if (product.Quantity == 0)
                 {
                     return StatusCode(StatusCodes.Status403Forbidden, product);
@@ -91,7 +94,7 @@ namespace API.Controllers
                         Quantity = orderDTO.Quantity,
                         Status = OrderStatus.New,
                         Seller = product.Owner,
-                        Buyer = user,
+                        Buyer = buyer,
                         AdditionalDetail = new OrderDetail()
                         {
                             ProductImage = product.Images.FirstOrDefault(),
@@ -102,6 +105,21 @@ namespace API.Controllers
                         DatePlaced = DateTime.Now
                     };
                     context.Orders.Add(order);
+                    buyer.Activity.Add(new Activity()
+                    {
+                        Date = DateTime.Now,
+                        Type = ActivityType.OrderPlace,
+                        Message = $"Order placed: {product.Name}",
+                        Reference = order.Id
+                    });
+                    seller.Activity.Add(new Activity()
+                    {
+                        Date = DateTime.Now,
+                        Type = ActivityType.OrderPlace,
+                        Message = $"Order placed for one of your products:  {product.Name}",
+                        Reference = order.Id
+                    });
+
                     await context.SaveChangesAsync();
                     return CreatedAtAction("GetOrder", new { id = order.Id }, order);
                 }
@@ -115,17 +133,46 @@ namespace API.Controllers
         [HttpGet("Complete/{id}")]
         public async Task<ActionResult<Order>> CompleteOrder(Guid id)
         {
-            var order = context.Orders.Where(o => o.Id == id).FirstOrDefault();
+            var order = context.Orders
+                .Where(o => o.Id == id)
+                .Include(o => o.Product)
+                .Include(o => o.Seller)
+                    .ThenInclude(s => s.Activity)
+                .Include(o => o.Buyer)
+                    .ThenInclude(b => b.Activity)
+                .FirstOrDefault();
             if (order == null)
             {
                 return BadRequest();
             }
             else
             {
-                var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+                var user = context.Users
+                    .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
+                    .Include(u => u.Activity)
+                    .FirstOrDefault();
+                
                 order.Status = OrderStatus.Completed;
                 order.DateCompleted = DateTime.Now;
                 order.CompletedBy = $"{user.FirstName} {user.LastName}";
+
+                var seller = order.Seller;
+                var buyer = order.Buyer;
+
+                buyer.Activity.Add(new Activity()
+                {
+                    Date = DateTime.Now,
+                    Type = ActivityType.OrderReveive,
+                    Message = $"Order received: {order.Product.Name}",
+                    Reference = order.Id
+                });
+                seller.Activity.Add(new Activity()
+                {
+                    Date = DateTime.Now,
+                    Type = ActivityType.OrderFulfill,
+                    Message = $"Order fulfilled: {order.Product.Name}",
+                    Reference = order.Id
+                });
                 await context.SaveChangesAsync();
                 return Ok();
             }
@@ -134,7 +181,14 @@ namespace API.Controllers
         [HttpPost("Cancel/{id}")]
         public async Task<ActionResult<Order>> CancelOrder(Guid id, string reason)
         {
-            var order = context.Orders.Where(o => o.Id == id).FirstOrDefault();
+            var order = context.Orders
+                .Where(o => o.Id == id)
+                .Include( o => o.Product)
+                .Include(o => o.Seller)
+                    .ThenInclude(s => s.Activity)
+                .Include(o => o.Buyer)
+                    .ThenInclude(b => b.Activity)
+                .FirstOrDefault();
             if (order == null)
             {
                 return BadRequest();
@@ -143,7 +197,9 @@ namespace API.Controllers
             {
                 return BadRequest();
             }
-            var user = await userManager.FindByEmailAsync(this.User.FindFirst(ClaimTypes.Email).Value);
+            var user = context.Users
+                .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
+                .FirstOrDefault();
             order.Status = OrderStatus.Cancelled;
             order.DateCancelled = DateTime.Now;
             order.CancelledBy = $"{user.FirstName} {user.LastName}";
@@ -151,6 +207,24 @@ namespace API.Controllers
             {
                 order.ReasonCancelled = reason;
             }
+
+            var seller = order.Seller;
+            var buyer = order.Buyer;
+
+            buyer.Activity.Add(new Activity()
+            {
+                Date = DateTime.Now,
+                Type = ActivityType.OrderCancel,
+                Message = $"Order cancelled: {order.Product.Name}",
+                Reference = order.Id
+            });
+            seller.Activity.Add(new Activity()
+            {
+                Date = DateTime.Now,
+                Type = ActivityType.OrderCancel,
+                Message = $"Order cancelled: {order.Product.Name}",
+                Reference = order.Id
+            });
             await context.SaveChangesAsync();
             return Ok();
         }

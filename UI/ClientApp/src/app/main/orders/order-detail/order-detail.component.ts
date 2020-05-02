@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { DialogComponent } from '../../common/dialog/dialog.component';
 import { MatDialog } from '@angular/material';
 import { OrderStatus } from 'src/models/enums/order.status.enum';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-order-detail',
@@ -103,7 +104,7 @@ export class OrderDetailComponent implements OnInit {
         type: 'text',
         size: '30',
         disabled: true,
-        value: order.DatePlaced
+        value: formatDate(order.DatePlaced, 'mediumDate', 'en-us')
       },
     });
     if (order.DateCompleted) {

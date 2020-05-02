@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using API.Models;
+using API.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,14 +35,20 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(string id)
         {
+            var user = context.Users
+                .Where(u => u.Id == id)
+                .Include(u => u.Activity).FirstOrDefault();
+
             return await context.Users
                 .Where(u => u.Id == id)
+                .Include(u => u.Activity)
                 .Select(u => new User {
                     Id = u.Id,
                     FirstName= u.FirstName,
                     LastName = u.LastName,
                     Email = u.Email,
-                    PhoneNumber = u.PhoneNumber
+                    PhoneNumber = u.PhoneNumber,
+                    Activity = u.Activity
                 })
                 .FirstOrDefaultAsync();
         }
@@ -54,7 +62,14 @@ namespace API.Controllers
                 UserName = sent.Email,
                 FirstName = sent.FirstName,
                 LastName = sent.LastName,
-                Email = sent.Email
+                Email = sent.Email,
+                Activity = new List<Activity> {
+                    new Activity() {
+                        Date = DateTime.Now,
+                        Type = ActivityType.AccountCreate,
+                        Message = "Account created"
+                    }
+                }
             };
 
             try
@@ -98,7 +113,5 @@ namespace API.Controllers
                 return Unauthorized();
             }
         }
-
-
     }
 }

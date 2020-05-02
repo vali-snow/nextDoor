@@ -22,6 +22,7 @@ import { OrdersResolver } from './orders/orders.resolver';
 import { OrderDetailResolver } from './orders/order-detail/order-detail.resolver';
 import { UserDetailComponent } from './users/user-detail/user-detail.component';
 import { UserDetailResolver } from './users/user-detail/user-detail.resolver';
+import { ActivityComponent } from './users/activity/activity.component';
 
 const routes: Routes = [
   {
@@ -91,6 +92,7 @@ const routes: Routes = [
     Image9DialogComponent,
     OrdersComponent,
     UserDetailComponent,
+    ActivityComponent,
   ],
   imports: [
     CommonModule,

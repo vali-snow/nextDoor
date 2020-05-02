@@ -1,0 +1,7 @@
+<mat-nav-list>
+  <a mat-list-item *ngFor="let a of activity" (click)="onActivityClick(a.Type, a.Reference)">
+    <mat-icon matListIcon [color]="getColor(a.Type)">{{getIcon(a.Type)}}</mat-icon>
+    <input matInput type="datetime" disabled=true value="{{a.Date | date}}">
+    <input matInput type="text" disabled=true value="{{a.Message}}">
+  </a>
+</mat-nav-list>

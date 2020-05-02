@@ -11,11 +11,11 @@
         <mat-grid-tile *ngFor="let product of products">
           <div class="card" fxLayout="column" fxLayoutAlign=" stretch" fxLayoutGap="5px">
             <div class="titleRow" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-              <mat-icon>storefront</mat-icon>
+              <mat-icon>redeem</mat-icon>
               <div>{{product.Name}}</div>
             </div>
             <div class="subtitleRow" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-              <div fxFlex>
+              <div>
                 <b matTooltip="Type" matTooltipPosition="after">T:</b>
                 {{enums.typeToString('productType', product.Type)}}
               </div>

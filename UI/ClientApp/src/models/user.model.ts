@@ -1,3 +1,5 @@
+import { Activity } from './activity.model';
+
 export class User {
   Id?: string;
   FirstName?: string;
@@ -5,4 +7,5 @@ export class User {
   Email: string;
   Password: string;
   PhoneNumber?: string;
+  Activity: Activity[] = [];
 }

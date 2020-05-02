@@ -30,7 +30,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <!-- Interval -->
+          <!-- Date Interval -->
           <mat-form-field *ngSwitchCase="'interval'">
             <mat-label>{{filter.value.label}}</mat-label>
             <input matInput [formControlName]="filter.key" [satDatepicker]="picker">

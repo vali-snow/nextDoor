@@ -5,3 +5,12 @@
 .overflow {
   overflow: auto;
 }
+
+hr {
+  width: 100%;
+}
+
+.aTitle{
+  font-size: 24px;
+  font-weight: 500;
+}

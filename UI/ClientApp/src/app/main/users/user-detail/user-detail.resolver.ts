@@ -18,7 +18,8 @@ export class UserDetailResolver implements Resolve<any> {
           FirstName: u.FirstName,
           LastName: u.LastName,
           Email: u.Email,
-          PhoneNumber: u.PhoneNumber
+          PhoneNumber: u.PhoneNumber,
+          Activity: u.Activity
         } as User;
       }
     ));
