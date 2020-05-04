@@ -25,7 +25,6 @@ export class DashComponent implements OnInit {
 
   ngOnInit() {
     this.dash = this.route.snapshot.data.dash;
-    const newUserData = this.dash.Charts.Activity.NewUsers.map((value, key) =>  [key, 4, value]).filter((item) => item[2] !== 0);
 
     this.options.products = {
       tooltip: {
@@ -122,7 +121,7 @@ export class DashComponent implements OnInit {
       visualMap: [
         {
           type: 'continuous',
-          min: Math.min(...this.dash.Charts.Activity.NewUsers),
+          min: 1,
           max: Math.max(...this.dash.Charts.Activity.NewUsers),
           seriesIndex: 0,
           inRange: {
@@ -132,7 +131,7 @@ export class DashComponent implements OnInit {
         },
         {
           type: 'continuous',
-          min: Math.min(...this.dash.Charts.Activity.NewProducts),
+          min: 1,
           max: Math.max(...this.dash.Charts.Activity.NewProducts),
           seriesIndex: 1,
           inRange: {
@@ -142,11 +141,7 @@ export class DashComponent implements OnInit {
         },
         {
           type: 'continuous',
-          min: Math.min(
-            ...this.dash.Charts.Activity.NewOrders,
-            ...this.dash.Charts.Activity.CompletedOrders,
-            ...this.dash.Charts.Activity.CancelledOrders
-          ),
+          min: 1,
           max: Math.max(
             ...this.dash.Charts.Activity.NewOrders,
             ...this.dash.Charts.Activity.CompletedOrders,
