@@ -1,1 +1,77 @@
-<p>dash works!</p>
+<div class="height100" fxLayout="column" fxLayoutGap="5px">
+  <mat-card >
+    <mat-card-title>Summary</mat-card-title>
+  </mat-card>
+  <div fxLayout="row" fxLayoutAlign=" stretch" fxLayoutGap="5px">
+    <mat-card fxFlex>
+      <mat-card-title>Today</mat-card-title>
+      <mat-card-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+          <div fxFlex class="font16 blue">{{today.toLocaleString('default', { month: 'long' })}}</div>
+          <div fxFlex class="font24 red"><b>{{today.getDate()}}</b></div>
+          <div fxFlex class="font16 blue">{{today.getFullYear()}}</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card fxFlex fxLayout="column">
+      <mat-card-title>Users</mat-card-title>
+      <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+          <div class="font20">New:</div>
+          <div class="font20 red"><b>{{dash.Summary.Users.New}}</b></div>
+        </div>
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+          <div class="font20">Total:</div>
+          <div class="font20 blue"><b>{{dash.Summary.Users.Total}}</b></div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card fxFlex fxLayout="column">
+      <mat-card-title>Products</mat-card-title>
+      <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+          <div class="font20">New:</div>
+          <div class="font20 red"><b>{{dash.Summary.Products.New}}</b></div>
+        </div>
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+          <div class="font20">Total:</div>
+          <div class="font20 blue"><b>{{dash.Summary.Products.Total}}</b></div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card fxFlex fxLayout="column">
+      <mat-card-title>Orders</mat-card-title>
+      <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+          <div class="font20">New:</div>
+          <div class="font20 red"><b>{{dash.Summary.Orders.New}}</b></div>
+        </div>
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+          <div class="font20">Total:</div>
+          <div class="font20 blue"><b>{{dash.Summary.Orders.Total}}</b></div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <mat-card >
+    <mat-card-title>Charts</mat-card-title>
+  </mat-card>
+  <div fxFlex fxLayout="row" fxLayoutAlign=" stretch" fxLayoutGap="5px">
+    <mat-card fxFlex fxLayout="column">
+      <mat-card-title>Products</mat-card-title>
+      <mat-card-content fxFlex>
+        <div echarts [options]="options.products" class="height100"></div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card fxFlex fxLayout="column">
+      <mat-card-title>Orders</mat-card-title>
+      <mat-card-content fxFlex>
+        <div echarts [options]="options.orders" class="height100"></div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card fxFlex="50" fxLayout="column">
+      <mat-card-title>Activity</mat-card-title>
+      <mat-card-content fxFlex>
+        <div echarts [options]="options.activity" class="height100"></div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

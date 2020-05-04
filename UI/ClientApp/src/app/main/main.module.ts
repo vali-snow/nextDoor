@@ -23,13 +23,18 @@ import { OrderDetailResolver } from './orders/order-detail/order-detail.resolver
 import { UserDetailComponent } from './users/user-detail/user-detail.component';
 import { UserDetailResolver } from './users/user-detail/user-detail.resolver';
 import { ActivityComponent } from './users/activity/activity.component';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { DashResolver } from './dash/dash.resolver';
 
 const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
     children: [
-      { path: 'dash', component: DashComponent },
+      {
+        path: 'dash', component: DashComponent,
+        resolve: { dash: DashResolver }
+      },
       {
         path: 'products-all', component: ProductsComponent,
         resolve: { products: ProductsResolver },
@@ -100,6 +105,7 @@ const routes: Routes = [
     FlexLayoutModule,
     ReactiveFormsModule,
     FormsModule,
+    NgxEchartsModule,
     RouterModule.forChild(routes)
   ],
   entryComponents: [
@@ -112,7 +118,8 @@ const routes: Routes = [
     ProductDetailResolver,
     OrdersResolver,
     OrderDetailResolver,
-    UserDetailResolver
+    UserDetailResolver,
+    DashResolver
   ]
 })
 

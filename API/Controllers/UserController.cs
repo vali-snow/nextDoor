@@ -57,6 +57,7 @@ namespace API.Controllers
         [Route("register")]
         public async Task<IActionResult> RegisterUser(RegisterUserDTO sent)
         {
+            var now = DateTime.Now;
             var user = new User()
             {
                 UserName = sent.Email,
@@ -65,11 +66,12 @@ namespace API.Controllers
                 Email = sent.Email,
                 Activity = new List<Activity> {
                     new Activity() {
-                        Date = DateTime.Now,
+                        Date = now,
                         Type = ActivityType.AccountCreate,
                         Message = "Account created"
                     }
-                }
+                },
+                DateCreated = now
             };
 
             try

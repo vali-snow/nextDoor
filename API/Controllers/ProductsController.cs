@@ -79,6 +79,7 @@ namespace API.Controllers
                 else
                 {
                     product.Owner = user;
+                    product.DateCreated = DateTime.Now;
                     context.Products.Add(product);
                     foreach (var file in form.Files)
                     {

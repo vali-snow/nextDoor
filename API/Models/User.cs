@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace API.Models
@@ -8,5 +9,6 @@ namespace API.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public ICollection<Activity> Activity { get; set;}
+        public DateTime DateCreated { get; set; }
     }
 }

@@ -14,5 +14,6 @@ namespace API.Models
         public int Quantity { get; set; }
         public User Owner { get; set; }
         public ICollection<ImageDetail> Images { get; set; }
+        public DateTime DateCreated { get; set; }
     }
 }
