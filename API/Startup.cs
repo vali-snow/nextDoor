@@ -1,4 +1,5 @@
 using API.Data;
+using API.Engines;
 using API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -41,6 +42,7 @@ namespace API
                     .AddDefaultTokenProviders();
             
             services.AddDbContext<EFContext>(options => options.UseSqlServer(Configuration["ConnectionString:nextDoor"]));
+            services.AddScoped<ProductsEngine>();
             services.AddTransient<Seeder>();
 
             services.AddCors();

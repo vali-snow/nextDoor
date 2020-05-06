@@ -11,6 +11,7 @@ using API.Models.Filters;
 using API.Models.Enums;
 using System.Text.Json;
 using System.IO;
+using API.Engines;
 
 namespace API.Controllers
 {
@@ -20,37 +21,28 @@ namespace API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly EFContext context;
+        private readonly ProductsEngine engine;
 
-        public ProductsController(EFContext context)
+        public ProductsController(EFContext context, ProductsEngine engine)
         {
             this.context = context;
+            this.engine = engine;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(Guid id)
         {
-            return await context.Products
-                .Where(p => p.Id == id)
-                .Include(p => p.Owner)
-                .Include(p => p.Images)
-                .FirstOrDefaultAsync();
+            return await engine.GetProduct(id);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] ProductFilters filters)
+        public async Task<ActionResult<List<Product>>> GetProducts([FromQuery] ProductFilters filters)
         {
             var user = context.Users
                 .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
                 .FirstOrDefault();
 
-            return await context.Products
-                .Where(p => p.Status == ProductStatus.Listed)
-                .Where(p => filters.Search == null || p.Name.ToLower().Contains(filters.Search.ToLower()) || p.Description.ToLower().Contains(filters.Search.ToLower()))
-                .Where(p => filters.ProductType == null || p.Type == filters.ProductType)
-                .Include(p => p.Owner)
-                .Where(p => filters.IsOwner == null || p.Owner.Id == user.Id)
-                .Include(p => p.Images)
-                .ToListAsync();
+            return await engine.GetProducts(user, filters);
         }
 
         [HttpPost]
@@ -58,51 +50,28 @@ namespace API.Controllers
         {
             try
             {
-                var form = Request.Form;
                 var user = context.Users
                     .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
                     .Include(u => u.Activity)
                     .FirstOrDefault();
+                var form = Request.Form;
                 var product = JsonSerializer.Deserialize<Product>(form["product"]);
+                var images = new List<ImageDetail>();
+                foreach (var file in form.Files)
+                {
+                    using var memoryStream = new MemoryStream();
+                    await file.CopyToAsync(memoryStream);
+                    images.Add(new ImageDetail
+                    {
+                        ProductId = null,
+                        Description = file.FileName,
+                        Type = file.ContentType,
+                        Image = memoryStream.ToArray()
+                    });
+                }
 
-                if (ProductExists(product.Id))
-                {
-                    context.Entry(product).State = EntityState.Modified;
-                    user.Activity.Add(new Activity()
-                    {
-                        Date = DateTime.Now,
-                        Type = ActivityType.ProductEdit,
-                        Message = $"Product edited:  {product.Name}",
-                        Reference = product.Id
-                    });
-                }
-                else
-                {
-                    product.Owner = user;
-                    product.DateCreated = DateTime.Now;
-                    context.Products.Add(product);
-                    foreach (var file in form.Files)
-                    {
-                        using var memoryStream = new MemoryStream();
-                        await file.CopyToAsync(memoryStream);
-                        context.ImageDetails.Add(new ImageDetail
-                        {
-                            ProductId = product.Id,
-                            Description = file.FileName,
-                            Type = file.ContentType,
-                            Image = memoryStream.ToArray()
-                        });
-                    }
-                    user.Activity.Add(new Activity()
-                    {
-                        Date = DateTime.Now,
-                        Type = ActivityType.ProductCreate,
-                        Message = $"Product created:  {product.Name}",
-                        Reference = product.Id
-                    });
-                }
-                await context.SaveChangesAsync();
-                return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+                var result = engine.PostProduct(user, product, images);
+                return CreatedAtAction("GetProduct", new { id = result.Id }, result);                
             }
             catch (Exception ex)
             {
@@ -111,7 +80,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(Guid id)
+        public IActionResult DeleteProduct(Guid id)
         {
             try
             {
@@ -119,36 +88,23 @@ namespace API.Controllers
                     .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
                     .Include(u => u.Activity)
                     .FirstOrDefault();
-                var product = await context.Products.FindAsync(id);
 
-                if (product == null)
+                var result = engine.DeleteProduct(user, id);
+                if (result)
+                {
+                    return NoContent();
+                }
+                else
                 {
                     return NotFound();
                 }
 
-                product.Status = ProductStatus.Removed;
-                user.Activity.Add(new Activity()
-                {
-                    Date = DateTime.Now,
-                    Type = ActivityType.ProductRemove,
-                    Message = $"Product removed:  {product.Name}",
-                    Reference = product.Id
-                });
-
-                await context.SaveChangesAsync();
-
-                return NoContent();
             }
             catch (Exception ex)
             {
-                return StatusCode(500,ex.Message);
+                return StatusCode(500, ex.Message);
             }
-            
-        }
 
-        private bool ProductExists(Guid id)
-        {
-            return context.Products.Any(p => p.Id == id);
         }
     }
 }
