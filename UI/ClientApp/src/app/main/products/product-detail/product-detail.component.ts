@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ProductsService } from '../products.service';
 import { EnumService } from 'src/app/core/service/enum.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,13 +8,16 @@ import { ToastrService } from 'ngx-toastr';
 import { OrdersService } from '../../orders/orders.service';
 import { DialogComponent } from '../../common/dialog/dialog.component';
 import { MatDialog } from '@angular/material';
+import { formatDate } from '@angular/common';
+import { ProductStatus } from 'src/models/enums/product.status.enum';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailComponent implements OnInit, OnDestroy {
   rows = [];
   buttons = {};
   product: Product;
@@ -26,22 +29,35 @@ export class ProductDetailComponent implements OnInit {
   };
 
   private backURL = 'main/dash';
+  private subscriptions: Subscription[] = [];
 
   @ViewChild('filtersForm', { static: false }) filtersForm: FormComponent;
   constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog,
-              private productsService: ProductsService, private ordersService: OrdersService,
-              private enums: EnumService, private toastr: ToastrService) {
+    private productsService: ProductsService, private ordersService: OrdersService,
+    private enums: EnumService, private toastr: ToastrService) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state && navigation.extras.state.backURL) {
       this.backURL = this.router.getCurrentNavigation().extras.state.backURL;
     }
+    this.subscriptions.push(
+      this.route.data.subscribe((data: any) => {
+        this.product = data.product;
+      })
+    );
   }
 
   ngOnInit() {
-    this.product = this.route.snapshot.data.product;
+    this.onInit();
+  }
+
+  onInit() {
     this.backupEditableValues(this.product);
     this.generateFormTemplate(this.product);
     this.generateButtons(this.product);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach((sub: Subscription) => sub.unsubscribe());
   }
 
   backupEditableValues(product: Product) {
@@ -53,25 +69,38 @@ export class ProductDetailComponent implements OnInit {
   }
 
   generateFormTemplate(product: Product) {
-    this.rows = [
-      {
-        name: {
-          label: 'Name',
-          type: 'text',
-          size: '60',
-          disabled: true,
-          value: product.Name
-        },
-        seller: {
-          label: 'Seller',
-          type: 'text',
-          size: '40',
-          disabled: true,
-          value: product.Owner.FirstName + ' ' + product.Owner.LastName
-        }
+    this.rows = [];
+    this.rows.push({
+      name: {
+        order: 1,
+        label: 'Name',
+        type: 'text',
+        size: '60',
+        disabled: true,
+        value: product.Name
       },
+      orderStatus: {
+        order: 2,
+        label: 'Product Status',
+        type: 'select',
+        size: '20',
+        disabled: true,
+        options: this.enums.getKeysFromEnum('productStatus'),
+        value: product.Status.toString()
+      },
+      seller: {
+        order: 3,
+        label: 'Seller',
+        type: 'text',
+        size: '20',
+        disabled: true,
+        value: product.Owner.FirstName + ' ' + product.Owner.LastName
+      }
+    });
+    this.rows.push(
       {
         productType: {
+          order: 4,
           label: 'Type',
           type: 'text',
           size: '50',
@@ -79,65 +108,77 @@ export class ProductDetailComponent implements OnInit {
           value: this.enums.typeToString('productType', product.Type)
         },
         quantity: {
+          order: 5,
           label: 'Quantity',
           type: 'number',
-          size: '50',
+          size: '20',
           disabled: true,
           value: product.Quantity,
           minValue: product.Quantity
-        }
-      },
-      {
-        description: {
-          label: 'Description',
-          type: 'textarea',
-          size: '100',
-          rows: 7,
+        },
+        dateCreated: {
+          order: 6,
+          label: 'Date Created',
+          type: 'text',
+          size: '30',
           disabled: true,
-          value: product.Description
+          value: formatDate(product.DateCreated, 'mediumDate', 'en-us')
         }
       }
-    ];
+    );
+    this.rows.push({
+      description: {
+        order: 7,
+        label: 'Description',
+        type: 'textarea',
+        size: '100',
+        rows: 7,
+        disabled: true,
+        value: product.Description
+      }
+    });
   }
 
   generateButtons(product: Product) {
-    const userId = localStorage.getItem('userId');
-    if (product.Owner.Id === userId) {
-      this.buttons = {
-        save: {
-          order: 1,
-          label: 'Save',
-          icon: 'save',
-          disabled: true,
-        },
-        edit: {
-          order: 2,
-          label: 'Edit',
-          icon: 'edit',
-          disabled: false,
-        },
-        copy: {
-          order: 3,
-          label: 'Copy',
-          icon: 'file_copy',
-          disabled: false
-        },
-        remove: {
-          order: 4,
-          label: 'Remove',
-          icon: 'remove_circle',
-          disabled: false,
-        }
-      };
-    } else {
-      this.buttons = {
-        order: {
-          order: 1,
-          label: 'Order',
-          icon: 'save',
-          disabled: false,
-        }
-      };
+    if (product.Status !== ProductStatus.Removed) {
+      const userId = localStorage.getItem('userId');
+      if (product.Owner.Id === userId) {
+        this.buttons = {
+          save: {
+            order: 1,
+            label: 'Save',
+            icon: 'save',
+            disabled: true,
+          },
+          edit: {
+            order: 2,
+            label: 'Edit',
+            icon: 'edit',
+            disabled: false,
+          },
+          copy: {
+            order: 3,
+            label: 'Copy',
+            icon: 'file_copy',
+            disabled: false
+          },
+          remove: {
+            order: 4,
+            label: 'Remove',
+            icon: 'remove_circle',
+            disabled: false,
+          }
+        };
+      } else {
+        this.buttons = {
+          order: {
+            order: 1,
+            label: 'Order',
+            icon: 'save',
+            disabled: false,
+          }
+        };
+      }
     }
   }
 
@@ -206,7 +247,9 @@ export class ProductDetailComponent implements OnInit {
                 this.productsService.removeProduct(this.product.Id).subscribe(
                   () => {
                     this.toastr.success('Delete successful', 'Product delete successful');
-                    this.router.navigate(['main/products-all']);
+                    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                      this.router.navigate(['main/product-detail', this.product.Id], { state: { backURL: 'main/products-all' } });
+                    });
                     removeDialog.close();
                   },
                   (error: any) => {

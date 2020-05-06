@@ -8,4 +8,5 @@ export class User {
   Password: string;
   PhoneNumber?: string;
   Activity: Activity[] = [];
+  DateCreated?: Date;
 }

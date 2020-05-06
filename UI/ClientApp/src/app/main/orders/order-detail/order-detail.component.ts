@@ -115,7 +115,7 @@ export class OrderDetailComponent implements OnInit {
           type: 'text',
           size: '50',
           disabled: true,
-          value: order.DateCompleted
+          value: formatDate(order.DateCompleted, 'mediumDate', 'en-us')
         },
         completedBy: {
           order: 2,
@@ -135,7 +135,7 @@ export class OrderDetailComponent implements OnInit {
           type: 'text',
           size: '25',
           disabled: true,
-          value: order.DateCompleted
+          value: formatDate(order.DateCancelled, 'mediumDate', 'en-us')
         },
         completedBy: {
           order: 2,
@@ -143,15 +143,16 @@ export class OrderDetailComponent implements OnInit {
           type: 'text',
           size: '25',
           disabled: true,
-          value: order.CompletedBy
+          value: order.CancelledBy
         },
         reasonCancelled: {
           order: 3,
           label: 'Reason Cancelled',
-          type: 'text',
+          type: 'textarea',
           size: '50',
+          rows: 1,
           disabled: true,
-          value: order.CompletedBy
+          value: order.ReasonCancelled
         }
       });
     }

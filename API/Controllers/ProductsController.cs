@@ -126,7 +126,7 @@ namespace API.Controllers
                     return NotFound();
                 }
 
-                product.Status = ProductStatus.Unlisted;
+                product.Status = ProductStatus.Removed;
                 user.Activity.Add(new Activity()
                 {
                     Date = DateTime.Now,

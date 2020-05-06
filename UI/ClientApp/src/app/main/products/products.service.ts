@@ -156,7 +156,9 @@ export class ProductsService {
               (received: Product) => {
                 newProductDialogRef.close();
                 this.toastr.success('Save successful', 'Product added successful');
-                this.router.navigate(['main/product-detail', received.Id], { state: { backURL: 'main/products-all' } });
+                this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                  this.router.navigate(['main/product-detail', received.Id], { state: { backURL: 'main/products-all' } });
+                });
               },
               (error: any) => {
                 this.toastr.error('Save failed', 'Product add failed');
@@ -316,7 +318,7 @@ export class ProductsService {
             const values = orderProductDialogRef.componentInstance.getFormValues();
             const orderDTO = {
               ProductId: orderProductDialogRef.componentInstance.data.product.Id,
-              Quantity: values['quantity'],
+              Quantity: Number(values['quantity']),
               ContactName: values['contactName'],
               ContactPhone: values['contactPhone'],
               ContactAddress: values['contactAddress']

@@ -74,7 +74,7 @@ namespace API.Controllers
             };
             for (int i = 0; i < 10; i++)
             {
-                var day = DateTime.Today.AddDays(9 - i);
+                var day = DateTime.Today.AddDays(-9 + i);
                 activityDTO.NewUsers.Add(context.Users.Where(u => u.DateCreated.Date == day.Date).Count());
                 activityDTO.NewProducts.Add(context.Products.Where(p => p.DateCreated.Date == day.Date).Count());
                 activityDTO.NewOrders.Add(context.Orders.Where(o => o.DatePlaced.Date == day.Date).Count());

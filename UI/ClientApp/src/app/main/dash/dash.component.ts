@@ -16,16 +16,15 @@ export class DashComponent implements OnInit {
     orders: EChartOption,
     activity: EChartOption
   } = {
-      products: undefined,
-      orders: undefined,
-      activity: undefined
-    };
+    products: undefined,
+    orders: undefined,
+    activity: undefined
+  };
 
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.dash = this.route.snapshot.data.dash;
-
     this.options.products = {
       tooltip: {
         trigger: 'item',
@@ -159,7 +158,7 @@ export class DashComponent implements OnInit {
           name: 'Users',
           type: 'heatmap',
           data: [
-            ...this.dash.Charts.Activity.NewUsers.map((value, key) =>  [key, 4, value]).filter((item) => item[2] !== 0)
+            ...this.dash.Charts.Activity.NewUsers.map((value, key) => [key, 4, value]).filter((item) => item[2] !== 0)
           ],
           label: {
             show: true
@@ -175,7 +174,7 @@ export class DashComponent implements OnInit {
           name: 'Products',
           type: 'heatmap',
           data: [
-            ...this.dash.Charts.Activity.NewProducts.map((value, key) =>  [key, 3, value]).filter((item) => item[2] !== 0)
+            ...this.dash.Charts.Activity.NewProducts.map((value, key) => [key, 3, value]).filter((item) => item[2] !== 0)
           ],
           label: {
             show: true
@@ -191,9 +190,9 @@ export class DashComponent implements OnInit {
           name: 'Orders',
           type: 'heatmap',
           data: [
-            ...this.dash.Charts.Activity.NewOrders.map((value, key) =>  [key, 2, value]).filter((item) => item[2] !== 0),
-            ...this.dash.Charts.Activity.CompletedOrders.map((value, key) =>  [key, 1, value]).filter((item) => item[2] !== 0),
-            ...this.dash.Charts.Activity.CancelledOrders.map((value, key) =>  [key, 0, value]).filter((item) => item[2] !== 0)
+            ...this.dash.Charts.Activity.NewOrders.map((value, key) => [key, 2, value]).filter((item) => item[2] !== 0),
+            ...this.dash.Charts.Activity.CompletedOrders.map((value, key) => [key, 1, value]).filter((item) => item[2] !== 0),
+            ...this.dash.Charts.Activity.CancelledOrders.map((value, key) => [key, 0, value]).filter((item) => item[2] !== 0)
           ],
           label: {
             show: true
