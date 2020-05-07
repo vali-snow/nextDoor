@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using API.Engines;
 using API.Models;
-using API.Models.Enums;
+using API.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,69 +17,37 @@ namespace API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly EFContext context;
+        private readonly UsersEngine engine;
         private readonly UserManager<User> userManager;
-        private readonly SignInManager<User> signInManager;
         private readonly AppSettings appSettings;
 
-        public UserController(EFContext context, UserManager<User> userManager, SignInManager<User> signInManager, IOptions<AppSettings> appSettings)
+        public UserController(UsersEngine engine, UserManager<User> userManager, IOptions<AppSettings> appSettings)
         {
-            this.context = context;
+            this.engine = engine;
             this.userManager = userManager;
-            this.signInManager = signInManager;
             this.appSettings = appSettings.Value;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(string id)
+        public UserDTO GetUser(Guid id)
         {
-            var user = context.Users
-                .Where(u => u.Id == id)
-                .Include(u => u.Activity).FirstOrDefault();
 
-            return await context.Users
-                .Where(u => u.Id == id)
-                .Include(u => u.Activity)
-                .Select(u => new User {
-                    Id = u.Id,
-                    FirstName= u.FirstName,
-                    LastName = u.LastName,
-                    Email = u.Email,
-                    PhoneNumber = u.PhoneNumber,
-                    Activity = u.Activity
-                })
-                .FirstOrDefaultAsync();
+            return engine.GetUser(id);
+                
         }
 
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> RegisterUser(RegisterUserDTO sent)
         {
-            var now = DateTime.Now;
-            var user = new User()
-            {
-                UserName = sent.Email,
-                FirstName = sent.FirstName,
-                LastName = sent.LastName,
-                Email = sent.Email,
-                Activity = new List<Activity> {
-                    new Activity() {
-                        Date = now,
-                        Type = ActivityType.AccountCreate,
-                        Message = "Account created"
-                    }
-                },
-                DateCreated = now
-            };
-
             try
             {
-                var result = await userManager.CreateAsync(user, sent.Password);
+                var result = await engine.RegisterUser(sent);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex;
+                return StatusCode(500, ex.Message);
             }
         }
 

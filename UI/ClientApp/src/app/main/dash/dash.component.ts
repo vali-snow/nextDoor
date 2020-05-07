@@ -213,7 +213,7 @@ export class DashComponent implements OnInit {
     const day = new Date();
     day.setDate(day.getDate() - 9);
     for (let i = 0; i < 10; i++) {
-      last10.push(`${day.getDate()}.${day.getMonth()}`);
+      last10.push(`${day.getDate()}.${day.getMonth() + 1}`);
       day.setDate(day.getDate() + 1);
     }
     return last10;

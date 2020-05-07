@@ -1,12 +1,10 @@
 ﻿using API.Models;
 using API.Models.Enums;
 using API.Models.Filters;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace API.Engines
 {
@@ -18,25 +16,28 @@ namespace API.Engines
             this.context = context;
         }
 
-        public Task<Product> GetProduct(Guid id)
+        public Product GetProduct(Guid id)
         {
             return context.Products
                 .Where(p => p.Id == id)
                 .Include(p => p.Owner)
+                    .ThenInclude(o => o.Activity)
                 .Include(p => p.Images)
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
         }
 
-        public Task<List<Product>> GetProducts(User user, ProductFilters filters)
+        public List<Product> GetProducts(User user, ProductFilters filters)
         {
             return context.Products
-                    .Where(p => p.Status == ProductStatus.Listed)
-                    .Where(p => filters.Search == null || p.Name.ToLower().Contains(filters.Search.ToLower()) || p.Description.ToLower().Contains(filters.Search.ToLower()))
-                    .Where(p => filters.ProductType == null || p.Type == filters.ProductType)
-                    .Include(p => p.Owner)
-                    .Where(p => filters.IsOwner == null || p.Owner.Id == user.Id)
-                    .Include(p => p.Images)
-                    .ToListAsync();
+                .AsNoTracking()
+                .Where(p => p.Status == ProductStatus.Listed)
+                .Where(p => filters.Search == null || p.Name.ToLower().Contains(filters.Search.ToLower()) || p.Description.ToLower().Contains(filters.Search.ToLower()))
+                .Where(p => filters.ProductType == null || p.Type == filters.ProductType)
+                .Include(p => p.Owner)
+                    .ThenInclude(o => o.Activity)
+                .Where(p => filters.IsOwner == null || p.Owner.Id == user.Id)
+                .Include(p => p.Images)
+                .ToList();
         }
 
         public Product PostProduct(User user, Product product, List<ImageDetail> images, DateTime? date = null)
@@ -66,15 +67,10 @@ namespace API.Engines
                     i.ProductId = product.Id;
                 });
                 product.Images = images;
-                user.Activity.Add(new Activity()
-                {
-                    Date = date.Value,
-                    Type = ActivityType.ProductCreate,
-                    Message = $"Product created:  {product.Name}",
-                    Reference = product.Id
-                });
+
+                user.Activity.Add(new Activity() { Date = date.Value, Type = ActivityType.ProductCreate, Message = $"Product created:  {product.Name}", Reference = product.Id });
             }
-            context.SaveChangesAsync();
+            context.SaveChanges();
             return product;
         }
 
@@ -97,15 +93,9 @@ namespace API.Engines
             }
 
             product.Status = ProductStatus.Removed;
-            user.Activity.Add(new Activity()
-            {
-                Date = date.Value,
-                Type = ActivityType.ProductRemove,
-                Message = $"Product removed:  {product.Name}",
-                Reference = product.Id
-            });
+            user.Activity.Add(new Activity() { Date = date.Value, Type = ActivityType.ProductRemove, Message = $"Product removed:  {product.Name}", Reference = product.Id });
 
-            context.SaveChangesAsync();
+            context.SaveChanges();
             return true;
         }
     }

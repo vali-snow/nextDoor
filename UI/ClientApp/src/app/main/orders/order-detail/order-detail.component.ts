@@ -66,7 +66,7 @@ export class OrderDetailComponent implements OnInit {
         type: 'text',
         size: '30',
         disabled: true,
-        value: order.Product.Owner.FirstName + order.Product.Owner.LastName
+        value: order.Seller.FirstName + order.Seller.LastName
       }
     });
     this.rows.push({

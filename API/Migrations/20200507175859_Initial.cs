@@ -209,7 +209,7 @@ namespace API.Migrations
                     Description = table.Column<string>(nullable: true),
                     Type = table.Column<string>(nullable: true),
                     Image = table.Column<byte[]>(nullable: true),
-                    ProductId = table.Column<Guid>(nullable: false)
+                    ProductId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -219,7 +219,7 @@ namespace API.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

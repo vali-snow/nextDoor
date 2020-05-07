@@ -140,7 +140,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   }
 
   generateButtons(product: Product) {
-    if (product.Status !== ProductStatus.Removed) {
+    if (product.Status === ProductStatus.Listed) {
       const userId = localStorage.getItem('userId');
       if (product.Owner.Id === userId) {
         this.buttons = {

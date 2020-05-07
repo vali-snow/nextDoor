@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using API.Models;
 using API.Models.Filters;
-using API.Models.Enums;
 using System.Text.Json;
 using System.IO;
 using API.Engines;
@@ -20,47 +16,41 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly EFContext context;
         private readonly ProductsEngine engine;
+        private readonly UsersEngine uEngine;
 
-        public ProductsController(EFContext context, ProductsEngine engine)
+        public ProductsController(ProductsEngine engine, UsersEngine uEngine)
         {
-            this.context = context;
             this.engine = engine;
+            this.uEngine = uEngine;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(Guid id)
+        public Product GetProduct(Guid id)
         {
-            return await engine.GetProduct(id);
+            return engine.GetProduct(id);
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts([FromQuery] ProductFilters filters)
+        public List<Product> GetProducts([FromQuery] ProductFilters filters)
         {
-            var user = context.Users
-                .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
-                .FirstOrDefault();
-
-            return await engine.GetProducts(user, filters);
+            var user = uEngine.GetUser(this.User.FindFirst(ClaimTypes.Email).Value);
+            return engine.GetProducts(user, filters);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct()
+        public IActionResult PostProduct()
         {
             try
             {
-                var user = context.Users
-                    .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
-                    .Include(u => u.Activity)
-                    .FirstOrDefault();
+                var user = uEngine.GetUser(this.User.FindFirst(ClaimTypes.Email).Value);
                 var form = Request.Form;
                 var product = JsonSerializer.Deserialize<Product>(form["product"]);
                 var images = new List<ImageDetail>();
                 foreach (var file in form.Files)
                 {
                     using var memoryStream = new MemoryStream();
-                    await file.CopyToAsync(memoryStream);
+                    file.CopyTo(memoryStream);
                     images.Add(new ImageDetail
                     {
                         ProductId = null,
@@ -84,10 +74,7 @@ namespace API.Controllers
         {
             try
             {
-                var user = context.Users
-                    .Where(u => u.Email == this.User.FindFirst(ClaimTypes.Email).Value)
-                    .Include(u => u.Activity)
-                    .FirstOrDefault();
+                var user = uEngine.GetUser(this.User.FindFirst(ClaimTypes.Email).Value);
 
                 var result = engine.DeleteProduct(user, id);
                 if (result)

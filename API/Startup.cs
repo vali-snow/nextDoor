@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Text;
 
 namespace API
@@ -42,7 +41,9 @@ namespace API
                     .AddDefaultTokenProviders();
             
             services.AddDbContext<EFContext>(options => options.UseSqlServer(Configuration["ConnectionString:nextDoor"]));
+            services.AddScoped<UsersEngine>();
             services.AddScoped<ProductsEngine>();
+            services.AddScoped<OrdersEngine>();
             services.AddTransient<Seeder>();
 
             services.AddCors();
