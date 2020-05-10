@@ -37,8 +37,8 @@ export class LoginComponent implements OnInit {
       (data: any) => {
         localStorage.setItem('userId', data.userId);
         localStorage.setItem('authToken', data.token);
-        this.toastr.success('Login successful', 'Login successful');
         this.router.navigate(['main/dash']);
+        this.toastr.success('Login successful', 'Login successful');
       },
       (error) => {
         if (error.status === 401) {

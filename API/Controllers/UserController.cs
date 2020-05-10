@@ -38,11 +38,11 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> RegisterUser(RegisterUserDTO sent)
+        public IActionResult RegisterUser(RegisterUserDTO sent)
         {
             try
             {
-                var result = await engine.RegisterUser(sent);
+                var result = engine.RegisterUser(sent);
                 return Ok(result);
             }
             catch (Exception ex)

@@ -1,9 +1,13 @@
-﻿using API.Models;
+﻿using API.Engines;
+using API.Models;
 using API.Models.Enums;
+using API.Models.Resources;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace API.Data
@@ -11,153 +15,454 @@ namespace API.Data
     public class Seeder
     {
         private readonly EFContext context;
-        private readonly UserManager<User> userManager;
-
-        public Seeder(EFContext context, UserManager<User> userManager)
+        private readonly UsersEngine uEngine;
+        private readonly ProductsEngine pEngine;
+        private readonly OrdersEngine oEngine;
+        public Seeder(EFContext context, UsersEngine uEngine, ProductsEngine pEngine, OrdersEngine oEngine)
         {
             this.context = context;
-            this.userManager = userManager;
+            this.uEngine = uEngine;
+            this.pEngine = pEngine;
+            this.oEngine = oEngine;
         }
 
-        public async Task SeedAsync()
+        public void Seed()
         {
-            await SeedUsers();
-            await SeedProducts();
-            await SeedOrders();
+            SeedUsers();
+            SeedProductsAndOrders();
         }
 
-        private async Task SeedUsers()
+        private void SeedUsers()
         {
-            if (userManager.Users.Count() == 0)
+            if (context.Users.Count() == 0)
             {
-                var admin = await userManager.FindByEmailAsync("valens@admin.com");
-                if (admin == null)
-                {
-                    admin = new User() { UserName = "valens@admin.com", FirstName = "valen", LastName = "s", Email = "valens@admin.com", PhoneNumber = "0770777777" };
-                    var result = await userManager.CreateAsync(admin, "111");
-                    if (result != IdentityResult.Success)
-                    {
-                        throw new InvalidOperationException("Seeder: Could not create admin");
-                    }
-                }
+                var uRegister = new List<IdentityResult>() {
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Valentin", LastName = "Sarghi", Email = "valens@admin.com", Password = "111" }, DateTime.Today.AddDays(-9)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Clarence", LastName = "Charlton", Email = "Clarence.Charlton@email.com", Password = "111" }, DateTime.Today.AddDays(-8)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kairon", LastName = "Lester", Email = "Kairon.Lester@email.com", Password = "111" }, DateTime.Today.AddDays(-8)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Gemma", LastName = "Ferreira", Email = "Gemma.Ferreira@email.com", Password = "111" }, DateTime.Today.AddDays(-6)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Misbah", LastName = "Hanson", Email = "Misbah.Hanson@email.com", Password = "111" }, DateTime.Today.AddDays(-6)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Donte", LastName = "Sykes", Email = "Donte.Sykes@email.com", Password = "111" }, DateTime.Today.AddDays(-6)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Tyler", LastName = "Rasmussen", Email = "Tyler.Rasmussen@email.com", Password = "111" }, DateTime.Today.AddDays(-5)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kiya", LastName = "Montoya", Email = "Kiya.Montoya@email.com", Password = "111" }, DateTime.Today.AddDays(-5)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Bradley", LastName = "Shea", Email = "Bradley.Shea@email.com", Password = "111" }, DateTime.Today.AddDays(-5)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Sania", LastName = "Holden", Email = "Sania.Holden@email.com", Password = "111" }, DateTime.Today.AddDays(-3)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kerri", LastName = "Robles", Email = "Kerri.Robles@email.com", Password = "111" }, DateTime.Today.AddDays(-3)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Tessa", LastName = "Sparrow", Email = "Tessa.Sparrow@email.com", Password = "111" }, DateTime.Today.AddDays(-3)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Khloe", LastName = "Correa", Email = "Khloe.Correa@email.com", Password = "111" }, DateTime.Today.AddDays(-3)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Reef", LastName = "Frank", Email = "Reef.Frank@email.com", Password = "111" }, DateTime.Today.AddDays(-2)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Bobbie", LastName = "Hall", Email = "Bobbie.Hall@email.com", Password = "111" }, DateTime.Today.AddDays(-1)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Damian", LastName = "Dale", Email = "Damian.Dale@email.com", Password = "111" }, DateTime.Today.AddDays(-1)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Lorena", LastName = "Lovell", Email = "Lorena.Lovell@email.com", Password = "111" }, DateTime.Today),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kelly", LastName = "Chung", Email = "Kelly.Chung@email.com", Password = "111" }, DateTime.Today),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Charlton", LastName = "Hendricks", Email = "Charlton.Hendricks@email.com", Password = "111" }, DateTime.Today),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Rubie", LastName = "Gill", Email = "Rubie.Gill@email.com", Password = "111" }, DateTime.Today),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Thiago", LastName = "Gonzalez", Email = "Thiago.Gonzalez@email.com", Password = "111" }, DateTime.Today),
+                };
 
-                var user1 = await userManager.FindByEmailAsync("bot1@user.com");
-                if (user1 == null)
+                if (uRegister.Any(registration => registration.Succeeded != true))
                 {
-                    user1 = new User() { UserName = "bot1@user.com", FirstName = "one", LastName = "bot", Email = "bot1@user.com", PhoneNumber = "0770111111" };
-                    var result = await userManager.CreateAsync(user1, "111");
-                    if (result != IdentityResult.Success)
-                    {
-                        throw new InvalidOperationException("Seeder: Could not create user1");
-                    }
-                }
-
-                var user2 = await userManager.FindByEmailAsync("bot2@user.com");
-                if (user2 == null)
-                {
-                    user2 = new User() { UserName = "bot2@user.com", FirstName = "two", LastName = "bot", Email = "bot2@user.com", PhoneNumber = "0770222222" };
-                    var result = await userManager.CreateAsync(user2, "222");
-                    if (result != IdentityResult.Success)
-                    {
-                        throw new InvalidOperationException("Seeder: Could not create user2");
-                    }
+                    throw new InvalidOperationException("Seeder: Error while creating users");
                 }
             }
+
         }
 
-        private async Task SeedProducts()
+        private void SeedProductsAndOrders()
         {
             if (context.Products.Count() == 0)
             {
-                var admin = await userManager.FindByEmailAsync("valens@admin.com");
-                var user1 = await userManager.FindByEmailAsync("bot1@user.com");
-                var user2 = await userManager.FindByEmailAsync("bot2@user.com");
-                var products = new List<Product>()
-                {
-                    new Product() { Status = ProductStatus.Listed, Name = "G1 Name", Description = "G1 Description", Type = ProductType.Good, Owner = admin, Quantity = 1 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G2 Name", Description = "G2 Description", Type = ProductType.Good, Owner = admin, Quantity = 2 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G3 Name", Description = "G3 Description", Type = ProductType.Good, Owner = admin, Quantity = 3 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G4 Name", Description = "G4 Description", Type = ProductType.Good, Owner = user1, Quantity = 4 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G5 Name", Description = "G5 Description", Type = ProductType.Good, Owner = user1, Quantity = 5 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G6 Name", Description = "G6 Description", Type = ProductType.Good, Owner = user1, Quantity = 6 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G7 Name", Description = "G7 Description", Type = ProductType.Good, Owner = user2, Quantity = 7 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G8 Name", Description = "G8 Description", Type = ProductType.Good, Owner = user2, Quantity = 8 },
-                    new Product() { Status = ProductStatus.Listed, Name = "G9 Name", Description = "G9 Description", Type = ProductType.Good, Owner = user2, Quantity = 9 },
-                    new Product() { Status = ProductStatus.Listed, Name = "S1 Name", Description = "S1 Description", Type = ProductType.Service, Owner = admin },
-                    new Product() { Status = ProductStatus.Listed, Name = "S2 Name", Description = "S2 Description", Type = ProductType.Service, Owner = user1 },
-                    new Product() { Status = ProductStatus.Listed, Name = "S3 Name", Description = "S3 Description", Type = ProductType.Service, Owner = user2 },
-                };
-                context.Products.AddRange(products);
-                context.SaveChanges();
-            }
-        }
+                // Seed Products
+                var userValentin = uEngine.GetUser("valens@admin.com");
+                var userClarence = uEngine.GetUser("Clarence.Charlton@email.com");
+                var userKairon = uEngine.GetUser("Kairon.Lester@email.com");
+                var userGemma = uEngine.GetUser("Gemma.Ferreira@email.com");
+                var userMisbah = uEngine.GetUser("Misbah.Hanson@email.com");
+                var userDonte = uEngine.GetUser("Donte.Sykes@email.com");
+                var userTyler = uEngine.GetUser("Tyler.Rasmussen@email.com");
+                var userKiya = uEngine.GetUser("Kiya.Montoya@email.com");
+                var userBradley = uEngine.GetUser("Bradley.Shea@email.com");
+                var userSania = uEngine.GetUser("Sania.Holden@email.com");
+                var userKerri = uEngine.GetUser("Kerri.Robles@email.com");
+                var userTessa = uEngine.GetUser("Tessa.Sparrow@email.com");
+                var userKhloe = uEngine.GetUser("Khloe.Correa@email.com");
+                var userReef = uEngine.GetUser("Reef.Frank@email.com");
+                var userBobbie = uEngine.GetUser("Bobbie.Hall@email.com");
+                var userDamian = uEngine.GetUser("Damian.Dale@email.com");
+                var userLorena = uEngine.GetUser("Lorena.Lovell@email.com");
+                var userKelly = uEngine.GetUser("Kelly.Chung@email.com");
+                var userCharlton = uEngine.GetUser("Charlton.Hendricks@email.com");
+                var userRubie = uEngine.GetUser("Rubie.Gill@email.com");
+                var userThiago = uEngine.GetUser("Thiago.Gonzalez@email.com");
 
-        private async Task SeedOrders()
-        {
-            if (context.Orders.Count() == 0)
-            {
-                var admin = await userManager.FindByEmailAsync("valens@admin.com");
-                var user1 = await userManager.FindByEmailAsync("bot1@user.com");
-                var user2 = await userManager.FindByEmailAsync("bot2@user.com");
+                string jsonString;
+                ProductResource product;
 
-                var product1 = context.Products.Where(p1 => p1.Name == "G1 Name").FirstOrDefault();
-                if (product1 != null)
-                {
-                    var orders = new List<Order>()
+                jsonString = System.IO.File.ReadAllText(@".\Data\productChicken.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productChicken = pEngine.PostProduct(
+                    userClarence,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
                     {
-                        new Order ()
-                        {
-                            Product = product1, Quantity = 2, Status = OrderStatus.New, Seller = product1.Owner, Buyer = user1, DatePlaced = DateTime.UtcNow,
-                            AdditionalDetail = new OrderDetail { ContactName = "user3", ContactPhone = "0770333333", ContactAddress = "Str. X3" }
-                        },
-                        new Order ()
-                        {
-                            Product = product1, Quantity = 2, Status = OrderStatus.New, Seller = product1.Owner, Buyer = user2, DatePlaced = DateTime.UtcNow,
-                            AdditionalDetail = new OrderDetail { ContactName = "user4", ContactPhone = "0770444444", ContactAddress = "Str. X4" }
-                        },
-                    };
-                    context.Orders.AddRange(orders);
-                }
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-8)
+                );
 
-                var product2 = context.Products.Where(p1 => p1.Name == "G4 Name").FirstOrDefault();
-                if (product2 != null)
-                {
-                    var orders = new List<Order>()
+                jsonString = System.IO.File.ReadAllText(@".\Data\productCurd.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productCurd = pEngine.PostProduct(
+                    userKairon,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
                     {
-                        new Order ()
-                        {
-                            Product = product2, Quantity = 2, Status = OrderStatus.New, Seller = product2.Owner, Buyer = admin, DatePlaced = DateTime.UtcNow,
-                            AdditionalDetail = new OrderDetail { ContactName = "admin", ContactPhone = "0770777777", ContactAddress = "Str. X7" }
-                        },
-                        new Order ()
-                        {
-                            Product = product2, Quantity = 2, Status = OrderStatus.New, Seller = product2.Owner, Buyer = user2, DatePlaced = DateTime.UtcNow,
-                            AdditionalDetail = new OrderDetail { ContactName = "user4", ContactPhone = "0770444444", ContactAddress = "Str. X4" }
-                        },
-                    };
-                    context.Orders.AddRange(orders);
-                }
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-7)
+                );
 
-                var product3 = context.Products.Where(p1 => p1.Name == "G7 Name").FirstOrDefault();
-                if (product3 != null)
-                {
-                    var orders = new List<Order>()
+                jsonString = System.IO.File.ReadAllText(@".\Data\productHoney.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productHoney = pEngine.PostProduct(
+                    userGemma,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
                     {
-                        new Order ()
-                        {
-                            Product = product3, Quantity = 2, Status = OrderStatus.New, Seller = product3.Owner, Buyer = admin, DatePlaced = DateTime.UtcNow,
-                            AdditionalDetail = new OrderDetail { ContactName = "admin", ContactPhone = "0770777777", ContactAddress = "Str. X7" }
-                        },
-                        new Order ()
-                        {
-                            Product = product3, Quantity = 2, Status = OrderStatus.New, Seller = product3.Owner, Buyer = user2, DatePlaced = DateTime.UtcNow,
-                            AdditionalDetail = new OrderDetail { ContactName = "user3", ContactPhone = "0770333333", ContactAddress = "Str. X3" }
-                        },
-                    };
-                    context.Orders.AddRange(orders);
-                }
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-6)
+                );
 
-                context.SaveChanges();
+                jsonString = System.IO.File.ReadAllText(@".\Data\productApplePie.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productApplePie = pEngine.PostProduct(
+                    userMisbah,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-6)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productSweetBread.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productSweetBread = pEngine.PostProduct(
+                    userDonte,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-6)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productGreenSpaceMaintenance.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productGreenSpaceMaintenance = pEngine.PostProduct(
+                    userValentin,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-9)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productBread.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productBread = pEngine.PostProduct(
+                    userTyler,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-5)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productCabbageVineRolls.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productCabbageVineRolls = pEngine.PostProduct(
+                    userKiya,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-4)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productStrawberries.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productStrawberries = pEngine.PostProduct(
+                    userBradley,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-3)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productFilledNutsCookies.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productFilledNutsCookies = pEngine.PostProduct(
+                    userSania,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-3)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productGardenSet.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productGardenSet = pEngine.PostProduct(
+                    userKerri,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-3)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productNailSaloon.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productNailSaloon = pEngine.PostProduct(
+                    userTessa,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-2)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productFriedChicken.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productFriedChicken = pEngine.PostProduct(
+                    userKhloe,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-1)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productCleanupServices.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productCleanupServices = pEngine.PostProduct(
+                    userReef,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-1)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productLandscaping.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productLandscaping = pEngine.PostProduct(
+                    userBobbie,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-1)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productFlowerBouquets.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productFlowerBouquets = pEngine.PostProduct(
+                    userDamian,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today.AddDays(-1)
+                );
+
+                jsonString = System.IO.File.ReadAllText(@".\Data\productTomatoSeedlings.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productTomatoSeedlings = pEngine.PostProduct(
+                    userLorena,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today
+                );
+                
+                jsonString = System.IO.File.ReadAllText(@".\Data\productMiniHouse.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productMiniHouse = pEngine.PostProduct(
+                    userKelly,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today
+                );
+                
+                jsonString = System.IO.File.ReadAllText(@".\Data\productStrawberryCake.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productStrawberryCake = pEngine.PostProduct(
+                    userCharlton,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today
+                );
+                
+                jsonString = System.IO.File.ReadAllText(@".\Data\productGirlHeadbands.json");
+                product = JsonConvert.DeserializeObject<ProductResource>(jsonString);
+                var productGirlHeadbands = pEngine.PostProduct(
+                    userRubie,
+                    new Product() { Name = product.Name, Type = product.Type, Quantity = product.Quantity, Price = product.Price, Description = product.Description },
+                    product.Images.Select(i => new ImageDetail()
+                    {
+                        Description = i.Description,
+                        Type = i.Type,
+                        Image = Convert.FromBase64String(i.Image)
+                    }).ToList(),
+                    DateTime.Today
+                );
+
+                //Seed Orders
+                // To fulfill admin
+                var orderGreenSpaceMaintenance1 = oEngine.PlaceOrder(userClarence, new Models.DTOs.OrderDTO() {
+                    ProductId = productGreenSpaceMaintenance.Id,
+                    Quantity = 1,
+                    ContactName = $"{userClarence.FirstName} {userClarence.LastName}",
+                    ContactAddress = "Ethernet Str.",
+                    ContactPhone = "0770111111"
+                }, DateTime.Today.AddDays(-8));
+                var orderGreenSpaceMaintenance2 = oEngine.PlaceOrder(userKairon, new Models.DTOs.OrderDTO() {
+                    ProductId = productGreenSpaceMaintenance.Id,
+                    Quantity = 1,
+                    ContactName = $"{userKairon.FirstName} {userKairon.LastName}",
+                    ContactAddress = "Ethernet Str.",
+                    ContactPhone = "0770111111"
+                }, DateTime.Today.AddDays(-7));
+                var orderGreenSpaceMaintenance3 = oEngine.PlaceOrder(userGemma, new Models.DTOs.OrderDTO() {
+                    ProductId = productGreenSpaceMaintenance.Id,
+                    Quantity = 1,
+                    ContactName = $"{userGemma.FirstName} {userGemma.LastName}",
+                    ContactAddress = "Ethernet Str.",
+                    ContactPhone = "0770111111"
+                }, DateTime.Today.AddDays(-6));
+                var orderGreenSpaceMaintenance4 = oEngine.PlaceOrder(userMisbah, new Models.DTOs.OrderDTO() {
+                    ProductId = productGreenSpaceMaintenance.Id,
+                    Quantity = 1,
+                    ContactName = $"{userMisbah.FirstName} {userMisbah.LastName}",
+                    ContactAddress = "Ethernet Str.",
+                    ContactPhone = "0770111111"
+                }, DateTime.Today.AddDays(-6));
+                var orderGreenSpaceMaintenance5 = oEngine.PlaceOrder(userDonte, new Models.DTOs.OrderDTO()
+                {
+                    ProductId = productGreenSpaceMaintenance.Id,
+                    Quantity = 1,
+                    ContactName = $"{userDonte.FirstName} {userDonte.LastName}",
+                    ContactAddress = "Ethernet Str.",
+                    ContactPhone = "0770111111"
+                }, DateTime.Today.AddDays(-5));
+                var orderGreenSpaceMaintenance6 = oEngine.PlaceOrder(userTyler, new Models.DTOs.OrderDTO()
+                {
+                    ProductId = productGreenSpaceMaintenance.Id,
+                    Quantity = 1,
+                    ContactName = $"{userTyler.FirstName} {userTyler.LastName}",
+                    ContactAddress = "Ethernet Str.",
+                    ContactPhone = "0770111111"
+                }, DateTime.Today.AddDays(-4));
+
+                oEngine.CompleteOrder(userValentin, orderGreenSpaceMaintenance1.Id, DateTime.Today.AddDays(-7));
+                oEngine.CompleteOrder(userValentin, orderGreenSpaceMaintenance2.Id, DateTime.Today.AddDays(-6));
+                oEngine.CompleteOrder(userValentin, orderGreenSpaceMaintenance3.Id, DateTime.Today.AddDays(-5));
+                oEngine.CancelOrder(userMisbah, orderGreenSpaceMaintenance4.Id, "No longer required", DateTime.Today.AddDays(-5));
+
+                // To receive admin
+                var orderChicken = oEngine.PlaceOrder(userValentin, new Models.DTOs.OrderDTO()
+                {
+                    ProductId = productChicken.Id,
+                    Quantity = 2,
+                    ContactName = $"{userValentin.FirstName} {userValentin.LastName}",
+                    ContactAddress = "Ethernet Str.",
+                    ContactPhone = "0770111111"
+                }, DateTime.Today.AddDays(-3));
+                var orderApplePie = oEngine.PlaceOrder(userValentin, new Models.DTOs.OrderDTO()
+                {
+                    ProductId = productApplePie.Id,
+                    Quantity = 1,
+                    ContactName = $"{userValentin.FirstName} {userValentin.LastName}",
+                    ContactAddress = "Ethernet Str.",
+                    ContactPhone = "0770111111"
+                }, DateTime.Today.AddDays(-3));
+                var orderFriedChicken = oEngine.PlaceOrder(userValentin, new Models.DTOs.OrderDTO()
+                {
+                    ProductId = productFriedChicken.Id,
+                    Quantity = 1,
+                    ContactName = $"{userValentin.FirstName} {userValentin.LastName}",
+                    ContactAddress = "Ethernet Str.",
+                    ContactPhone = "0770111111"
+                }, DateTime.Today.AddDays(-1));
+                var orderFlowerBouquets = oEngine.PlaceOrder(userValentin, new Models.DTOs.OrderDTO()
+                {
+                    ProductId = productFlowerBouquets.Id,
+                    Quantity = 1,
+                    ContactName = $"{userValentin.FirstName} {userValentin.LastName}",
+                    ContactAddress = "Ethernet Str.",
+                    ContactPhone = "0770111111"
+                }, DateTime.Today);
             }
         }
     }

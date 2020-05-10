@@ -23,6 +23,10 @@
     <Compile Remove="Migrations\20200504133544_Initial.Designer.cs" />
     <Compile Remove="Migrations\20200507163900_Initial.cs" />
     <Compile Remove="Migrations\20200507163900_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20200507175859_Initial.cs" />
+    <Compile Remove="Migrations\20200507175859_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20200508180025_Initial.cs" />
+    <Compile Remove="Migrations\20200508180025_Initial.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +38,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>

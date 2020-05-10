@@ -84,6 +84,7 @@ namespace API.Engines
             {
                 Product = product,
                 Quantity = orderDTO.Quantity,
+                Total = orderDTO.Quantity * product.Price,
                 Status = OrderStatus.New,
                 Seller = product.Owner,
                 Buyer = buyer,
@@ -126,11 +127,25 @@ namespace API.Engines
                 return null;
             }
             order.Status = OrderStatus.Cancelled;
-            order.DateCancelled = DateTime.Now;
+            order.DateCancelled = date;
             order.CancelledBy = $"{user.FirstName} {user.LastName}";
             if (reason != null)
             {
                 order.ReasonCancelled = reason;
+            }
+            if (order.Product.Type == ProductType.Good) {
+                switch (order.Product.Status)
+                {
+                    case ProductStatus.Listed:
+                        order.Product.Quantity += order.Quantity;
+                        break;
+                    case ProductStatus.OutOfStock:
+                        order.Product.Quantity += order.Quantity;
+                        order.Product.Status = ProductStatus.Listed;
+                        break;
+                    case ProductStatus.Removed:
+                        break;
+                }
             }
 
             order.Seller.Activity.Add(new Activity() { Date = date.Value, Type = ActivityType.OrderCancel, Message = $"Order cancelled: {order.Product.Name}", Reference = order.Id });

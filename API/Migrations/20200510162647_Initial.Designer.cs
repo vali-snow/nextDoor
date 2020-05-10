@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20200507175859_Initial")]
+    [Migration("20200510162647_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,6 +116,9 @@ namespace API.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
+                    b.Property<double>("Total")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AdditionalDetailId");
@@ -171,6 +174,9 @@ namespace API.Migrations
 
                     b.Property<string>("OwnerId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");

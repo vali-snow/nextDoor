@@ -15,7 +15,7 @@ namespace API
             using (var scope = host.Services.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var seeder = scope.ServiceProvider.GetService<Seeder>();
-                seeder.SeedAsync().Wait();
+                seeder.Seed();
             }
 
             host.Run();

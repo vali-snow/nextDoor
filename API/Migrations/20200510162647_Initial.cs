@@ -187,6 +187,7 @@ namespace API.Migrations
                     Description = table.Column<string>(nullable: true),
                     Type = table.Column<int>(nullable: false),
                     Quantity = table.Column<int>(nullable: false),
+                    Price = table.Column<double>(nullable: false),
                     OwnerId = table.Column<string>(nullable: true),
                     DateCreated = table.Column<DateTime>(nullable: false)
                 },
@@ -250,6 +251,7 @@ namespace API.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     ProductId = table.Column<Guid>(nullable: true),
                     Quantity = table.Column<int>(nullable: false),
+                    Total = table.Column<double>(nullable: false),
                     Status = table.Column<int>(nullable: true),
                     SellerId = table.Column<string>(nullable: true),
                     BuyerId = table.Column<string>(nullable: true),

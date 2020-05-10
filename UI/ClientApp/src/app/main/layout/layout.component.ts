@@ -50,4 +50,9 @@ export class LayoutComponent {
   onMyProfileClick() {
     this.router.navigate(['main/user-detail', localStorage.getItem('userId')], { state: { backURL: 'main/dash' } });
   }
+
+  onLogoutClick() {
+    localStorage.clear();
+    this.router.navigate(['auth/login']);
+  }
 }

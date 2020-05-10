@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace API.Engines
 {
@@ -46,7 +45,7 @@ namespace API.Engines
                 .FirstOrDefault();
         }
 
-        public async Task<IdentityResult> RegisterUser(RegisterUserDTO sent, DateTime? date = null)
+        public IdentityResult RegisterUser(RegisterUserDTO sent, DateTime? date = null)
         {
             if (date.HasValue == false)
             {
@@ -69,7 +68,7 @@ namespace API.Engines
                 DateCreated = date.Value
             };
 
-            return await userManager.CreateAsync(user, sent.Password);
+            return userManager.CreateAsync(user, sent.Password).Result;
         }
     }
 }

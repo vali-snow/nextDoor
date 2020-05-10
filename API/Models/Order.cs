@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Models
 {
@@ -7,6 +8,9 @@ namespace API.Models
         public Guid Id { get; set; }
         public Product Product { get; set; }
         public int Quantity { get; set; }
+        [RegularExpression(@"^\d+\.\d{0,2}$")]
+        [Range(0, 9999999999999.99)]
+        public double Total { get; set; }
         public OrderStatus? Status { get; set; }
         public User? Seller { get; set; }
         public User? Buyer { get; set; }

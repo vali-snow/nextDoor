@@ -114,6 +114,9 @@ namespace API.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
+                    b.Property<double>("Total")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AdditionalDetailId");
@@ -169,6 +172,9 @@ namespace API.Migrations
 
                     b.Property<string>("OwnerId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
