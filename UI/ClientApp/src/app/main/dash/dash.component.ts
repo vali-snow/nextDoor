@@ -97,6 +97,15 @@ export class DashComponent implements OnInit {
     };
 
     this.options.activity = {
+      tooltip: {
+        trigger: 'item',
+        formatter: function  (params: any, ticket, callback) {
+          const number = Number.parseInt(params.data[2]);
+          const unit = number === 1 ? params.seriesName.slice(0, -1) : params.seriesName;
+          const date = params.name;
+          return `${date}:</br>${number} ${unit}`;
+        }
+      },
       grid: {
         top: 5,
         right: 5,
@@ -112,7 +121,7 @@ export class DashComponent implements OnInit {
       },
       yAxis: {
         type: 'category',
-        data: ['NewUsers', 'New Products', 'New Orders', 'Completed Orders', 'Cancelled Orders'].reverse(),
+        data: ['New Users', 'New Products', 'New Orders', 'Completed Orders', 'Cancelled Orders'].reverse(),
         splitArea: {
           show: true
         }
@@ -213,7 +222,9 @@ export class DashComponent implements OnInit {
     const day = new Date();
     day.setDate(day.getDate() - 9);
     for (let i = 0; i < 10; i++) {
-      last10.push(`${day.getDate()}.${day.getMonth() + 1}`);
+      const mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(day);
+      const da = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(day);
+      last10.push(`${mo} ${da}`);
       day.setDate(day.getDate() + 1);
     }
     return last10;
