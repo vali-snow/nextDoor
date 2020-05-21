@@ -23,6 +23,7 @@ export class ActivityComponent implements OnInit {
       case 'ProductCreate':
       case 'OrderPlace':
         return 'basic';
+      case 'AccountUpdate':
       case 'ProductEdit':
       case 'OrderReveive':
       case 'OrderFulfill':
@@ -36,6 +37,7 @@ export class ActivityComponent implements OnInit {
   getIcon(type: ActivityType) {
     switch (this.enums.typeToString('activityType', type)) {
       case 'AccountCreate':
+      case 'AccountUpdate':
         return 'account_box';
       case 'ProductCreate':
       case 'ProductEdit':
@@ -53,6 +55,7 @@ export class ActivityComponent implements OnInit {
     const userId = localStorage.getItem('userId');
     switch (this.enums.typeToString('activityType', type)) {
       case 'AccountCreate':
+      case 'AccountUpdate':
         break;
       case 'ProductCreate':
       case 'ProductEdit':

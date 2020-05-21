@@ -29,17 +29,17 @@ namespace API.Controllers
                 {
                     Users = new DashSummaryNewTotalDTO()
                     {
-                        New = context.Users.Where(u => DateTime.Today.AddDays(-29) < u.DateCreated.Date && u.DateCreated.Date <= DateTime.Today).Count(),
+                        New = context.Users.Where(u => DateTime.Today.AddDays(-9) <= u.DateCreated.Date && u.DateCreated.Date <= DateTime.Today).Count(),
                         Total = context.Users.Count()
                     },
                     Products = new DashSummaryNewTotalDTO()
                     {
-                        New = context.Products.Where(p => DateTime.Today.AddDays(-29) < p.DateCreated.Date && p.DateCreated.Date <= DateTime.Today).Count(),
+                        New = context.Products.Where(p => DateTime.Today.AddDays(-9) <= p.DateCreated.Date && p.DateCreated.Date <= DateTime.Today).Count(),
                         Total = context.Products.Count()
                     },
                     Orders = new DashSummaryNewTotalDTO()
                     {
-                        New = context.Orders.Where(o => DateTime.Today.AddDays(-29) < o.DatePlaced.Date && o.DatePlaced.Date <= DateTime.Today).Count(),
+                        New = context.Orders.Where(o => DateTime.Today.AddDays(-9) <= o.DatePlaced.Date && o.DatePlaced.Date <= DateTime.Today).Count(),
                         Total = context.Orders.Count()
                     }
                 },

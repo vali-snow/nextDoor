@@ -8,6 +8,7 @@ namespace API.Models.Enums
     public enum ActivityType
     {
         AccountCreate,
+        AccountUpdate,
         ProductCreate,
         ProductEdit,
         ProductRemove,

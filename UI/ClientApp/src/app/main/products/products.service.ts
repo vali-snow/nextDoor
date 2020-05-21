@@ -155,13 +155,13 @@ export class ProductsService {
             this.saveProduct(prod, images).subscribe(
               (received: Product) => {
                 newProductDialogRef.close();
-                this.toastr.success('Save successful', 'Product added successful');
+                this.toastr.success('Product added successful', 'Save successful');
                 this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
                   this.router.navigate(['main/product-detail', received.Id], { state: { backURL: 'main/products-all' } });
                 });
               },
               (error: any) => {
-                this.toastr.error('Save failed', 'Product add failed');
+                this.toastr.error('Product add failed', 'Save failed');
                 console.log(error);
               }
             );
@@ -326,11 +326,11 @@ export class ProductsService {
             this.ordersService.saveOrder(orderDTO).subscribe(
               (received: Order) => {
                 orderProductDialogRef.close();
-                this.toastr.success('Save successful', 'Order added successful');
+                this.toastr.success('Order added successful', 'Save successful');
                 this.router.navigate(['main/order-detail', received.Id], { state: { backURL: 'main/orders-to-receive' } });
               },
               (error: any) => {
-                this.toastr.error('Save failed', 'Order failed');
+                this.toastr.error('Order failed', 'Save failed');
                 console.log(error);
               }
             );

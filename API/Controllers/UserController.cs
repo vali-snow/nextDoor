@@ -51,6 +51,21 @@ namespace API.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("update")]
+        public IActionResult UpdateUser(User user)
+        {
+            try
+            {
+                var result = engine.UpdateUser(user);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
         [HttpPost]
         [Route("login")]

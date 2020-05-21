@@ -58,6 +58,7 @@ namespace API.Engines
                 FirstName = sent.FirstName,
                 LastName = sent.LastName,
                 Email = sent.Email,
+                PhoneNumber = sent.PhoneNumber,
                 Activity = new List<Activity> {
                     new Activity() {
                         Date = date.Value,
@@ -69,6 +70,31 @@ namespace API.Engines
             };
 
             return userManager.CreateAsync(user, sent.Password).Result;
+        }
+
+        public User UpdateUser(User user, DateTime? date = null)
+        {
+            if (date.HasValue == false)
+            {
+                date = DateTime.Now;
+            }
+
+            var storedUser = context.Users
+                .Where(u => u.Id == user.Id)
+                .Include(u => u.Activity)
+                .FirstOrDefault();
+            storedUser.FirstName = user.FirstName;
+            storedUser.LastName = user.LastName;
+            storedUser.PhoneNumber = user.PhoneNumber;
+            storedUser.Activity.Add(new Activity()
+            {
+                Date = date.Value,
+                Type = ActivityType.AccountUpdate,
+                Message = "Account updated"
+            });
+            context.SaveChanges();
+
+            return storedUser;
         }
     }
 }

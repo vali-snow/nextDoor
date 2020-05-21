@@ -14,4 +14,8 @@ export class UsersService {
   getUser(id: string): Observable<User> {
     return this.http.get<User>(`https://localhost:44377/api/User/${id}`).pipe(single());
   }
+
+  saveUser(user: User) {
+    return this.http.post<User>('https://localhost:44377/api/User/update', user).pipe(single());
+  }
 }

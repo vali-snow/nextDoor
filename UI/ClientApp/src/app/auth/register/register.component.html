@@ -9,7 +9,7 @@
       <mat-form-field>
         <input matInput type="text" placeholder="First Name" [formControl]="registerFormGroup.get('firstName')" [errorStateMatcher]="matcher">
         <mat-error *ngIf="registerFormGroup.get('firstName').hasError('minlength')">
-            Please enter a username with length grater than 7.
+            Please enter a first name with length grater than 3.
         </mat-error>
         <mat-error *ngIf="registerFormGroup.get('firstName').hasError('required')">
           Username is <strong>required</strong>
@@ -18,7 +18,7 @@
       <mat-form-field>
         <input matInput type="text" placeholder="Last Name" [formControl]="registerFormGroup.get('lastName')" [errorStateMatcher]="matcher">
         <mat-error *ngIf="registerFormGroup.get('lastName').hasError('minlength')">
-            Please enter a username with length grater than 7.
+            Please enter a last name with length grater than 3.
         </mat-error>
         <mat-error *ngIf="registerFormGroup.get('lastName').hasError('required')">
           Username is <strong>required</strong>
@@ -31,6 +31,15 @@
         </mat-error>
         <mat-error *ngIf="registerFormGroup.get('email').hasError('required')">
           Email is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="phoneNumber" placeholder="Phone Number" [formControl]="registerFormGroup.get('phoneNumber')" [errorStateMatcher]="matcher">
+        <mat-error *ngIf="(registerFormGroup.get('phoneNumber').hasError('pattern') || registerFormGroup.get('phoneNumber').hasError('minlength')) && !registerFormGroup.get('phoneNumber').hasError('required')">
+          Please enter a valid phone number. Minimum 3 digits.
+        </mat-error>
+        <mat-error *ngIf="registerFormGroup.get('phoneNumber').hasError('required')">
+          Phone number is <strong>required</strong>
         </mat-error>
       </mat-form-field>
       <mat-form-field>

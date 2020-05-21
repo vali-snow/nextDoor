@@ -191,10 +191,10 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             this.product = prod;
             this.backupEditableValues(this.product);
             this.editable = false;
-            this.toastr.success('Save successful', 'Product save successful');
+            this.toastr.success('Product save successful', 'Save successful');
           },
           (error: any) => {
-            this.toastr.error('Save failed', 'Product save failed');
+            this.toastr.error('Product save failed', 'Save failed');
             console.log(error);
           }
         );
@@ -246,14 +246,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
               case 'remove':
                 this.productsService.removeProduct(this.product.Id).subscribe(
                   () => {
-                    this.toastr.success('Delete successful', 'Product delete successful');
+                    this.toastr.success('Product delete successful', 'Delete successful');
                     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
                       this.router.navigate(['main/product-detail', this.product.Id], { state: { backURL: 'main/products-all' } });
                     });
                     removeDialog.close();
                   },
                   (error: any) => {
-                    this.toastr.error('Delete failed', 'Product delete failed');
+                    this.toastr.error('Product delete failed', 'Delete failed');
                     console.log(error);
                   }
                 );

@@ -1,5 +1,6 @@
 export enum ActivityType {
   AccountCreate,
+  AccountUpdate,
   ProductCreate,
   ProductEdit,
   ProductRemove,
