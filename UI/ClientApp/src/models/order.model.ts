@@ -7,6 +7,7 @@ export class Order {
   Id?: string;
   Product: Product;
   Quantity: number;
+  Total: number;
   Status?: OrderStatus;
   Seller?: User;
   Buyer?: User;

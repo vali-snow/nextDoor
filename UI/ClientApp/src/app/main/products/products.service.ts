@@ -80,10 +80,10 @@ export class ProductsService {
             },
             {
               productType: {
-                order: 2,
+                order: 1,
                 label: 'Type',
                 type: 'select',
-                size: '50',
+                size: '40',
                 disabled: false,
                 options: this.enums.getKeysFromEnum('productType'),
                 validation: {
@@ -92,21 +92,34 @@ export class ProductsService {
                 value: product ? product.Type.toString() : '0'
               },
               quantity: {
-                order: 3,
+                order: 2,
                 label: 'Quantity',
                 type: 'number',
-                size: '50',
+                size: '30',
                 disabled: false,
                 validation: {
                   required: true,
                   minValue: 1
                 },
                 value: product ? product.Quantity : 1
+              },
+              price: {
+                order: 3,
+                label: 'Price',
+                type: 'number',
+                size: '30',
+                disabled: false,
+                validation: {
+                  required: true,
+                  minValue: 0
+                },
+                currency: 'euro',
+                value: product ? product.Price : 1
               }
             },
             {
               description: {
-                order: 4,
+                order: 1,
                 label: 'Description',
                 type: 'textarea',
                 size: '100',
@@ -150,7 +163,8 @@ export class ProductsService {
               Name: values['name'],
               Description: values['description'],
               Type: Number(values['productType']),
-              Quantity: Number(values['quantity'])
+              Quantity: Number(values['quantity']),
+              Price: Number(values['price'])
             } as Product;
             this.saveProduct(prod, images).subscribe(
               (received: Product) => {
@@ -200,7 +214,7 @@ export class ProductsService {
                 order: 1,
                 label: 'Name',
                 type: 'text',
-                size: '50',
+                size: '40',
                 disabled: true,
                 value: product.Name
               },
@@ -208,13 +222,22 @@ export class ProductsService {
                 order: 2,
                 label: 'Type',
                 type: 'select',
-                size: '30',
+                size: '20',
                 disabled: true,
                 options: this.enums.getKeysFromEnum('productType'),
                 value: product.Type.toString()
               },
-              availableqty: {
+              price: {
                 order: 3,
+                label: 'Price',
+                type: 'number',
+                size: '20',
+                disabled: true,
+                value: product.Price,
+                currency: 'euro'
+              },
+              availableqty: {
+                order: 4,
                 label: 'Available',
                 type: 'number',
                 size: '20',

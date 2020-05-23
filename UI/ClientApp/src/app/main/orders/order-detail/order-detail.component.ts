@@ -94,15 +94,24 @@ export class OrderDetailComponent implements OnInit {
         order: 2,
         label: 'Quantity',
         type: 'number',
-        size: '30',
+        size: '20',
         disabled: true,
         value: order.Quantity
       },
-      datePlaced: {
+      totalPrice: {
         order: 3,
+        label: 'Estimated Total',
+        type: 'number',
+        size: '20',
+        disabled: true,
+        value: order.Total,
+        currency: 'euro'
+      },
+      datePlaced: {
+        order: 4,
         label: 'Date Placed',
         type: 'text',
-        size: '30',
+        size: '20',
         disabled: true,
         value: formatDate(order.DatePlaced, 'mediumDate', 'en-us')
       },

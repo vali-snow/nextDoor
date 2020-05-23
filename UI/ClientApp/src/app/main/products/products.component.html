@@ -19,8 +19,11 @@
                 <b matTooltip="Type" matTooltipPosition="after">T:</b>
                 {{enums.typeToString('productType', product.Type)}}
               </div>
-              <div fxFlex [hidden]="enums.typeToString('productType', product.Type) == 'Service'">
+              <div [hidden]="enums.typeToString('productType', product.Type) == 'Service'">
                 <b matTooltip="Quantity" matTooltipPosition="after">Q:</b> {{product.Quantity}}
+              </div>
+              <div fxFlex>
+                <b matTooltip="Price" matTooltipPosition="after">P:</b> {{product.Price}} €
               </div>
             </div>
             <div class="imageRow" fxLayout="row" fxLayoutAlign="center center" [ngSwitch]="product.Images.length">

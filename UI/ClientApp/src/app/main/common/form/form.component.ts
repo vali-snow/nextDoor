@@ -18,11 +18,14 @@ export class FormComponent implements OnInit {
     if (this.rows) {
       this.rows.forEach((row: any[]) => {
         Object.keys(row).forEach((key: string) => {
-          switch (key) {
+          switch (row[key].type) {
             case 'placeholder':
               break;
             case 'select':
               formGroup[key] = new FormControl(row[key].value || '', this.getValidators(row[key].validation));
+              break;
+            case 'number':
+              formGroup[key] = new FormControl(row[key].value, this.getValidators(row[key].validation));
               break;
             default:
               formGroup[key] = new FormControl(row[key].value || '', this.getValidators(row[key].validation));

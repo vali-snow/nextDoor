@@ -100,15 +100,15 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     this.rows.push(
       {
         productType: {
-          order: 4,
+          order: 1,
           label: 'Type',
           type: 'text',
-          size: '50',
+          size: '30',
           disabled: true,
           value: this.enums.typeToString('productType', product.Type)
         },
         quantity: {
-          order: 5,
+          order: 2,
           label: 'Quantity',
           type: 'number',
           size: '20',
@@ -116,8 +116,17 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
           value: product.Quantity,
           minValue: product.Quantity
         },
+        price: {
+          order: 3,
+          label: 'Price',
+          type: 'number',
+          size: '20',
+          disabled: true,
+          value: product.Price,
+          currency: 'euro',
+        },
         dateCreated: {
-          order: 6,
+          order: 4,
           label: 'Date Created',
           type: 'text',
           size: '30',

@@ -10,6 +10,7 @@ export class Product {
   Description: string;
   Type: ProductType;
   Quantity: number;
+  Price: number;
   Owner?: User;
   Images: ImageDetail[];
   DateCreated?: Date;

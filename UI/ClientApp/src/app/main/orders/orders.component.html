@@ -38,6 +38,7 @@
                 <mat-icon (click)="onProductDetailClick(order.Product.Id)">link</mat-icon>
               </div>
               <div><b>Quantity:</b> {{order.Quantity}}</div>
+              <div *ngIf="order.Total > 0"><b>Estimated Total:</b> {{order.Total}}</div>
               <div [ngSwitch]="ordersType">
                 <div *ngSwitchCase="'toFulfill'">
                   <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">

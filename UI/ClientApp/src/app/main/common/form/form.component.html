@@ -12,6 +12,7 @@
           <!-- Number -->
           <mat-form-field *ngSwitchCase="'number'">
             <mat-label>{{filter.value.label}}</mat-label>
+            <mat-icon matSuffix *ngIf="filter.value.currency">{{filter.value.currency}}</mat-icon>
             <input matInput [formControlName]="filter.key" [id]="filter.key" [type]="filter.value.type"
               [min]="filter.value.min" [max]="filter.value.max" [readonly]="filter.value.disabled">
           </mat-form-field>
