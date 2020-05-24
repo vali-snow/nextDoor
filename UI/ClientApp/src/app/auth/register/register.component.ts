@@ -47,7 +47,10 @@ export class RegisterComponent implements OnInit {
         validators: (formGroup: FormGroup): ValidationErrors | null => {
           return (formGroup.get('password1').value === formGroup.get('password2').value) ? null : { passwordMismatch: true };
         }
-      })
+      }),
+      gdprCheck: new FormControl('', [
+        Validators.requiredTrue
+      ]),
     });
 
     this.matcher = new AuthErrorStateMatcher();

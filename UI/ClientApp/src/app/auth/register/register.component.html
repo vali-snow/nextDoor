@@ -60,6 +60,13 @@
           Passwords do not match.
         </mat-error>
       </mat-form-field>
+      <hr>
+      <div>GDPR Terms:</div>
+      <div>The application will use the data you provide <i>only</i> for the purpose of:</div>
+      <div>&#9657; displaying your products to other users</div>
+      <div>&#9657; displaying your order and contact information to the seller</div>
+      <hr>
+      <mat-checkbox [formControl]="registerFormGroup.get('gdprCheck')">I agree</mat-checkbox>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button (click)="onRegister($event)" [disabled]="isFormInvalid()">Register</button>
