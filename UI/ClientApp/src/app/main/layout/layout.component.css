@@ -1,11 +1,63 @@
 .height100 {
     height: 100%;
 }
+::ng-deep .mat-toolbar {
+    background: #252525;
+    color: whitesmoke;
+}
+
+::ng-deep .mat-sidenav mat-icon {
+    color: #C23531;
+}
+
+::ng-deep .mat-drawer {
+    background: #252525;
+}
+
+::ng-deep .mat-list-item-content {
+    width: 100%;
+    color: whitesmoke;
+}
+
+::ng-deep .mat-expansion-panel-content ::ng-deep .mat-list-item-content {
+    padding: 0px 16px 0px 24px !important;
+}
+
+mat-expansion-panel-header {
+    padding: 0px 16px;
+    color: whitesmoke;
+}
+
+.mat-list ::ng-deep .mat-expansion-panel {
+    display: inline;
+    background: inherit;
+}
+
+::ng-deep .mat-expansion-panel-header {
+    font-size: 16px;
+}
+
+::ng-deep .mat-sidenav ::ng-deep .mat-expansion-panel-body {
+    padding: 0px !important;
+}
+
+::ng-deep .mat-drawer-container {
+    background-color: inherit;
+}
+
 
 .active {
-    background-color: lightsalmon;
+    background-color: #C23531;
+}
+
+.active mat-icon {
+    color: whitesmoke;
 }
 
 .navPadding {
     padding: 0px 0px 0px 5px;
+}
+
+.paddingLeft8 {
+    padding-left: 8px;
 }

@@ -1,4 +1,4 @@
-<div fxLayout="column" fxLayoutAlign=" stretch" class="height100">
+<div fxLayout="column" fxLayoutAlign=" stretch" fxLayoutGap="5px" class="height100">
   <mat-toolbar fxFlex="40px" fxLayout="row" fxLayoutAlign="space-between center">
     <button mat-icon-button (click)="toggleNavbar()">
       <mat-icon *ngIf="toggle.icon" [attr.aria-label]="toggle.description">{{toggle.icon}}</mat-icon>
@@ -15,30 +15,22 @@
   <mat-sidenav-container fxFlex>
     <mat-sidenav #sidenav mode="side" opened>
       <mat-list>
-        <mat-list-item [routerLinkActive]="['active']">
-          <a routerLink="/main/dash">Dashboard</a>
-        </mat-list-item>
-        <mat-list-item [routerLinkActive]="['active']" fxLayout="row" fxLayoutAlign="space-between stretch">
-          <a fxFlex routerLink="/main/products-all">All Products</a>
+        <a mat-list-item [routerLinkActive]="['active']" routerLink="/main/dash">Dashboard</a>
+        <a mat-list-item [routerLinkActive]="['active']" routerLink="/main/products-all" class="width100" fxLayout="row" fxLayoutAlign="space-between stretch">
+          <div fxFlex>All Products</div>
           <button mat-icon-button color="warn" (click)="onProductAdd()">
             <mat-icon>add_circle</mat-icon>
           </button>
-        </mat-list-item>
-        <mat-list-item style="color: #0366D6;">
-          My Hub
-        </mat-list-item>
+        </a>
         <mat-list style="padding-top: 0px;">
-          <div>
-            <mat-list-item [routerLinkActive]="['active']" style="padding-left: 8px;">
-              <a routerLink="/main/products-shop">My Products</a>
-            </mat-list-item>
-            <mat-list-item [routerLinkActive]="['active']" style="padding-left: 8px;">
-              <a routerLink="/main/orders-to-fulfill">Orders To Fulfill</a>
-            </mat-list-item>
-            <mat-list-item [routerLinkActive]="['active']" style="padding-left: 8px;">
-              <a routerLink="/main/orders-to-receive">Orders To Receive</a>
-            </mat-list-item>
-          </div>
+          <mat-expansion-panel expanded=true hideToggle=true>
+            <mat-expansion-panel-header>
+              My Hub
+            </mat-expansion-panel-header>
+            <a mat-list-item class="paddingLeft8" [routerLinkActive]="['active']" routerLink="/main/products-shop">My Products</a>
+            <a mat-list-item class="paddingLeft8" [routerLinkActive]="['active']" routerLink="/main/orders-to-fulfill">Orders To Fulfill</a>
+            <a mat-list-item class="paddingLeft8" [routerLinkActive]="['active']" routerLink="/main/orders-to-receive">Orders To Receive</a>
+          </mat-expansion-panel>
         </mat-list>
       </mat-list>
     </mat-sidenav>

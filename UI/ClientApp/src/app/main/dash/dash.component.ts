@@ -48,7 +48,7 @@ export class DashComponent implements OnInit {
           emphasis: {
             label: {
               show: true,
-              fontSize: 30,
+              fontSize: 24,
               fontWeight: 'bold'
             }
           },
@@ -83,7 +83,7 @@ export class DashComponent implements OnInit {
           emphasis: {
             label: {
               show: true,
-              fontSize: 30,
+              fontSize: 24,
               fontWeight: 'bold'
             }
           },
