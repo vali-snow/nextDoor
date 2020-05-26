@@ -29,11 +29,24 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public UserDTO GetUser(Guid id)
+        public IActionResult GetUser(Guid id)
         {
-
-            return engine.GetUser(id);
-                
+            try
+            {
+                var user = engine.GetUser(id);
+                if (user != null)
+                {
+                    return Ok(user);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost]

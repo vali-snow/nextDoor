@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using API.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using API.Models.Filters;
@@ -29,16 +26,40 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public Order GetOrder(Guid id)
+        public IActionResult GetOrder(Guid id)
         {
-            return engine.GetOrder(id);
+            try
+            {
+                var order = engine.GetOrder(id);
+                if (order != null)
+                {
+                    return Ok(order);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
         }
 
         [HttpGet]
-        public List<Order> GetOrders([FromQuery] OrderFilters filters)
+        public IActionResult GetOrders([FromQuery] OrderFilters filters)
         {
-            var user = uEngine.GetUser(this.User.FindFirst(ClaimTypes.Email).Value);
-            return engine.GetOrders(user, filters);
+            try
+            {
+                var user = uEngine.GetUser(this.User.FindFirst(ClaimTypes.Email).Value);
+                var orders = engine.GetOrders(user, filters);
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }            
         }
 
 
@@ -74,22 +95,45 @@ namespace API.Controllers
         [HttpGet("Complete/{id}")]
         public IActionResult CompleteOrder(Guid id)
         {
-            var user = uEngine.GetUser(this.User.FindFirst(ClaimTypes.Email).Value);
-            if (engine.CompleteOrder(user, id) == null) {
-                return BadRequest();
+            try
+            {
+                var user = uEngine.GetUser(this.User.FindFirst(ClaimTypes.Email).Value);
+                if (engine.CompleteOrder(user, id) != null)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            return Ok();
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            
         }
 
         [HttpPost("Cancel/{id}")]
-        public async Task<ActionResult<Order>> CancelOrder(Guid id, string reason)
+        public IActionResult CancelOrder(Guid id, string reason)
         {
-            var user = uEngine.GetUser(this.User.FindFirst(ClaimTypes.Email).Value);
-            if (engine.CancelOrder(user, id, reason) == null)
+            try
             {
-                return BadRequest();
+                var user = uEngine.GetUser(this.User.FindFirst(ClaimTypes.Email).Value);
+                if (engine.CancelOrder(user, id, reason) != null)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+                
             }
-            return Ok();
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

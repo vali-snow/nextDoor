@@ -44,6 +44,7 @@ namespace API
             services.AddScoped<UsersEngine>();
             services.AddScoped<ProductsEngine>();
             services.AddScoped<OrdersEngine>();
+            services.AddScoped<DashboardEngine>();
             services.AddTransient<Seeder>();
 
             services.AddCors();

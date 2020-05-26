@@ -26,16 +26,39 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public Product GetProduct(Guid id)
+        public IActionResult GetProduct(Guid id)
         {
-            return engine.GetProduct(id);
+            try
+            {
+                var product = engine.GetProduct(id);
+                if (product != null)
+                {
+                    return Ok(product);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet]
-        public List<Product> GetProducts([FromQuery] ProductFilters filters)
+        public IActionResult GetProducts([FromQuery] ProductFilters filters)
         {
-            var user = uEngine.GetUser(this.User.FindFirst(ClaimTypes.Email).Value);
-            return engine.GetProducts(user, filters);
+            try
+            {
+                var user = uEngine.GetUser(this.User.FindFirst(ClaimTypes.Email).Value);
+                var products = engine.GetProducts(user, filters);
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost]

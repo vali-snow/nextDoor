@@ -75,9 +75,7 @@ namespace API.Controllers
                 System.IO.File.WriteAllText(@$".\Data\{name}.json", jsonString);
             }
        
-           
             return Ok();
-
         }
     }
 }
