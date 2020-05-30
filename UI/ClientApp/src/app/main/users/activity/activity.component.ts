@@ -22,7 +22,7 @@ export class ActivityComponent implements OnInit {
       case 'AccountCreate':
       case 'ProductCreate':
       case 'OrderPlace':
-        return 'basic';
+        return 'accent';
       case 'AccountUpdate':
       case 'ProductEdit':
       case 'OrderReveive':

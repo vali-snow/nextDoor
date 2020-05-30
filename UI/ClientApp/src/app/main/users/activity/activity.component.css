@@ -2,3 +2,7 @@ input[type="datetime"] {
   width: 150px;
   text-align: center;
 }
+
+::ng-deep .mat-icon.mat-accent {
+  color: #252525;
+}
