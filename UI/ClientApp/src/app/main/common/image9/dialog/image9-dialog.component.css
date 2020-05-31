@@ -9,10 +9,6 @@
   width: 100%;
 }
 
-::ng-deep .mat-dialog-container:has(#detail) {
-  padding: 34px 5px;
-}
-
 hr {
   margin: 10px 29px;
 }
