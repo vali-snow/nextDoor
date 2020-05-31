@@ -11,7 +11,7 @@ export class Image9DialogComponent implements OnInit {
   images: (string | ArrayBuffer) [] = [];
   constructor(public dialogRef: MatDialogRef<Image9DialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
     this.images = data.images;
-    this.index = data.index;
+    this.index = +data.index;
   }
 
   ngOnInit() {

@@ -9,7 +9,7 @@
   width: 100%;
 }
 
-::ng-deep .mat-dialog-container {
+::ng-deep .mat-dialog-container:has(#detail) {
   padding: 34px 5px;
 }
 
@@ -17,7 +17,7 @@ hr {
   margin: 10px 29px;
 }
 
-::ng-deep .mat-button {
+#detail ::ng-deep .mat-button {
   min-width: 0px;
   padding: 0px;
 }
