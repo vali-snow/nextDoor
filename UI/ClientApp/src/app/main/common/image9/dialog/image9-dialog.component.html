@@ -11,5 +11,5 @@
 </div>
 <hr>
 <div fxLayout="row" fxLayoutAlign="center stretch" fxLayoutGap="5px">
-  <img *ngFor="let image of images | keyvalue" class="thumbnail" [ngClass]="{'selected': index === +image.key}" [src]="image.value" (click)="onImageClick(image.key)">
+  <img *ngFor="let image of images | keyvalue" class="thumbnail" [ngClass]="{'selected': index === +image.key}" [src]="image.value" (click)="onImageClick(+image.key)">
 </div>
