@@ -1,7 +1,15 @@
 <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-  <mat-icon (click)="onNavigateBefore()">navigate_before</mat-icon>
+  <button mat-button color="basic" (click)="onNavigateBefore()">
+    <mat-icon>navigate_before</mat-icon>
+  </button>
   <div fxFlex class="imgContainer">
     <img [src]="images[index]">
   </div>
-  <mat-icon (click)="onNavigateNext()">navigate_next</mat-icon>
+  <button mat-button color="basic" (click)="onNavigateNext()">
+    <mat-icon >navigate_next</mat-icon>
+  </button>
+</div>
+<hr>
+<div fxLayout="row" fxLayoutAlign="center stretch" fxLayoutGap="5px">
+  <img *ngFor="let image of images | keyvalue" class="thumbnail" [ngClass]="{'selected': index === +image.key}" [src]="image.value" (click)="onImageClick(image.key)">
 </div>

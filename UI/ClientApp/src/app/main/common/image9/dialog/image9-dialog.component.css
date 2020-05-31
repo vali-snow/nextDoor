@@ -9,6 +9,29 @@
   width: 100%;
 }
 
-mat-icon:hover{
-  cursor: pointer;
+::ng-deep .mat-dialog-container {
+  padding: 34px 5px;
+}
+
+hr {
+  margin: 10px 29px;
+}
+
+::ng-deep .mat-button {
+  min-width: 0px;
+  padding: 0px;
+}
+
+mat-icon {
+  color: #252525;
+}
+
+.thumbnail {
+  height: 100px;
+  width: 100px;;
+}
+
+.selected {
+  border-style: solid;
+  border-color: #C23531;
 }

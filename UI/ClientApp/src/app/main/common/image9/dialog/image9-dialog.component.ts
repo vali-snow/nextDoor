@@ -33,4 +33,8 @@ export class Image9DialogComponent implements OnInit {
     this.index++;
   }
 
+  onImageClick(index: number) {
+    this.index = +index;
+  }
+
 }
