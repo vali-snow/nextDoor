@@ -3,6 +3,7 @@ using API.Engines;
 using API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -33,13 +34,15 @@ namespace API
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredUniqueChars = 0;
-                options.Password.RequiredLength = 3;
+                options.Password.RequiredLength = 7;
             });
 
             services.AddIdentity<User, IdentityRole>(config => { config.User.RequireUniqueEmail = true; })
                     .AddEntityFrameworkStores<EFContext>()
                     .AddDefaultTokenProviders();
-            
+
+            services.AddDataProtection();
+
             services.AddDbContext<EFContext>(options => options.UseSqlServer(Configuration["ConnectionString:nextDoor"]));
             services.AddScoped<UsersEngine>();
             services.AddScoped<ProductsEngine>();

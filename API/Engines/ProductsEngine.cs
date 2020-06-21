@@ -1,6 +1,7 @@
 ﻿using API.Models;
 using API.Models.Enums;
 using API.Models.Filters;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,19 +12,30 @@ namespace API.Engines
     public class ProductsEngine
     {
         private EFContext context;
-        public ProductsEngine(EFContext context)
+        private readonly IDataProtector protector;
+        public ProductsEngine(EFContext context, IDataProtectionProvider protectionProvider)
         {
             this.context = context;
+            this.protector = protectionProvider.CreateProtector("luckyNumber7");
         }
 
         public Product GetProduct(Guid id)
         {
-            return context.Products
+            var product = context.Products
+                .AsNoTracking()
                 .Where(p => p.Id == id)
                 .Include(p => p.Owner)
                     .ThenInclude(o => o.Activity)
                 .Include(p => p.Images)
                 .FirstOrDefault();
+            if (product != null)
+            { 
+                
+                product.Owner.FirstName = protector.Unprotect(product.Owner.FirstName);
+                product.Owner.LastName = protector.Unprotect(product.Owner.LastName);
+                product.Owner.PhoneNumber = protector.Unprotect(product.Owner.PhoneNumber);
+            }
+            return product;
         }
 
         public List<Product> GetProducts(User user, ProductFilters filters)

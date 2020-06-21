@@ -2,6 +2,7 @@
 using API.Models.DTOs;
 using API.Models.Enums;
 using API.Models.Filters;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,14 +13,18 @@ namespace API.Engines
     public class OrdersEngine
     {
         private EFContext context;
-        public OrdersEngine(EFContext context)
+        private readonly IDataProtector protector;
+
+        public OrdersEngine(EFContext context, IDataProtectionProvider protectionProvider)
         {
             this.context = context;
+            this.protector = protectionProvider.CreateProtector("luckyNumber7");
         }
 
         public Order GetOrder(Guid id)
         {
-            return context.Orders
+            var order = context.Orders
+                .AsNoTracking()
                 .Where(o => o.Id == id)
                 .Include(o => o.Buyer)
                 .Include(o => o.Seller)
@@ -27,6 +32,21 @@ namespace API.Engines
                     .ThenInclude(p => p.Images)
                 .Include(o => o.AdditionalDetail)
                 .FirstOrDefault();
+            if (order != null)
+            {
+                order.Buyer.FirstName = protector.Unprotect(order.Buyer.FirstName);
+                order.Buyer.LastName = protector.Unprotect(order.Buyer.LastName);
+                order.Buyer.PhoneNumber = protector.Unprotect(order.Buyer.PhoneNumber);
+                order.Seller.FirstName = protector.Unprotect(order.Seller.FirstName);
+                order.Seller.LastName = protector.Unprotect(order.Seller.LastName);
+                order.Seller.PhoneNumber = protector.Unprotect(order.Seller.PhoneNumber);
+                order.AdditionalDetail.ContactName = protector.Unprotect(order.AdditionalDetail.ContactName);
+                order.AdditionalDetail.ContactAddress = protector.Unprotect(order.AdditionalDetail.ContactAddress);
+                order.AdditionalDetail.ContactPhone = protector.Unprotect(order.AdditionalDetail.ContactPhone);
+                order.CompletedBy = order.CompletedBy != null ? protector.Unprotect(order.CompletedBy) : null;
+                order.CancelledBy = order.CancelledBy != null ? protector.Unprotect(order.CancelledBy) : null;
+            }
+            return order;
         }
 
         public Order AddOrder(Order order)
@@ -38,7 +58,7 @@ namespace API.Engines
 
         public List<Order> GetOrders(User user, OrderFilters filters)
         {
-            return context.Orders
+            var orders = context.Orders
                 .AsNoTracking()
                 .Where(o => filters.OrderStatus == null || o.Status == filters.OrderStatus)
                 .Where(o => filters.DateRange == null || (filters.DateRange.Begin < o.DatePlaced && o.DatePlaced < filters.DateRange.End))
@@ -53,6 +73,19 @@ namespace API.Engines
                 .Include(o => o.AdditionalDetail)
                     .ThenInclude(a => a.ProductImage)
                 .ToList();
+            orders.ForEach(o =>
+                {
+                    o.Buyer.FirstName = protector.Unprotect(o.Buyer.FirstName);
+                    o.Buyer.LastName = protector.Unprotect(o.Buyer.LastName);
+                    o.Buyer.PhoneNumber = protector.Unprotect(o.Buyer.PhoneNumber);
+                    o.Seller.FirstName = protector.Unprotect(o.Seller.FirstName);
+                    o.Seller.LastName = protector.Unprotect(o.Seller.LastName);
+                    o.Seller.PhoneNumber = protector.Unprotect(o.Seller.PhoneNumber);
+                    o.AdditionalDetail.ContactName = protector.Unprotect(o.AdditionalDetail.ContactName);
+                    o.AdditionalDetail.ContactAddress = protector.Unprotect(o.AdditionalDetail.ContactAddress);
+                    o.AdditionalDetail.ContactPhone = protector.Unprotect(o.AdditionalDetail.ContactPhone);
+                });
+            return orders;
         }
 
         public Order PlaceOrder(User buyer, OrderDTO orderDTO, DateTime? date = null)
@@ -91,9 +124,9 @@ namespace API.Engines
                 AdditionalDetail = new OrderDetail()
                 {
                     ProductImage = product.Images.FirstOrDefault(),
-                    ContactName = orderDTO.ContactName,
-                    ContactPhone = orderDTO.ContactPhone,
-                    ContactAddress = orderDTO.ContactAddress
+                    ContactName = protector.Protect(orderDTO.ContactName),
+                    ContactPhone = protector.Protect(orderDTO.ContactPhone),
+                    ContactAddress = protector.Protect(orderDTO.ContactAddress)
                 },
                 DatePlaced = date.Value
             };
@@ -128,7 +161,7 @@ namespace API.Engines
             }
             order.Status = OrderStatus.Cancelled;
             order.DateCancelled = date;
-            order.CancelledBy = $"{user.FirstName} {user.LastName}";
+            order.CancelledBy = protector.Protect($"{protector.Unprotect(user.FirstName)} {protector.Unprotect(user.LastName)}");
             if (reason != null)
             {
                 order.ReasonCancelled = reason;
@@ -175,7 +208,7 @@ namespace API.Engines
             {
                 order.Status = OrderStatus.Completed;
                 order.DateCompleted = date.Value;
-                order.CompletedBy = $"{user.FirstName} {user.LastName}";
+                order.CompletedBy = protector.Protect($"{protector.Unprotect(user.FirstName)} {protector.Unprotect(user.LastName)}");
 
                 order.Seller.Activity.Add(new Activity() { Date = date.Value, Type = ActivityType.OrderReveive, Message = $"Order received: {order.Product.Name}", Reference = order.Id });
                 order.Buyer.Activity.Add(new Activity() { Date = date.Value, Type = ActivityType.OrderFulfill, Message = $"Order fulfilled: {order.Product.Name}", Reference = order.Id });

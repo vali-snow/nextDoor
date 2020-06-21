@@ -1,6 +1,7 @@
 ﻿using API.Models;
 using API.Models.DTOs;
 using API.Models.Enums;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,25 +14,28 @@ namespace API.Engines
     {
         private EFContext context;
         private readonly UserManager<User> userManager;
-        private readonly AppSettings appSettings;
-        public UsersEngine(EFContext context, UserManager<User> userManager)
+        private readonly IDataProtector protector;
+
+        public UsersEngine(EFContext context, UserManager<User> userManager, IDataProtectionProvider protectionProvider)
         {
             this.context = context;
             this.userManager = userManager;
+            this.protector = protectionProvider.CreateProtector("luckyNumber7");
         }
 
         public UserDTO GetUser(Guid id)
         {
             return context.Users
+                .AsNoTracking()
                 .Where(u => u.Id == id.ToString())
                 .Include(u => u.Activity)
                 .Select(u => new UserDTO
                 {
                     Id = u.Id,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName,
+                    FirstName = protector.Unprotect(u.FirstName),
+                    LastName = protector.Unprotect(u.LastName),
                     Email = u.Email,
-                    PhoneNumber = u.PhoneNumber,
+                    PhoneNumber = protector.Unprotect(u.PhoneNumber),
                     Activity = u.Activity
                 })
                 .FirstOrDefault();
@@ -55,10 +59,10 @@ namespace API.Engines
             var user = new User()
             {
                 UserName = sent.Email,
-                FirstName = sent.FirstName,
-                LastName = sent.LastName,
+                FirstName = protector.Protect(sent.FirstName),
+                LastName = protector.Protect(sent.LastName),
                 Email = sent.Email,
-                PhoneNumber = sent.PhoneNumber,
+                PhoneNumber = protector.Protect(sent.PhoneNumber),
                 Activity = new List<Activity> {
                     new Activity() {
                         Date = date.Value,
@@ -83,9 +87,9 @@ namespace API.Engines
                 .Where(u => u.Id == user.Id)
                 .Include(u => u.Activity)
                 .FirstOrDefault();
-            storedUser.FirstName = user.FirstName;
-            storedUser.LastName = user.LastName;
-            storedUser.PhoneNumber = user.PhoneNumber;
+            storedUser.FirstName = protector.Protect(user.FirstName);
+            storedUser.LastName = protector.Protect(user.LastName);
+            storedUser.PhoneNumber = protector.Protect(user.PhoneNumber);
             storedUser.Activity.Add(new Activity()
             {
                 Date = date.Value,
@@ -94,7 +98,7 @@ namespace API.Engines
             });
             context.SaveChanges();
 
-            return storedUser;
+            return user;
         }
     }
 }

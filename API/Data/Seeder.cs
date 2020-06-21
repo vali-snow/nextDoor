@@ -1,14 +1,12 @@
 ﻿using API.Engines;
 using API.Models;
-using API.Models.Enums;
 using API.Models.Resources;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace API.Data
 {
@@ -18,12 +16,15 @@ namespace API.Data
         private readonly UsersEngine uEngine;
         private readonly ProductsEngine pEngine;
         private readonly OrdersEngine oEngine;
-        public Seeder(EFContext context, UsersEngine uEngine, ProductsEngine pEngine, OrdersEngine oEngine)
+        private readonly IDataProtector protector;
+
+        public Seeder(EFContext context, UsersEngine uEngine, ProductsEngine pEngine, OrdersEngine oEngine, IDataProtectionProvider protectionProvider)
         {
             this.context = context;
             this.uEngine = uEngine;
             this.pEngine = pEngine;
             this.oEngine = oEngine;
+            this.protector = protectionProvider.CreateProtector("luckyNumber7");
         }
 
         public void Seed()
@@ -37,27 +38,27 @@ namespace API.Data
             if (context.Users.Count() == 0)
             {
                 var uRegister = new List<IdentityResult>() {
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Valentin", LastName = "Sarghi", Email = "valentin.sarghi@gmail.com", PhoneNumber = "0770397736", Password = "111" }, DateTime.Today.AddDays(-9)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Clarence", LastName = "Charlton", Email = "Clarence.Charlton@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-8)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kairon", LastName = "Lester", Email = "Kairon.Lester@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-8)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Gemma", LastName = "Ferreira", Email = "Gemma.Ferreira@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-6)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Misbah", LastName = "Hanson", Email = "Misbah.Hanson@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-6)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Donte", LastName = "Sykes", Email = "Donte.Sykes@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-6)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Tyler", LastName = "Rasmussen", Email = "Tyler.Rasmussen@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-5)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kiya", LastName = "Montoya", Email = "Kiya.Montoya@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-5)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Bradley", LastName = "Shea", Email = "Bradley.Shea@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-5)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Sania", LastName = "Holden", Email = "Sania.Holden@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-3)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kerri", LastName = "Robles", Email = "Kerri.Robles@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-3)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Tessa", LastName = "Sparrow", Email = "Tessa.Sparrow@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-3)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Khloe", LastName = "Correa", Email = "Khloe.Correa@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-3)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Reef", LastName = "Frank", Email = "Reef.Frank@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-2)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Bobbie", LastName = "Hall", Email = "Bobbie.Hall@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-1)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Damian", LastName = "Dale", Email = "Damian.Dale@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-1)),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Lorena", LastName = "Lovell", Email = "Lorena.Lovell@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kelly", LastName = "Chung", Email = "Kelly.Chung@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Charlton", LastName = "Hendricks", Email = "Charlton.Hendricks@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Rubie", LastName = "Gill", Email = "Rubie.Gill@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today),
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Thiago", LastName = "Gonzalez", Email = "Thiago.Gonzalez@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Valentin", LastName = "Sarghi", Email = "valentin.sarghi@gmail.com", PhoneNumber = "0770397736", Password = "1111111" }, DateTime.Today.AddDays(-9)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Clarence", LastName = "Charlton", Email = "Clarence.Charlton@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-8)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kairon", LastName = "Lester", Email = "Kairon.Lester@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-8)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Gemma", LastName = "Ferreira", Email = "Gemma.Ferreira@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-6)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Misbah", LastName = "Hanson", Email = "Misbah.Hanson@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-6)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Donte", LastName = "Sykes", Email = "Donte.Sykes@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-6)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Tyler", LastName = "Rasmussen", Email = "Tyler.Rasmussen@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-5)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kiya", LastName = "Montoya", Email = "Kiya.Montoya@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-5)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Bradley", LastName = "Shea", Email = "Bradley.Shea@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-5)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Sania", LastName = "Holden", Email = "Sania.Holden@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-3)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kerri", LastName = "Robles", Email = "Kerri.Robles@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-3)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Tessa", LastName = "Sparrow", Email = "Tessa.Sparrow@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-3)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Khloe", LastName = "Correa", Email = "Khloe.Correa@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-3)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Reef", LastName = "Frank", Email = "Reef.Frank@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-2)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Bobbie", LastName = "Hall", Email = "Bobbie.Hall@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-1)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Damian", LastName = "Dale", Email = "Damian.Dale@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today.AddDays(-1)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Lorena", LastName = "Lovell", Email = "Lorena.Lovell@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kelly", LastName = "Chung", Email = "Kelly.Chung@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Charlton", LastName = "Hendricks", Email = "Charlton.Hendricks@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Rubie", LastName = "Gill", Email = "Rubie.Gill@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Thiago", LastName = "Gonzalez", Email = "Thiago.Gonzalez@email.com", PhoneNumber = "0770111111", Password = "1111111" }, DateTime.Today),
                 };
 
                 if (uRegister.Any(registration => registration.Succeeded != true))
@@ -383,28 +384,28 @@ namespace API.Data
                 var orderGreenSpaceMaintenance1 = oEngine.PlaceOrder(userClarence, new Models.DTOs.OrderDTO() {
                     ProductId = productGreenSpaceMaintenance.Id,
                     Quantity = 1,
-                    ContactName = $"{userClarence.FirstName} {userClarence.LastName}",
+                    ContactName = $"{this.protector.Unprotect(userClarence.FirstName)} {this.protector.Unprotect(userClarence.LastName)}",
                     ContactAddress = "Ethernet Str.",
                     ContactPhone = "0770111111"
                 }, DateTime.Today.AddDays(-8));
                 var orderGreenSpaceMaintenance2 = oEngine.PlaceOrder(userKairon, new Models.DTOs.OrderDTO() {
                     ProductId = productGreenSpaceMaintenance.Id,
                     Quantity = 1,
-                    ContactName = $"{userKairon.FirstName} {userKairon.LastName}",
+                    ContactName = $"{this.protector.Unprotect(userKairon.FirstName)} {this.protector.Unprotect(userKairon.LastName)}",
                     ContactAddress = "Ethernet Str.",
                     ContactPhone = "0770111111"
                 }, DateTime.Today.AddDays(-7));
                 var orderGreenSpaceMaintenance3 = oEngine.PlaceOrder(userGemma, new Models.DTOs.OrderDTO() {
                     ProductId = productGreenSpaceMaintenance.Id,
                     Quantity = 1,
-                    ContactName = $"{userGemma.FirstName} {userGemma.LastName}",
+                    ContactName = $"{this.protector.Unprotect(userGemma.FirstName)} {this.protector.Unprotect(userGemma.LastName)}",
                     ContactAddress = "Ethernet Str.",
                     ContactPhone = "0770111111"
                 }, DateTime.Today.AddDays(-6));
                 var orderGreenSpaceMaintenance4 = oEngine.PlaceOrder(userMisbah, new Models.DTOs.OrderDTO() {
                     ProductId = productGreenSpaceMaintenance.Id,
                     Quantity = 1,
-                    ContactName = $"{userMisbah.FirstName} {userMisbah.LastName}",
+                    ContactName = $"{this.protector.Unprotect(userMisbah.FirstName)} {this.protector.Unprotect(userMisbah.LastName)}",
                     ContactAddress = "Ethernet Str.",
                     ContactPhone = "0770111111"
                 }, DateTime.Today.AddDays(-6));
@@ -412,7 +413,7 @@ namespace API.Data
                 {
                     ProductId = productGreenSpaceMaintenance.Id,
                     Quantity = 1,
-                    ContactName = $"{userDonte.FirstName} {userDonte.LastName}",
+                    ContactName = $"{this.protector.Unprotect(userDonte.FirstName)} {this.protector.Unprotect(userDonte.LastName)}",
                     ContactAddress = "Ethernet Str.",
                     ContactPhone = "0770111111"
                 }, DateTime.Today.AddDays(-5));
@@ -420,7 +421,7 @@ namespace API.Data
                 {
                     ProductId = productGreenSpaceMaintenance.Id,
                     Quantity = 1,
-                    ContactName = $"{userTyler.FirstName} {userTyler.LastName}",
+                    ContactName = $"{this.protector.Unprotect(userTyler.FirstName)} {this.protector.Unprotect(userTyler.LastName)}",
                     ContactAddress = "Ethernet Str.",
                     ContactPhone = "0770111111"
                 }, DateTime.Today.AddDays(-4));
@@ -435,7 +436,7 @@ namespace API.Data
                 {
                     ProductId = productChicken.Id,
                     Quantity = 2,
-                    ContactName = $"{userValentin.FirstName} {userValentin.LastName}",
+                    ContactName = $"{this.protector.Unprotect(userValentin.FirstName)} {this.protector.Unprotect(userValentin.LastName)}",
                     ContactAddress = "Ethernet Str.",
                     ContactPhone = "0770111111"
                 }, DateTime.Today.AddDays(-3));
@@ -443,7 +444,7 @@ namespace API.Data
                 {
                     ProductId = productApplePie.Id,
                     Quantity = 1,
-                    ContactName = $"{userValentin.FirstName} {userValentin.LastName}",
+                    ContactName = $"{this.protector.Unprotect(userValentin.FirstName)} {this.protector.Unprotect(userValentin.LastName)}",
                     ContactAddress = "Ethernet Str.",
                     ContactPhone = "0770111111"
                 }, DateTime.Today.AddDays(-3));
@@ -451,7 +452,7 @@ namespace API.Data
                 {
                     ProductId = productFriedChicken.Id,
                     Quantity = 1,
-                    ContactName = $"{userValentin.FirstName} {userValentin.LastName}",
+                    ContactName = $"{this.protector.Unprotect(userValentin.FirstName)} {this.protector.Unprotect(userValentin.LastName)}",
                     ContactAddress = "Ethernet Str.",
                     ContactPhone = "0770111111"
                 }, DateTime.Today.AddDays(-1));
@@ -459,7 +460,7 @@ namespace API.Data
                 {
                     ProductId = productFlowerBouquets.Id,
                     Quantity = 1,
-                    ContactName = $"{userValentin.FirstName} {userValentin.LastName}",
+                    ContactName = $"{this.protector.Unprotect(userValentin.FirstName)} {this.protector.Unprotect(userValentin.LastName)}",
                     ContactAddress = "Ethernet Str.",
                     ContactPhone = "0770111111"
                 }, DateTime.Today);
