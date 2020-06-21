@@ -203,13 +203,15 @@ export class OrderDetailComponent implements OnInit {
         complete: {
           order: 1,
           label: 'Delivered',
-          icon: 'remove_circle',
+          color: 'primary',
+          icon: 'done',
           disabled: this.order.Status !== OrderStatus.New,
         },
         cancel: {
           order: 2,
           label: 'Cancel',
-          icon: 'remove_circle',
+          color: 'warn',
+          icon: 'cancel',
           disabled: this.order.Status !== OrderStatus.New,
         }
       };
@@ -219,13 +221,15 @@ export class OrderDetailComponent implements OnInit {
         complete: {
           order: 1,
           label: 'Received',
-          icon: 'remove_circle',
+          color: 'primary',
+          icon: 'done',
           disabled: this.order.Status !== OrderStatus.New,
         },
         cancel: {
           order: 2,
           label: 'Cancel',
-          icon: 'remove_circle',
+          color: 'warn',
+          icon: 'cancel',
           disabled: this.order.Status !== OrderStatus.New,
         }
       };

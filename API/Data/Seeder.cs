@@ -37,7 +37,7 @@ namespace API.Data
             if (context.Users.Count() == 0)
             {
                 var uRegister = new List<IdentityResult>() {
-                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Valentin", LastName = "Sarghi", Email = "valens@admin.com", PhoneNumber = "0770777777", Password = "111" }, DateTime.Today.AddDays(-9)),
+                    uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Valentin", LastName = "Sarghi", Email = "valentin.sarghi@gmail.com", PhoneNumber = "0770397736", Password = "111" }, DateTime.Today.AddDays(-9)),
                     uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Clarence", LastName = "Charlton", Email = "Clarence.Charlton@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-8)),
                     uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Kairon", LastName = "Lester", Email = "Kairon.Lester@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-8)),
                     uEngine.RegisterUser(new RegisterUserDTO() { FirstName = "Gemma", LastName = "Ferreira", Email = "Gemma.Ferreira@email.com", PhoneNumber = "0770111111", Password = "111" }, DateTime.Today.AddDays(-6)),
@@ -73,7 +73,7 @@ namespace API.Data
             if (context.Products.Count() == 0)
             {
                 // Seed Products
-                var userValentin = uEngine.GetUser("valens@admin.com");
+                var userValentin = uEngine.GetUser("valentin.sarghi@gmail.com");
                 var userClarence = uEngine.GetUser("Clarence.Charlton@email.com");
                 var userKairon = uEngine.GetUser("Kairon.Lester@email.com");
                 var userGemma = uEngine.GetUser("Gemma.Ferreira@email.com");

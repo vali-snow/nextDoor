@@ -201,6 +201,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             this.backupEditableValues(this.product);
             this.editable = false;
             this.toastr.success('Product save successful', 'Save successful');
+            this.buttons['copy'].disabled = this.editable;
           },
           (error: any) => {
             this.toastr.error('Product save failed', 'Save failed');

@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ProductsService } from '../products/products.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-layout',
@@ -20,7 +21,7 @@ export class LayoutComponent {
 
   @ViewChild('sidenav', { static: false }) sidenav: any;
 
-  constructor(private productsService: ProductsService, private router: Router) {
+  constructor(private productsService: ProductsService, private router: Router, private toastr: ToastrService) {
   }
 
   toggleNavbar() {
@@ -54,5 +55,6 @@ export class LayoutComponent {
   onLogoutClick() {
     localStorage.clear();
     this.router.navigate(['auth/login']);
+    this.toastr.success('Logout successful', 'Logout successful');
   }
 }
